@@ -19,7 +19,6 @@ const RouterComponent = () => {
 
   return (
     <>
-      {/* Generally we will want to render Header and Footer on all pages except auth page */}
       <BrowserRouter>
         {currentUrl.includes("/auth") ? <></> : <Header />}
 
