@@ -14,8 +14,17 @@ import {
 // import { IconArrowLeft } from "@tabler/icons-react";
 import { ArrowBack } from "@mui/icons-material";
 import classes from "./resetpassword.css";
+import { useAuth } from "../../context/AuthContext";
+import { useState } from "react";
 
 export function ForgotPassword() {
+  const [email, setEmail] = useState('');
+  const { resetPassword,
+    isLoading} = useAuth();
+
+const handlePasswordReset =()=>{
+  resetPassword(email)
+}
   return (
     <section className="section forgot__password-section"
     style={{
@@ -37,8 +46,10 @@ export function ForgotPassword() {
           <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
             <TextInput
               label="Your Email"
-              placeholder="me@email.com"
+              placeholder="name@email.com"
               required
+              onChange={(e)=>setEmail(e.target.value)}
+              type="email"
             />
             <Group justify="space-between" mt="lg" className={classes.controls}>
               <Anchor c="dimmed" size="sm" className={classes.control} href="/auth">
@@ -50,7 +61,7 @@ export function ForgotPassword() {
                   <Box ml={5}>Back to the login page</Box>
                 </Center>
               </Anchor>
-              <Button className={classes.control}>Reset password</Button>
+              <Button className={classes.control} onClick={handlePasswordReset} >Reset password</Button>
             </Group>
           </Paper>
         </Container>

@@ -20,10 +20,18 @@ import { GoogleButton } from './googlebutton.jsx';
 import {  useNavigate } from 'react-router-dom';
 import classes from "./resetpassword.css";
 import { ArrowBack } from '@mui/icons-material';
-
+import {useAuth} from "../../context/AuthContext.js";
 
 export function AuthenticationForm(props) {
   const navigate = useNavigate();
+  const {
+    signUpNewUser,
+    signInUserWithGoogle,
+    signInUser,
+    signOutUser,
+    error,
+    isLoading} = useAuth();
+
   const [type, toggle] = useToggle(['login', 'register']);
   const form = useForm({
     initialValues: {
@@ -38,6 +46,10 @@ export function AuthenticationForm(props) {
       password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
     },
   });
+
+  const handleSubmit = (data) => {
+    signUpNewUser(data.email, data.password);
+  };
 
   return (
     <Paper radius="md" p="5rem" withBorder {...props} w={"35vw"} >
@@ -55,13 +67,13 @@ export function AuthenticationForm(props) {
       </Text>
 
       <Group grow mb="md" mt="md">
-        <GoogleButton radius="xl">Google</GoogleButton>
-        <TwitterButton radius="xl">Twitter</TwitterButton>
+        <GoogleButton radius="xl" onClick={signInUserWithGoogle}>Google</GoogleButton>
+        {/* <TwitterButton radius="xl">Twitter</TwitterButton> */}
       </Group>
 
       <Divider label="Or continue with email" labelPosition="center" my="lg" />
 
-      <form onSubmit={form.onSubmit(() => {})}>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack>
           {type === 'register' && (
             <TextInput
@@ -76,7 +88,7 @@ export function AuthenticationForm(props) {
           <TextInput
             required
             label="Email"
-            placeholder="hello@email.com"
+            placeholder="name@email.com"
             value={form.values.email}
             onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
             error={form.errors.email && 'Invalid email'}

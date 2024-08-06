@@ -64,7 +64,7 @@ function ListingComponent({ listingData }) {
                       <h3 className="h3 card-title">
                         <Link
                           style={{ textTransform: "capitalize" }}
-                          to={`/landdetaials/${data.id}`}
+                          to={`/landdetails/${data.id}`}
                         >
                           {data.name}
                         </Link>

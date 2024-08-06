@@ -1,6 +1,15 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
-import { Auth as auth } from "./auth";
+import { auth } from "../config/firebaseConfig";
 import { toast } from "react-toastify";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+} from "firebase/auth";
 
 const AuthContext = createContext();
 
@@ -39,6 +48,7 @@ export function AuthProvider({ children }) {
     } catch (err) {
       setError(err.message);
       showToast(`Error: ${err.message}`, "error");
+      console.error("Operation failed:", err);
       throw err;
     } finally {
       setIsLoading(false);
@@ -62,42 +72,56 @@ export function AuthProvider({ children }) {
 
   const signUpNewUser = (email, password) =>
     handleAsyncOperation(async () => {
-      const result = await auth.createUserWithEmailAndPassword(email, password);
+      console.log("Inside auth", auth)
+      const result = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       updateUserProfile(result.user);
       return result;
     }, "Account created successfully");
 
   const signInUser = (email, password) =>
     handleAsyncOperation(async () => {
-      const result = await auth.signInWithEmailAndPassword(email, password);
+      const result = await signInWithEmailAndPassword(auth, email, password);
       updateUserProfile(result.user);
       return result;
     }, "Login successful. Please wait ...");
 
-  const signInUserWithGoogle = () =>
-    handleAsyncOperation(async () => {
-      const provider = new auth.GoogleAuthProvider();
-      const result = await auth.signInWithPopup(provider);
-      updateUserProfile(result.user);
-      return result;
-    }, "Login successful. Please wait ...");
+    const signInUserWithGoogle = () =>
+      handleAsyncOperation(async () => {
+        try {
+          const provider = new GoogleAuthProvider();
+          const result = await signInWithPopup(auth, provider);
+          updateUserProfile(result.user);
+          return result;
+        } catch (error) {
+          if (error.code === 'auth/cancelled-popup-request') {
+            console.log('Sign-in popup was closed before finalizing');
+            throw new Error('The sign-in popup was closed. Please try again.');
+          } else {
+            throw error;
+          }
+        }
+      }, "Login successful. Please wait ...");
 
   const signOutUser = () =>
     handleAsyncOperation(async () => {
-      await auth.signOut();
+      await signOut(auth);
       setCurrentUser(null);
       setUserProfile(null);
     }, "Sign out successfully");
 
   const resetPassword = (email) =>
     handleAsyncOperation(
-      () => auth.sendPasswordResetEmail(email),
+      () => sendPasswordResetEmail(auth, email),
       "Password reset email was sent to your address"
     );
 
   const updateProfile = async (updates) => {
     if (!currentUser) {
-      throw new Error('No authenticated user');
+      throw new Error("No authenticated user");
     }
 
     return handleAsyncOperation(async () => {
@@ -107,7 +131,7 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       updateUserProfile(user);
     });
