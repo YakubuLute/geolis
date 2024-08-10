@@ -10,8 +10,8 @@ function CallToAction() {
                         <h2 className="h2 card-title">Looking for a secure and <br/>affordable land?</h2>
 
                         <p className="card-text">
-                            We can help you realize your dream of acquiring that 
-                                    cheap <br/>and secured land with just a few steps.
+                            We can help you realize your dream of acquiring a 
+                                    cheap <br/>and secured land with just a few clicks.
                         </p>
                     </div>
 

@@ -844,6 +844,7 @@ svg.icon {
   line-height: 1;
   display: flex;
   align-items: flex-end;
+  text-transform: capitalize;
   gap: 4px;
 }
 
