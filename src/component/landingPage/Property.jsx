@@ -9,9 +9,16 @@ import BedOutlinedIcon from '@mui/icons-material/BedOutlined';
 import ManOutlinedIcon from '@mui/icons-material/ManOutlined';
 import SquareFootOutlinedIcon from '@mui/icons-material/SquareFootOutlined';
 import { useUserProfile } from "../../context/UserContext"
+import Skeleton from '@mui/material/Skeleton';
+import EmptyField from './EmptyField';
 function Property() {
     const { landData } = useUserProfile();
     console.log("Land information stored", landData)
+    if (landData.length < 1) {
+        <>
+            <EmptyField fieldName='Featured Listings'/>
+        </>
+    }
     return (
         <section className="property" id="property">
             <div className="container">

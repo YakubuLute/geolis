@@ -14,34 +14,38 @@ export function UserContext({ children }) {
   const [userProfile, setUserProfile] = useState(null);
   const [userData, setUserData] = useState([]);
   const [landData, setLandData] = useState([]);
+  const [isUserDataLoading, setIsUserDataLoading] = useState(true);
+  const [isLandDataLoading, setIsLandDataLoading] = useState(true);
 
   // Effect for user data
   useEffect(() => {
-    // if (!currentUser) return; // Only fetch data if user is authenticated
+    setIsLandDataLoading(true);
+    const landCollectionRef = collection(db, 'geolis');
+    const unsubscribe = onSnapshot(landCollectionRef, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+      setLandData(data);
+      setIsLandDataLoading(false);
+    }, (error) => {
+      console.error("Error fetching land data:", error);
+      setIsLandDataLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [currentUser]);
+
+  useEffect(() => {
+    setIsUserDataLoading(true);
     const usersCollectionRef = collection(db, 'users');
     const unsubscribe = onSnapshot(usersCollectionRef, (snapshot) => {
       const data = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
       setUserData(data);
+      setIsUserDataLoading(false);
     }, (error) => {
       console.error("Error fetching user data:", error);
+      setIsUserDataLoading(false);
     });
 
-    return () => unsubscribe(); // Cleanup on unmount
-  }, [currentUser]);
-
-
-  useEffect(() => {
-    // if (!currentUser) return; // Only fetch data if user is authenticated
-
-    const landCollectionRef = collection(db, 'geolis'); // Change 'lands' to your actual collection name
-    const unsubscribe = onSnapshot(landCollectionRef, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-      setLandData(data);
-    }, (error) => {
-      console.error("Error fetching land data:", error);
-    });
-
-    return () => unsubscribe(); // Cleanup on unmount
+    return () => unsubscribe();
   }, [currentUser]);
 
 
@@ -95,6 +99,8 @@ export function UserContext({ children }) {
     updateUserProfile,
     userData,
     landData,
+    isLandDataLoading,
+    isUserDataLoading,
   };
 
   return (
