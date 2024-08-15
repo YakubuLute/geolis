@@ -17,7 +17,6 @@ export function UserContext({ children }) {
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
   const [isLandDataLoading, setIsLandDataLoading] = useState(true);
 
-  // Effect for user data
   useEffect(() => {
     setIsLandDataLoading(true);
     const landCollectionRef = collection(db, 'geolis');
