@@ -11,7 +11,7 @@ import SquareFootOutlinedIcon from '@mui/icons-material/SquareFootOutlined';
 export default function PropertyCard({ land }) {
     return  <div className="property-card">
     <figure className="card-banner">
-        <Link to="/property-listing/property-details/">
+        <Link to={`land/details/${land.id}`}>
             <img
                 src={land.imageUrl || Property_1}
                 alt={land.plotNumber || "Property Image"}
@@ -50,11 +50,11 @@ export default function PropertyCard({ land }) {
         </div>
 
         <h3 className="h3 card-title">
-            <Link to={`/property-listing/property-details/${land.id}`}>{land.plotNumber}</Link>
+            <Link to={`land/details/${land.id}`}>{land.plotNumber}</Link>
         </h3>
 
         <p className="card-text">
-            The land is dry and flat
+            {land?.description}
         </p>
 
         <ul className="card-list">

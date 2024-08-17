@@ -863,6 +863,8 @@ svg.icon {
 .property-card .card-content {
   padding: 30px 15px 15px;
   border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+  height: 400px;
+
 }
 
 .card-price {
@@ -891,6 +893,11 @@ svg.icon {
   font-size: var(--fs-5);
   line-height: 1.8;
   margin-bottom: 25px;
+  height:200px;
+  overflow-y: scroll;
+text-wrap: wrap;
+word-break: normal;
+line-break: auto;
 }
 
 .property-card .card-list {

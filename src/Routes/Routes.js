@@ -12,6 +12,7 @@ import LandListing from "../Pages/Home/Menu/landlisting/LandListing"
 import Faqs from "../Pages/Home/Menu/Faqs/faqs";
 import { ForgotPassword } from "../component/Auth/resetpassword";
 import LandDetails from "../Pages/Home/Menu/LandDetails";
+import PrivateRoute from "./PrivateRoute";
 
 
 const RouterComponent = () => {
@@ -27,9 +28,16 @@ const RouterComponent = () => {
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/auth/reset-password" element={<ForgotPassword />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route 
+            path="/dashboard" 
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            } 
+          />
           <Route path="/land-listing" element={<LandListing />} />
-          <Route path="/landdetails/:id" element={<LandDetails />} />
+          <Route path="/land/details/:id" element={<LandDetails />} />
           <Route path="/faqs" element={<Faqs />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>

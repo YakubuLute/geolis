@@ -10,7 +10,7 @@ function Property() {
 
     try {
         if (landData.length === 0) {
-            return <EmptyField fieldName="Featured Listings" />;
+            return <EmptyField fieldName="Featured Land Listings" />;
         }
 
         if (isLandDataLoading) {
@@ -27,7 +27,7 @@ function Property() {
             <section className="property" id="property">
             <div className="container">
                 <p className="section-subtitle">Properties</p>
-                <h2 className="h2 section-title">Featured Listings</h2>
+                <h2 className="h2 section-title">Featured Land Listings</h2>
                 <ul className="property-list has-scrollbar">
                     {landData.map((land) => (
                         <li key={land.id}>
