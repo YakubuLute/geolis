@@ -1,8 +1,10 @@
 import React from 'react'
-
+import LandDetailsComponent from "../../../../component/shared/landDetails"
 function LandDetails() {
   return (
-    <div>LandDetails</div>
+    <div>
+      <LandDetailsComponent />
+    </div>
   )
 }
 

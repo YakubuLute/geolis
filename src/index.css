@@ -993,7 +993,7 @@ line-break: auto;
   color: var(--white);
 }
 
-.features {
+.features, .land-details {
   background: var(--light-white-2);
   padding-block: var(--section-padding);
 }

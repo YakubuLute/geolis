@@ -16,7 +16,7 @@ import PrivateRoute from "./PrivateRoute";
 
 
 const RouterComponent = () => {
-  const [currentUrl, setCurrentUrl] = useState(window.location.pathname);
+  const [currentUrl] = useState(window.location.pathname);
 
   return (
     <>
