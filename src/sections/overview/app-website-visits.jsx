@@ -4,9 +4,8 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 
-import Chart, { useChart } from 'src/components/chart';
+import Chart, { useChart } from '../../component/Dashboard/chart/index';
 
-// ----------------------------------------------------------------------
 
 export default function AppWebsiteVisits({ title, subheader, chart, ...other }) {
   const { labels, colors, series, options } = chart;

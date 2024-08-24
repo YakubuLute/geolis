@@ -10,9 +10,8 @@ import IconButton from '@mui/material/IconButton';
 import CardHeader from '@mui/material/CardHeader';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-import Iconify from 'src/components/iconify';
+import Iconify from '../../component/Dashboard/iconify/index';
 
-// ----------------------------------------------------------------------
 
 export default function AnalyticsTasks({ title, subheader, list, ...other }) {
   const [selected, setSelected] = useState(['2']);

@@ -1,14 +1,11 @@
 import { Helmet } from 'react-helmet-async';
-
-import { AppView } from 'src/sections/overview/view';
-
-// ----------------------------------------------------------------------
+import { AppView } from '../../sections/overview/view/index';
 
 export default function AppPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard | Minimal UI </title>
+        <title> Geolis Dashboard </title>
       </Helmet>
 
       <AppView />

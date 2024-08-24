@@ -4,11 +4,9 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 
-import { fNumber } from 'src/utils/format-number';
+import { fNumber } from '../../utils/format-number';
 
-import Chart, { useChart } from 'src/components/chart';
-
-// ----------------------------------------------------------------------
+import Chart, { useChart } from '../../component/Dashboard/chart/index';
 
 export default function AppConversionRates({ title, subheader, chart, ...other }) {
   const { colors, series, options } = chart;

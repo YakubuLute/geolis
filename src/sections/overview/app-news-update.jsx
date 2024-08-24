@@ -9,12 +9,10 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
 
-import { fToNow } from 'src/utils/format-time';
+import { fToNow } from '../../utils/format-time';
 
-import Iconify from 'src/components/iconify';
-import Scrollbar from 'src/components/scrollbar';
-
-// ----------------------------------------------------------------------
+import Iconify from '../../component/Dashboard/iconify/index';
+import Scrollbar from '../../component/Dashboard/scrollbar/index';
 
 export default function AppNewsUpdate({ title, subheader, list, ...other }) {
   return (
