@@ -1,10 +1,7 @@
 import merge from 'lodash/merge';
-
 import { alpha, useTheme } from '@mui/material/styles';
+import { useResponsive } from '../../../hooks/use-responsive';
 
-import { useResponsive } from 'src/hooks/use-responsive';
-
-// ----------------------------------------------------------------------
 
 export default function useChart(options) {
   const theme = useTheme();
