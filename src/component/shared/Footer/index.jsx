@@ -131,16 +131,12 @@ function Footer() {
               </li>
 
               <li>
-                <a href="/auth" className="footer-link">
+                <a href="/dashboard" className="footer-link">
                   My Geolis Dashboard
                 </a>
               </li>
 
-              <li>
-                <a href="/terms-and-condition" className="footer-link">
-                  Terms & Conditions
-                </a>
-              </li>
+             
             </ul>
 
           </div>

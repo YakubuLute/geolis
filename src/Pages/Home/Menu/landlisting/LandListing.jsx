@@ -1,10 +1,10 @@
 import React from "react";
-import ListingComponent from "../../../../component/shared/landlisting";
 import { Box, Card, Divider, Stack, Typography } from "@mui/material";
 import { Search } from "../../../../component/landingPage";
-import { landListing } from "../../../../Assets/data/listingData";
+// import { landListing } from "../../../../Assets/data/listingData";
 
 function LandListing() {
+  const landListing = {}
   return (
     <section className="section listing-section">
       <Stack
@@ -29,7 +29,8 @@ function LandListing() {
             Displaying 304 of land available in <strong>Techiman - Bono East</strong>
           </Typography>
           <Card elevation={0}  variant="outlined" sx={{marginBlock:"1rem", borderRadius:"7px", padding:"1.5rem 2rem"}}>
-          <ListingComponent listingData={landListing} />
+          {/* <ListingComponent listingData={landListing} /> */}
+          list all available land here
           </Card>
         </Box>
       </Stack>

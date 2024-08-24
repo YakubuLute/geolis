@@ -1,6 +1,6 @@
 import { ChangeEvent } from 'react';
-import Cookies from 'js-cookie';
-
+// import Cookies from 'js-cookie';
+import axios from 'axios';
 
 export const isValidEmail = (email: string): boolean => {
   const regex =
@@ -330,3 +330,22 @@ export function generateYears(totalYearsToThePast = 50, futureYears = 10): strin
 
   return years?.reverse() as any;
 };
+
+
+
+export const uploadImage = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', 'your_upload_preset');
+
+  try {
+    const response = await axios.post(
+      `https://api.cloudinary.com/v1_1/dl6ibklbe/image/upload`,
+      formData
+    );
+    return response.data.secure_url;
+  } catch (error) {
+    console.error('Error uploading image: ', error);
+  }
+};
+

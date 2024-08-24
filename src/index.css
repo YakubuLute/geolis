@@ -863,8 +863,7 @@ svg.icon {
 .property-card .card-content {
   padding: 30px 15px 15px;
   border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
-  height: 400px;
-
+  min-height: 390px;
 }
 
 .card-price {
@@ -1873,4 +1872,11 @@ display: grid;
 grid-template-columns: repeat(3, auto);
 gap: 1rem;
 column-gap: 1.5rem;
+}
+
+/* mantime css reset */
+@media(max-width:765px){
+  .m-1b7284a3.mantine-Paper-root{
+width: 100% !important;
+  }
 }

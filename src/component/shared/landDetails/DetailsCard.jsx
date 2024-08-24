@@ -12,7 +12,7 @@ export default function DetailsCard({ land }) {
     
     return  <div className="property-card">
     <figure className="card-banner">
-        <Link to={`land/details/${land.id}`}>
+        <Link>
             <img
                 src={land.imageUrl || Property_1}
                 alt={land.plotNumber || "Property Image"}
@@ -51,7 +51,7 @@ export default function DetailsCard({ land }) {
         </div>
 
         <h3 className="h3 card-title">
-            <Link to={`land/details/${land.id}`}>{land.plotNumber}</Link>
+        <span>{land.plotNumber}</span>
         </h3>
 
         <p className="card-text">

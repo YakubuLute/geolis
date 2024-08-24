@@ -114,7 +114,7 @@ function Header() {
           </button>
 
           <button className="nav-actions-btn" aria-label="Profile" title="Dashboard">
-            <a href="/auth">
+            <a href="/dashboard">
               <AccountCircleOutlinedIcon className="icon" />
               <span>Profile</span>
             </a>
