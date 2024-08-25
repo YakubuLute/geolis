@@ -1,4 +1,69 @@
-import React, {useState, useEffect} from 'react';
+// import React, {useState, useEffect} from 'react';
+// import Header from "../component/shared/Header/index.jsx";
+// import Footer from "../component/shared/Footer/index.jsx";
+// import Home from "../Pages/Home/index.jsx";
+// import PageNotFound from "../component/shared/404/index.jsx";
+// import {ContactPage} from "../Pages/Home/Menu/Contact/index.jsx";
+// import Dashboard from "../Pages/Dashboard/index.jsx";
+// import AuthPage from "../component/Auth/index";
+// import { Route, Routes, BrowserRouter } from "react-router-dom";
+
+
+// import LandListing from "../Pages/Home/Menu/landlisting/LandListing.jsx"
+// import Faqs from "../Pages/Home/Menu/Faqs/faqs.jsx";
+// import { ForgotPassword } from "../component/Auth/resetpassword.jsx";
+// import LandDetails from "../Pages/Home/Menu/LandDetails/index.tsx";
+// import PrivateRoute from "./PrivateRoute.jsx";
+// import { useFireStoreContext } from '../context/FireStoreContext.js';
+
+
+// const RouterComponent = () => {
+// const [currentUrl] = useState(window.location.pathname);
+// const {userData, userProfile, isUserDataLoading} = useFireStoreContext();  
+// if(isUserDataLoading){
+//   return <div>Please wait. Loading...</div>;
+ 
+// }  
+//   return (
+//     <>
+//       <BrowserRouter>
+//         {(currentUrl.includes("/auth")|| currentUrl.includes("/dashboard")) ? <></> : <Header />}
+
+//         <Routes>
+//           <Route path="/" element={<Home />} />
+//           <Route path="/auth" element={<AuthPage />} />
+//           <Route path="/auth/reset-password" element={<ForgotPassword />} />
+//           <Route path="/contact" element={<ContactPage />} />
+//           <Route 
+        
+//             path="/dashboard" 
+//             element={
+//               <PrivateRoute   
+//               userData= {userData}
+//               >
+//                 <Dashboard />
+//               </PrivateRoute>
+//             } 
+//           />
+//           <Route path="/land-listing" element={<LandListing />} />
+//           <Route path="/land/details/:id" element={<LandDetails />} />
+//           <Route path="/faqs" element={<Faqs />} />
+//           <Route path="*" element={<PageNotFound />} />
+//         </Routes>
+//         {(currentUrl.includes("/auth")|| currentUrl.includes("/dashboard")) ? <></> : <Footer />}
+//       </BrowserRouter>
+//     </>
+//   );
+// };
+
+// export default RouterComponent;
+
+
+import React, { lazy, Suspense } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+
+
+// Landing page components
 import Header from "../component/shared/Header/index.jsx";
 import Footer from "../component/shared/Footer/index.jsx";
 import Home from "../Pages/Home/index.jsx";
@@ -6,54 +71,85 @@ import PageNotFound from "../component/shared/404/index.jsx";
 import {ContactPage} from "../Pages/Home/Menu/Contact/index.jsx";
 import Dashboard from "../Pages/Dashboard/index.jsx";
 import AuthPage from "../component/Auth/index";
-import { Route, Routes, BrowserRouter } from "react-router-dom";
-
+import BlogPage from "../Pages/Dashboard/blog.jsx";
+import IndexPage from "../Pages/Dashboard/app.jsx"
+import ProductsPage from "../Pages/Dashboard/products.jsx"
+import UserPage from "../Pages/Dashboard/user.jsx"
 
 import LandListing from "../Pages/Home/Menu/landlisting/LandListing.jsx"
 import Faqs from "../Pages/Home/Menu/Faqs/faqs.jsx";
 import { ForgotPassword } from "../component/Auth/resetpassword.jsx";
 import LandDetails from "../Pages/Home/Menu/LandDetails/index.tsx";
-import PrivateRoute from "./PrivateRoute.jsx";
 import { useFireStoreContext } from '../context/FireStoreContext.js';
+// Dashboard components
+import DashboardLayout from '../layouts/dashboard/index.jsx';
 
 
-const RouterComponent = () => {
-const [currentUrl] = useState(window.location.pathname);
-const {userData, userProfile, isUserDataLoading} = useFireStoreContext();  
-if(isUserDataLoading){
-  return <div>Please wait. Loading...</div>;
- 
-}  
+
+const PrivateRoute = ({ children }) => {
+  const { userData, isUserDataLoading } = useFireStoreContext();
+
+  if (isUserDataLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!userData) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  return children;
+};
+
+const PublicLayout = ({ children }) => {
+  const currentUrl = window.location.pathname;
+  const showHeaderFooter = !currentUrl.includes("/auth") && !currentUrl.includes("/dashboard");
+
   return (
     <>
-      <BrowserRouter>
-        {(currentUrl.includes("/auth")|| currentUrl.includes("/dashboard")) ? <></> : <Header />}
-
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/auth" element={<AuthPage />} />
-          <Route path="/auth/reset-password" element={<ForgotPassword />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route 
-        
-            path="/dashboard" 
-            element={
-              <PrivateRoute   
-              userData= {userData}
-              >
-                <Dashboard />
-              </PrivateRoute>
-            } 
-          />
-          <Route path="/land-listing" element={<LandListing />} />
-          <Route path="/land/details/:id" element={<LandDetails />} />
-          <Route path="/faqs" element={<Faqs />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-        {(currentUrl.includes("/auth")|| currentUrl.includes("/dashboard")) ? <></> : <Footer />}
-      </BrowserRouter>
+      {showHeaderFooter && <Header />}
+      {children}
+      {showHeaderFooter && <Footer />}
     </>
   );
 };
 
-export default RouterComponent;
+const MainRouter = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Public routes */}
+        <Route element={<PublicLayout><Outlet /></PublicLayout>}>
+          <Route path="/" element={<Home />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/auth/reset-password" element={<ForgotPassword />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/land-listing" element={<LandListing />} />
+          <Route path="/land/details/:id" element={<LandDetails />} />
+          <Route path="/faqs" element={<Faqs />} />
+        </Route>
+
+        {/* Dashboard routes */}
+        <Route path="/dashboard" element={
+          <PrivateRoute>
+            <Suspense fallback={<div>Loading dashboard...</div>}>
+              <DashboardLayout>
+                <Outlet />
+              </DashboardLayout>
+            </Suspense>
+          </PrivateRoute>
+        }>
+          <Route index element={<IndexPage />} />
+          <Route path="user" element={<UserPage />} />
+          <Route path="land" element={<ProductsPage />} />
+          {/* <Route path="blog" element={<BlogPage />} /> */}
+        </Route>
+
+        {/* 404 and catch-all */}
+        <Route path="/404" element={<PageNotFound />} />
+        <Route path="*" element={<Navigate to="/404" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
+
+export default MainRouter;

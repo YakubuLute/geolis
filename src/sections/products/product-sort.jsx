@@ -6,9 +6,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { listClasses } from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 
-import Iconify from 'src/components/iconify';
+import Iconify from '../../component/Dashboard/iconify';
 
-// ----------------------------------------------------------------------
 
 const SORT_OPTIONS = [
   { value: 'featured', label: 'Featured' },

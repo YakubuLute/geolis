@@ -7,9 +7,9 @@ import IconButton from '@mui/material/IconButton';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 
-import Iconify from 'src/components/iconify';
+import Iconify from '../../component/Dashboard/iconify';
 
-// ----------------------------------------------------------------------
+
 
 export default function UserTableToolbar({ numSelected, filterName, onFilterName }) {
   return (

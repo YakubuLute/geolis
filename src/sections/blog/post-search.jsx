@@ -6,7 +6,6 @@ import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 
 import Iconify from 'src/components/iconify';
 
-// ----------------------------------------------------------------------
 
 PostSearch.propTypes = {
   posts: PropTypes.array.isRequired,

@@ -3,12 +3,13 @@ import RouterComponent from "./Routes/Routes.tsx";
 import { useScrollToTop } from './hooks/use-scroll-to-top.js';
 import './global.css';
 import ThemeProvider from './theme/index.jsx';
+import MainRouter from './Routes/Routes.tsx';
 
 function App() {
   // useScrollToTop();
   return (
   <ThemeProvider>
-    <RouterComponent />
+    <MainRouter />
 </ThemeProvider>
 
   );

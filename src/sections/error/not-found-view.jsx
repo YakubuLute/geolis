@@ -3,11 +3,10 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import { RouterLink } from 'src/routes/components';
+import { RouterLink } from '../../Routes/dashboardroutes/components/index';
 
-import Logo from 'src/components/logo';
+import Logo from '../../component/Dashboard/logo';
 
-// ----------------------------------------------------------------------
 
 export default function NotFoundView() {
   const renderHeader = (
