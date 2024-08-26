@@ -11,7 +11,7 @@ const StyledRoot = styled('div')(({ theme }) => ({
   cursor: 'pointer',
   position: 'fixed',
   alignItems: 'center',
-  top: theme.spacing(16),
+  top: theme.spacing(23),
   height: theme.spacing(5),
   paddingLeft: theme.spacing(2),
   paddingRight: theme.spacing(2),

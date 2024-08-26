@@ -5,7 +5,7 @@ export default function UserPage() {
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> Agents | Geolis </title>
       </Helmet>
 
       <UserView />

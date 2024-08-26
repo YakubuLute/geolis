@@ -27,7 +27,7 @@ export default function AppView() {
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Weekly Sales"
-            total={714000}
+            total={7140}
             color="success"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
           />
@@ -35,8 +35,8 @@ export default function AppView() {
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="New Users"
-            total={1352831}
+            title="Agents"
+            total={132}
             color="info"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
           />
@@ -44,8 +44,8 @@ export default function AppView() {
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Item Orders"
-            total={1723315}
+            title="Land Orders"
+            total={1723}
             color="warning"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
           />
@@ -53,7 +53,7 @@ export default function AppView() {
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Bug Reports"
+            title="Messages"
             total={234}
             color="error"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
@@ -107,16 +107,16 @@ export default function AppView() {
             title="Current Visits"
             chart={{
               series: [
-                { label: 'America', value: 4344 },
-                { label: 'Asia', value: 5435 },
-                { label: 'Europe', value: 1443 },
-                { label: 'Africa', value: 4443 },
+                { label: 'Techiman', value: 54344 },
+                { label: 'Kumasi', value: 5435 },
+                { label: 'Accra', value: 1443 },
+                { label: 'Sunyani', value: 4443 },
               ],
             }}
           />
         </Grid>
 
-        <Grid xs={12} md={6} lg={8}>
+        {/* <Grid xs={12} md={6} lg={8}>
           <AppConversionRates
             title="Conversion Rates"
             subheader="(+43%) than last year"
@@ -135,7 +135,7 @@ export default function AppView() {
               ],
             }}
           />
-        </Grid>
+        </Grid> */}
 
         <Grid xs={12} md={6} lg={4}>
           <AppCurrentSubject
@@ -182,7 +182,7 @@ export default function AppView() {
           />
         </Grid>
 
-        <Grid xs={12} md={6} lg={4}>
+        {/* <Grid xs={12} md={6} lg={4}>
           <AppTrafficBySite
             title="Traffic by Site"
             list={[
@@ -208,17 +208,17 @@ export default function AppView() {
               },
             ]}
           />
-        </Grid>
+        </Grid> */}
 
         <Grid xs={12} md={6} lg={8}>
           <AppTasks
             title="Tasks"
             list={[
-              { id: '1', name: 'Create FireStone Logo' },
-              { id: '2', name: 'Add SCSS and JS files if required' },
+              { id: '1', name: 'Upload land content for Id: 25-34223-fbx' },
+              { id: '2', name: 'Visit Fiaso Assemblyman for stool land meeting' },
               { id: '3', name: 'Stakeholder Meeting' },
               { id: '4', name: 'Scoping & Estimations' },
-              { id: '5', name: 'Sprint Showcase' },
+              { id: '5', name: 'Contact Forikrom cheif and update on sales of land 24-34234-hxs' },
             ]}
           />
         </Grid>

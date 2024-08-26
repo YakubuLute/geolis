@@ -25,7 +25,6 @@ const LANGS = [
   // },
 ];
 
-// ----------------------------------------------------------------------
 
 export default function LanguagePopover() {
   const [open, setOpen] = useState(null);

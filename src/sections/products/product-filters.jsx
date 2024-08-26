@@ -26,13 +26,13 @@ export const SORT_OPTIONS = [
   { value: 'priceDesc', label: 'Price: High-Low' },
   { value: 'priceAsc', label: 'Price: Low-High' },
 ];
-export const GENDER_OPTIONS = ['Men', 'Women', 'Kids'];
-export const CATEGORY_OPTIONS = ['All', 'Shose', 'Apparel', 'Accessories'];
+export const LOCATION_OPTIONS = ['Forikrom', 'Fiaso', 'Takofiano',  'Site', 'Bamire'];
+export const SIZE_OPTIONS = ['All', '0.1', '0.5', '1', '2', '5'];
 export const RATING_OPTIONS = ['up4Star', 'up3Star', 'up2Star', 'up1Star'];
 export const PRICE_OPTIONS = [
-  { value: 'below', label: 'Below $25' },
-  { value: 'between', label: 'Between $25 - $75' },
-  { value: 'above', label: 'Above $75' },
+  { value: 'below', label: 'Below ₵25,000' },
+  { value: 'between', label: 'Between ₵25,000 - ₵75,000' },
+  { value: 'above', label: 'Above ₵75,000' },
 ];
 export const COLOR_OPTIONS = [
   '#00AB55',
@@ -48,11 +48,11 @@ export const COLOR_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter }) {
-  const renderGender = (
+  const renderLocations = (
     <Stack spacing={1}>
-      <Typography variant="subtitle2">Gender</Typography>
+      <Typography variant="subtitle2">Location</Typography>
       <FormGroup>
-        {GENDER_OPTIONS.map((item) => (
+        {LOCATION_OPTIONS.map((item) => (
           <FormControlLabel key={item} control={<Checkbox />} label={item} />
         ))}
       </FormGroup>
@@ -61,9 +61,9 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
 
   const renderCategory = (
     <Stack spacing={1}>
-      <Typography variant="subtitle2">Category</Typography>
+      <Typography variant="subtitle2">Size (Acres)</Typography>
       <RadioGroup>
-        {CATEGORY_OPTIONS.map((item) => (
+        {SIZE_OPTIONS.map((item) => (
           <FormControlLabel key={item} value={item} control={<Radio />} label={item} />
         ))}
       </RadioGroup>
@@ -167,11 +167,11 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
 
         <Scrollbar>
           <Stack spacing={3} sx={{ p: 3 }}>
-            {renderGender}
+            {renderLocations}
 
             {renderCategory}
 
-            {renderColors}
+            {/* {renderColors} */}
 
             {renderPrice}
 

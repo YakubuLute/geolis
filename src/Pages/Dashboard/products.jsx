@@ -5,7 +5,7 @@ export default function ProductsPage() {
   return (
     <>
       <Helmet>
-        <title> Products | Minimal UI </title>
+        <title> Products | Geolis </title>
       </Helmet>
 
       <ProductsView />
