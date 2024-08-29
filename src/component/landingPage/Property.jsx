@@ -1,9 +1,8 @@
 import React from 'react'
-import Skeleton from '@mui/material/Skeleton';
 import EmptyField from './EmptyField.jsx';
 import PropertyCard from './PropertyCard.tsx';
-import { Box } from '@mui/material';
 import { useFireStoreContext } from '../../context/FireStoreContext.js';
+import LandlistingSkeleton from '../shared/Skeleton/land-skeleton.jsx';
 function Property() {
     const { landData, isLandDataLoading } = useFireStoreContext();
 
@@ -14,39 +13,7 @@ function Property() {
 
         if (isLandDataLoading) {
             return (
-                <Box className="container" wid>
-                    <div className="container">
-                        <Box className="loading-skeleton" display={'flex'} gap={'1.5rem'} mt={4}>
-                            <Box width={'100%'}>
-                            <Skeleton variant="rectangular" height={'300px'} width="100%" />
-                            <Skeleton variant="text" height={'10px'} width="100%" />
-                            <Skeleton variant="text" height={'10px'} width="100%" />
-                            <Skeleton variant="text" height={'30px'} width="100%" />
-                            <Skeleton variant="text" height={'30px'} width="100%" />
-                            <Skeleton variant="text" height={'30px'} width="100%" />
-                            <Skeleton variant="text" height={'30px'} width="100%" />
-                            </Box>
-                            <Box width={'100%'}>
-                            <Skeleton variant="rectangular" height={'300px'} width="100%" />
-                            <Skeleton variant="text" height={'10px'} width="100%" />
-                            <Skeleton variant="text" height={'10px'} width="100%" />
-                            <Skeleton variant="text" height={'30px'} width="100%" />
-                            <Skeleton variant="text" height={'30px'} width="100%" />
-                            <Skeleton variant="text" height={'30px'} width="100%" />
-                            <Skeleton variant="text" height={'30px'} width="100%" />
-                            </Box>
-                            <Box width={'100%'}>
-                            <Skeleton variant="rectangular" height={'300px'} width="100%" />
-                            <Skeleton variant="text" height={'10px'} width="100%" />
-                            <Skeleton variant="text" height={'10px'} width="100%" />
-                            <Skeleton variant="text" height={'30px'} width="100%" />
-                            <Skeleton variant="text" height={'30px'} width="100%" />
-                            <Skeleton variant="text" height={'30px'} width="100%" />
-                            <Skeleton variant="text" height={'30px'} width="100%" />
-                            </Box>
-                        </Box>
-                    </div>
-                </Box>
+                <LandlistingSkeleton />
             );
         }
         return (

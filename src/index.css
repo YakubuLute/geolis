@@ -910,6 +910,8 @@ line-break: auto;
   padding-block: 5px;
   color: var(--cadet);
   font-size: var(--fs-5);
+  text-transform: capitalize;
+  font-size: 12px;
 }
 
 .property-card .card-item:not(:last-child) {
@@ -918,7 +920,7 @@ line-break: auto;
   margin-right: 20px;
 }
 
-.property-card .card-item :is(strong, svg) {
+.property-card .card-item :is(span, svg) {
   display: inline-block;
 }
 
@@ -926,8 +928,11 @@ line-break: auto;
   margin-left: 10px;
   margin-bottom: -6px;
 }
-
-.property-card .card-item span {
+.property-card .card-item .flex{
+  justify-content: space-around;
+  align-items: center;
+}
+.property-card .card-item strong {
   margin-top: 5px;
 }
 
@@ -1878,5 +1883,31 @@ column-gap: 1.5rem;
 @media(max-width:765px){
   .m-1b7284a3.mantine-Paper-root{
 width: 100% !important;
+  }
+}
+
+.land-listing-items{
+  width:100%;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  row-gap: 2rem;
+  column-gap: 1rem;
+}
+
+@media(max-width:1200px){
+  .land-listing-items{
+    width:100%;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    row-gap: 2.2rem;
+    column-gap: 1.5rem;
+  }
+}
+@media(max-width:867px){
+  .land-listing-items{
+    width:100%;
+    display: grid;
+    grid-template-columns: repeat(1, auto);
+    row-gap: 2.5rem;
   }
 }

@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom'
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PhotoLibraryOutlinedIcon from '@mui/icons-material/PhotoLibraryOutlined';
 import MovieFilterOutlinedIcon from '@mui/icons-material/MovieFilterOutlined';
-import BedOutlinedIcon from '@mui/icons-material/BedOutlined';
-import ManOutlinedIcon from '@mui/icons-material/ManOutlined';
 import SquareFootOutlinedIcon from '@mui/icons-material/SquareFootOutlined';
-import DefaultImg from '../../Assets/Images/General/land_1.jpg'
+import DefaultImg from '../../Assets/Images/General/land_1.jpg';
+import SecurityIcon from '@mui/icons-material/Security';
+import HomeWorkIcon from '@mui/icons-material/HomeWork';
+
 interface LandProps {
     id: number;
     imageUrl: string[];
@@ -15,7 +16,9 @@ interface LandProps {
     price: number;
     size: number;
     description: string;
-
+    security: string;
+    environment: string;
+    purpose: string;
 }
 interface PropertyCardProps {
     land: LandProps;
@@ -71,27 +74,28 @@ export default function PropertyCard({ land }: PropertyCardProps) {
 
             <ul className="card-list">
                 <li className="card-item">
-                    <strong>3</strong>
+                    <div className="flex">
+                        <span>Security</span>
+                        < SecurityIcon />
+                    </div>
 
-                    < BedOutlinedIcon />
-
-                    <span>Bedrooms</span>
+                    <strong>{land?.security}</strong>
                 </li>
 
                 <li className="card-item">
-                    <strong>2</strong>
-
-                    <ManOutlinedIcon />
-
-                    <span>Bathrooms</span>
+                    <div className="flex">
+                        <span>purpose</span>
+                        <HomeWorkIcon />
+                    </div>
+                    <strong>{land?.purpose}</strong>
                 </li>
 
                 <li className="card-item">
+                    <div className="flex">
+                        <span>Acres</span>
+                        < SquareFootOutlinedIcon />
+                    </div>
                     <strong>{land.size}</strong>
-
-                    < SquareFootOutlinedIcon />
-
-                    <span>Acres</span>
                 </li>
             </ul>
         </div>

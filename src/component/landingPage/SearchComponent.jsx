@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   PillsInput,
   Pill,
@@ -8,27 +8,12 @@ import {
   useCombobox,
   Accordion,
   rem,
-  InputLabel,
 } from "@mantine/core";
 import {
-  PictureInPictureOutlined,
   ScreenSearchDesktopRounded,
 } from "@mui/icons-material";
 import MultiselectComponent from "../shared/mutiselect/multiselect";
-
-const communities = ["Anyinabrem", "Kenten", "Bamiri", "Fiaso", "Nkwaeso"];
-
-// mui
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+import { useFireStoreContext } from "../../../../context/FireStoreContext";
 
 const zoning = [
   "Residential",
@@ -47,51 +32,26 @@ const size = [
 ];
 
 const slope = ["Mostly Flat", "Rolling", "Sloped"];
-function Search() {
-  // mui select
+
+function SearchComponent({ onSearch }) {
+  const { landData } = useFireStoreContext();
+  const [locations, setLocations] = useState([]);
   const [zoneState, setZoneState] = useState([]);
   const [slopeState, setSlopeState] = useState([]);
   const [sizeState, setSizeState] = useState([]);
-
-  // zoning state
-  const handleZoningChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setZoneState(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
-
-  // size event
-  const handleSizeChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setSizeState(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
-  // slope event
-  const handleSlopeChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setSlopeState(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
+  const [search, setSearch] = useState("");
+  const [value, setValue] = useState([]);
 
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
     onDropdownOpen: () => combobox.updateSelectedOptionIndex("active"),
   });
 
-  const [search, setSearch] = useState("");
-  const [value, setValue] = useState([]);
+  useEffect(() => {
+    // Extract unique locations from landData
+    const uniqueLocations = [...new Set(landData.map(land => land.location))];
+    setLocations(uniqueLocations);
+  }, [landData]);
 
   const handleValueSelect = (val) =>
     setValue((current) =>
@@ -109,7 +69,7 @@ function Search() {
     </Pill>
   ));
 
-  const options = communities
+  const options = locations
     .filter((item) => item.toLowerCase().includes(search.trim().toLowerCase()))
     .map((item) => (
       <Combobox.Option value={item} key={item} active={value.includes(item)}>
@@ -121,7 +81,13 @@ function Search() {
     ));
 
   const handleSubmit = () => {
-    return;
+    const searchCriteria = {
+      locations: value,
+      zoning: zoneState,
+      size: sizeState,
+      slope: slopeState,
+    };
+    onSearch(searchCriteria);
   };
 
   return (
@@ -134,13 +100,12 @@ function Search() {
                 <PillsInput onClick={() => combobox.openDropdown()}>
                   <Pill.Group>
                     {values}
-
                     <Combobox.EventsTarget>
                       <PillsInput.Field
                         onFocus={() => combobox.openDropdown()}
                         onBlur={() => combobox.closeDropdown()}
                         value={search}
-                        placeholder="Add a community. You can also select multiples"
+                        placeholder="Add a location. You can also select multiples"
                         onChange={(event) => {
                           combobox.updateSelectedOptionIndex();
                           setSearch(event.currentTarget.value);
@@ -171,7 +136,6 @@ function Search() {
               </Combobox.Dropdown>
             </Combobox>
           </div>
-          {/* advance search */}
           <div className="advance__search">
             <Accordion transitionDuration={700}>
               <div className="flex">
@@ -194,21 +158,21 @@ function Search() {
                       <MultiselectComponent
                         label={"Any Zone"}
                         value={zoning}
-                        handleChange={handleZoningChange}
+                        handleChange={(event) => setZoneState(event.target.value)}
                         setvalueState={setZoneState}
                         valueState={zoneState}
                       />
                       <MultiselectComponent
                         label={"Any Size"}
                         value={size}
-                        handleChange={handleSizeChange}
+                        handleChange={(event) => setSizeState(event.target.value)}
                         setvalueState={setSizeState}
                         valueState={sizeState}
                       />
                       <MultiselectComponent
                         label={"Any Slope"}
                         value={slope}
-                        handleChange={handleSlopeChange}
+                        handleChange={(event) => setSlopeState(event.target.value)}
                         setvalueState={setSlopeState}
                         valueState={slopeState}
                       />
@@ -232,4 +196,4 @@ function Search() {
   );
 }
 
-export default Search;
+export default SearchComponent;

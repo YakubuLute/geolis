@@ -1,40 +1,88 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Box, Card, Divider, Stack, Typography } from "@mui/material";
-import { Search } from "../../../../component/landingPage";
-// import { landListing } from "../../../../Assets/data/listingData";
+import SearchComponent from "../../../../component/landingPage/SearchComponent.jsx";
+import LandlistingSkeleton from "../../../../component/shared/Skeleton/land-skeleton.jsx";
+import { useFireStoreContext } from "../../../../context/FireStoreContext.js";
+import EmptyField from "../../../../component/landingPage/EmptyField.jsx";
+import PropertyCard from "../../../../component/landingPage/PropertyCard.tsx";
 
 function LandListing() {
-  const landListing = {}
+  const { landData, isLandDataLoading } = useFireStoreContext();
+  const [searchCriteria, setSearchCriteria] = useState(null);
+
+  const filteredLandData = useMemo(() => {
+    if (!searchCriteria) return landData;
+
+    return landData.filter((land) => {
+      const matchesLocation =
+        searchCriteria.locations.length === 0 ||
+        searchCriteria.locations.includes(land.location);
+      const matchesZoning =
+        searchCriteria.zoning.length === 0 ||
+        searchCriteria.zoning.includes(land.zoning);
+      const matchesSize =
+        searchCriteria.size.length === 0 ||
+        searchCriteria.size.includes(land.size);
+      const matchesSlope =
+        searchCriteria.slope.length === 0 ||
+        searchCriteria.slope.includes(land.slope);
+
+      return matchesLocation && matchesZoning && matchesSize && matchesSlope;
+    });
+  }, [landData, searchCriteria]);
+
+  const handleSearch = (criteria) => {
+    setSearchCriteria(criteria);
+  };
+
+  if (isLandDataLoading) {
+    return <LandlistingSkeleton />;
+  }
+
+  if (filteredLandData.length === 0) {
+    return <EmptyField fieldName="land" />;
+  }
+
   return (
-    <section className="section listing-section">
-      <Stack
-        direction={"column"}
-        spacing={5}
-        divider={<Divider orientation="vertical" flexItem />}
-      >
-        <Box className={"listing-search-header"}>
-          <Box display={"grid"} className="container">
-            <Typography variant="h4" fontWeight={800} color={"#fff"}>
-              Search for Land
-            </Typography>
-            <Typography variant="p" color={"#c9c9c9"} >
-              Select at least one quality to start search
-            </Typography>
-           
+    <>
+      <section className="section listing-section">
+        <Stack
+          direction={"column"}
+          spacing={5}
+          divider={<Divider orientation="vertical" flexItem />}
+        >
+          <Box className={"listing-search-header"}>
+            <Box display={"grid"} className="container">
+              <Typography variant="h4" fontWeight={800} color={"#fff"}>
+                Search for Land
+              </Typography>
+              <Typography variant="p" color={"#c9c9c9"}>
+                Select at least one quality to start search
+              </Typography>
+            </Box>
+            <SearchComponent onSearch={handleSearch} />
           </Box>
-          <Search />
-        </Box>
-        <Box className="container listing-main-content" maxWidth="1200px">
-          <Typography borderBottom={"1px solid #c6c6c6"} width={'max-content'} paddingBottom={"10px"}>
-            Displaying 304 of land available in <strong>Techiman - Bono East</strong>
-          </Typography>
-          <Card elevation={0}  variant="outlined" sx={{marginBlock:"1rem", borderRadius:"7px", padding:"1.5rem 2rem"}}>
-          {/* <ListingComponent listingData={landListing} /> */}
-          list all available land here
-          </Card>
-        </Box>
-      </Stack>
-    </section>
+          <Box className="container listing-main-content" maxWidth="1400px">
+            <h2 className="h3 text-center text">
+              Displaying {filteredLandData.length} land available
+            </h2>
+            <Card
+              elevation={0}
+              variant="outlined"
+              sx={{ marginBlock: "1rem", borderRadius: "7px", padding: "1.5rem 2rem" }}
+            >
+              <ul className="land-listing-items">
+                {filteredLandData.map((land) => (
+                  <li key={land.id}>
+                    <PropertyCard land={land} />
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </Box>
+        </Stack>
+      </section>
+    </>
   );
 }
 
