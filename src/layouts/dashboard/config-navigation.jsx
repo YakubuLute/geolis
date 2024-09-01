@@ -18,7 +18,7 @@ const navConfig = [
     icon: icon('ic_user'),
   },
   {
-    title: 'land',
+    title: 'Properties',
     path: '/dashboard/land',
     icon: icon('ic_cart'),
   },

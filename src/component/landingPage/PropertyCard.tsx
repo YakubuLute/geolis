@@ -26,7 +26,7 @@ interface PropertyCardProps {
 export default function PropertyCard({ land }: PropertyCardProps) {
     return <div className="property-card">
         <figure className="card-banner">
-            <Link to={`land/details/${land.id}`}>
+            <Link to={`/land/details/${land.id}`}>
                 <img
                     src={land.imageUrl || `${DefaultImg}`}
                     alt={land.plotNumber || "Property Image"}
@@ -65,7 +65,7 @@ export default function PropertyCard({ land }: PropertyCardProps) {
             </div>
 
             <h3 className="h3 card-title">
-                <Link to={`land/details/${land.id}`}>{land.plotNumber}</Link>
+                <Link to={`/land/details/${land.id}`}>{land.plotNumber}</Link>
             </h3>
 
             <p className="card-text">

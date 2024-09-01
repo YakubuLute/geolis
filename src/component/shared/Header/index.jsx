@@ -112,12 +112,12 @@ function Header() {
           </nav>
 
           <div className="header-bottom-actions">
-            <button className="nav-actions-btn" aria-label="Search" title="Search for a land">
+            {/* <button className="nav-actions-btn" aria-label="Search" title="Search for a land">
               <Link to={"/advance-search"}> <SearchOutlinedIcon className="icon" />
                 <span>Search</span></Link>
-            </button>
+            </button> */}
 
-            <button className="nav-actions-btn" aria-label="Profile" title="Dashboard">
+            <button className="nav-actions-bt" aria-label="Profile" title="Dashboard">
               <Link to="/dashboard" className="icon">
 
                 <Avatar

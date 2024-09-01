@@ -15,17 +15,17 @@ function LandListing() {
 
     return landData.filter((land) => {
       const matchesLocation =
-        searchCriteria.locations.length === 0 ||
-        searchCriteria.locations.includes(land.location);
+        searchCriteria.locations?.length === 0 ||
+        searchCriteria.locations?.includes(land.location);
       const matchesZoning =
-        searchCriteria.zoning.length === 0 ||
-        searchCriteria.zoning.includes(land.zoning);
+        searchCriteria.zoning?.length === 0 ||
+        searchCriteria.zoning?.includes(land.zoning);
       const matchesSize =
-        searchCriteria.size.length === 0 ||
-        searchCriteria.size.includes(land.size);
+        searchCriteria.size?.length === 0 ||
+        searchCriteria.size?.includes(land.size);
       const matchesSlope =
-        searchCriteria.slope.length === 0 ||
-        searchCriteria.slope.includes(land.slope);
+        searchCriteria.slope?.length === 0 ||
+        searchCriteria.slope?.includes(land.slope);
 
       return matchesLocation && matchesZoning && matchesSize && matchesSlope;
     });
@@ -39,8 +39,8 @@ function LandListing() {
     return <LandlistingSkeleton />;
   }
 
-  if (filteredLandData.length === 0) {
-    return <EmptyField fieldName="land" />;
+  if (filteredLandData?.length === 0) {
+    return <EmptyField fieldName="Land" />;
   }
 
   return (
@@ -64,7 +64,7 @@ function LandListing() {
           </Box>
           <Box className="container listing-main-content" maxWidth="1400px">
             <h2 className="h3 text-center text">
-              Displaying {filteredLandData.length} land available
+              Displaying {filteredLandData?.length} land available
             </h2>
             <Card
               elevation={0}
@@ -72,7 +72,7 @@ function LandListing() {
               sx={{ marginBlock: "1rem", borderRadius: "7px", padding: "1.5rem 2rem" }}
             >
               <ul className="land-listing-items">
-                {filteredLandData.map((land) => (
+                {filteredLandData?.map((land) => (
                   <li key={land.id}>
                     <PropertyCard land={land} />
                   </li>

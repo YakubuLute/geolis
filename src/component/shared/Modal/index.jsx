@@ -8,11 +8,21 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  minWidth: 600,
+  minWidth: 670,
   bgcolor: 'background.paper',
   boxShadow: 24,
   borderRadius:1,
   p: 4,
+  marginBlock:'1rem',
+  overflow:'scroll',
+  height:'100%',
+  scrollbarWidth: 'none',
+  '&::-webkit-scrollbar': {
+    width: '0',
+    height: '0',
+    backgroundColor: 'transparent',
+  }
+
 };
 
 export default function CustomModal({ handleClose, open, title, children}) {
@@ -29,9 +39,9 @@ export default function CustomModal({ handleClose, open, title, children}) {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             {title}
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+          <Box id="modal-modal-description" sx={{ mt: 2 }}>
            {children}
-          </Typography>
+          </Box>
         </Box>
       </Modal>
     </div>

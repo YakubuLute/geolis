@@ -15,8 +15,7 @@ import ProductCartWidget from '../product-cart-widget';
 import Box from '@mui/material/Box'
 import CustomModal from '../../../component/shared/Modal';
 
-import {UploadLandComponent} from './upload-land-component';
-
+import {UploadLandComponent} from './upload-land-component.tsx';
 export default function ProductsView() {
   const [openFilter, setOpenFilter] = useState(false);
   const [open, setOpen] = useState(false);
@@ -36,10 +35,10 @@ export default function ProductsView() {
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Lands</Typography>
+        <Typography variant="h4">Available Lands</Typography>
 
         <Button onClick={handleOpen} variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
-          New Land
+          Add A New Listing
         </Button>
       </Stack>
       <Stack

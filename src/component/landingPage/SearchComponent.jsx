@@ -13,7 +13,8 @@ import {
   ScreenSearchDesktopRounded,
 } from "@mui/icons-material";
 import MultiselectComponent from "../shared/mutiselect/multiselect";
-import { useFireStoreContext } from "../../../../context/FireStoreContext";
+import { useFireStoreContext } from "../../context/FireStoreContext";
+
 
 const zoning = [
   "Residential",
