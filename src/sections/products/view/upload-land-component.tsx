@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { 
-  TextInput, 
-  NumberInput, 
-  Textarea, 
+import {
+  TextInput,
+  NumberInput,
+  Textarea,
   FileInput,
   Stack,
   Group,
@@ -16,9 +16,10 @@ import classes from './contained-input.module.css';
 import { TLandDetails } from '../../../Types/types';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../../../config/firebaseConfig'; 
-import cld from '../../../config/claudinaryConfig'; 
+import { db } from '../../../config/firebaseConfig';
+import cld from '../../../config/claudinaryConfig';
 import { toast } from 'react-toastify';
+import { Notification } from '@mantine/core';
 
 export function UploadLandComponent() {
   const [active, setActive] = useState(0);
@@ -32,19 +33,27 @@ export function UploadLandComponent() {
   const uploadToCloudinary = async (file: File, resourceType: 'image' | 'video') => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', 'your_upload_preset'); // Replace with your actual upload preset
+    formData.append('upload_preset', 'geolis');
     formData.append('cloud_name', 'dl6ibklbe');
 
-    const response = await fetch(`https://api.cloudinary.com/v1_1/dl6ibklbe/${resourceType}/upload`, {
+    // https://api.cloudinary.com/v1_1/${cloudName}/upload
+    const response = await fetch(`https://api.cloudinary.com/v1_1/dl6ibklbe/dl6ibklbe/upload`, {
       method: 'POST',
       body: formData
     });
 
     if (!response.ok) {
-      throw new Error('Failed to upload to Cloudinary');
+      console.log('Error uploading files');
+      // throw new Error('Failed to upload to Cloudinary');
+      return (<>
+        <Notification title="Error">
+          Error uploading images/videos
+        </Notification>
+      </>)
     }
 
     const data = await response.json();
+    console.log("Response from claudinary", data)
     return data.secure_url;
   };
 
@@ -65,33 +74,81 @@ export function UploadLandComponent() {
     return true;
   };
 
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  };
+
+  const handleImageUpload = async (files: File[]) => {
+    try {
+      const base64Images = await Promise.all(files.map(convertToBase64));
+      handleInputChange('images', base64Images);
+    } catch (error) {
+      console.error('Error converting images to base64:', error);
+      toast.error('Failed to process images. Please try again.');
+    }
+  };
+
+
+  // const handleSubmit = async () => {
+  //   if (!validateFields()) return;
+
+  //   setIsSubmitting(true);
+  //   try {
+  //     let imageUrls: string[] = [];
+  //     let videoUrls: string[] = [];
+
+  //     // Upload images to Cloudinary if present
+  //     if (landDetails.images && landDetails.images.length > 0) {
+  //       imageUrls = await Promise.all(
+  //         (landDetails.images as File[]).map(file => uploadToCloudinary(file, 'image'))
+  //       );
+  //     }
+
+  //     // Upload videos to Cloudinary if present
+  //     if (landDetails.videos && landDetails.videos.length > 0) {
+  //       videoUrls = await Promise.all(
+  //         (landDetails.videos as File[]).map(file => uploadToCloudinary(file, 'video'))
+  //       );
+  //     }
+
+  //     // Prepare the data to be sent to Firebase
+  //     const landData = {
+  //       ...landDetails,
+  //       images: imageUrls,
+  //       videos: videoUrls,
+  //       createdAt: new Date(),
+  //     };
+
+  //     // Add the document to Firestore
+  //     const docRef = await addDoc(collection(db, 'geolis'), landData);
+
+  //     toast.success('Land details uploaded successfully!');
+  //     console.log('Document written with ID: ', docRef.id);
+
+  //     // Reset the form or navigate to another page
+  //     setLandDetails({});
+  //     setActive(0);
+  //   } catch (error) {
+  //     console.error('Error submitting land details: ', error);
+  //     toast.error('Failed to upload land details. Please try again.');
+
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
   const handleSubmit = async () => {
     if (!validateFields()) return;
 
     setIsSubmitting(true);
     try {
-      let imageUrls: string[] = [];
-      let videoUrls: string[] = [];
-
-      // Upload images to Cloudinary if present
-      if (landDetails.images && landDetails.images.length > 0) {
-        imageUrls = await Promise.all(
-          (landDetails.images as File[]).map(file => uploadToCloudinary(file, 'image'))
-        );
-      }
-
-      // Upload videos to Cloudinary if present
-      if (landDetails.videos && landDetails.videos.length > 0) {
-        videoUrls = await Promise.all(
-          (landDetails.videos as File[]).map(file => uploadToCloudinary(file, 'video'))
-        );
-      }
-
       // Prepare the data to be sent to Firebase
       const landData = {
         ...landDetails,
-        images: imageUrls,
-        videos: videoUrls,
         createdAt: new Date(),
       };
 
@@ -111,6 +168,7 @@ export function UploadLandComponent() {
       setIsSubmitting(false);
     }
   };
+
 
   const nextStep = () => setActive((current) => (current < 2 ? current + 1 : current));
   const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
@@ -139,7 +197,7 @@ export function UploadLandComponent() {
                   required
                 />
               </SimpleGrid>
-              
+
               <Textarea
                 label="Description"
                 placeholder="Describe the land"

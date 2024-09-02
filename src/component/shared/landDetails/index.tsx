@@ -49,8 +49,8 @@ const LandDetailsComponent: React.FC = () => {
         <section className="" id="property">
             <div className="container">
                 <div className='slider-wrapper'>
-                    <ImageComponent  />
-                    <LandSlider videos={[]} photos={filteredLand.imageUrls} altName={filteredLand.plotNumber}/>                    
+                    {/* <ImageComponent  /> */}
+                    {/* <LandSlider videos={[]} photos={filteredLand.imageUrls} altName={filteredLand.plotNumber}/>                     */}
                 </div>
 
                 <ul className="property-list has-scrollbar">

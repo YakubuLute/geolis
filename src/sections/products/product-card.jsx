@@ -55,7 +55,7 @@ export default function ShopProductCard({ product }) {
       >
         {product.priceSale && fCurrency(product.priceSale)}
       </Typography>
-      &nbsp;
+      ₵
       {fCurrency(product.price)}
     </Typography>
   );
