@@ -2,12 +2,13 @@ import React, { useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
 import EmptyField from '../../landingPage/EmptyField';
-import DetailsCard from './DetailsCard';
+import { LandDetailPage } from './LandDetailPage.tsx';
 import { TLandDetails } from '../../../Types/types';
 import PropertyCard from '../../landingPage/PropertyCard.tsx';
 import LandSlider from '../LandSlider/LandSlider.tsx';
 import ImageComponent from '../ImageComponent/index.jsx';
 import { useFireStoreContext } from '../../../context/FireStoreContext.js';
+import { Button, Title } from '@mantine/core';
 
 const LandDetailsComponent: React.FC = () => {
     const { landData, isLandDataLoading } = useFireStoreContext();
@@ -28,14 +29,14 @@ const LandDetailsComponent: React.FC = () => {
         return (
             <div className="container">
                 <div className="loading-skeleton">
-               
-                    <Skeleton variant="rectangular" height={'300px'} width="40%"/>
+
+                    <Skeleton variant="rectangular" height={'300px'} width="40%" />
                     <Skeleton variant="text" height={'10px'} width="40%" />
                     <Skeleton variant="text" height={'10px'} width="40%" />
                     <Skeleton variant="text" height={'30px'} width="40%" />
                     <Skeleton variant="text" height={'30px'} width="40%" />
-                    <Skeleton variant="text" height={'30px'}  width="40%" />
-                    <Skeleton variant="text" height={'30px'}  width="40%" />
+                    <Skeleton variant="text" height={'30px'} width="40%" />
+                    <Skeleton variant="text" height={'30px'} width="40%" />
                 </div>
             </div>
         );
@@ -53,24 +54,29 @@ const LandDetailsComponent: React.FC = () => {
                     {/* <LandSlider videos={[]} photos={filteredLand.imageUrls} altName={filteredLand.plotNumber}/>                     */}
                 </div>
 
-                <ul className="property-list has-scrollbar">
-                    <li>
-                        <DetailsCard land={filteredLand} />
-                    </li>
-                </ul>
+                <div className="property-wrapper">
+                    <LandDetailPage />
+                </div>
+
+                {/* Similar properties */}
+
                 <div className="others">
-                    <h3>Similar Properties</h3>
-                    <div className="similar-properties">
+
+                    <Title size={'2.5rem'} fw={800} c={'#3F4254'} order={1} mb="md">Similar Properties</Title>
+
+                    <div className="similar-properties mt-4">
                         <ul className="property-list has-scrollbar">
                             {similarProperties.map((land: TLandDetails) => (
                                 <li key={land.id}>
-                                    <PropertyCard land={land}  />
+                                    <PropertyCard land={land} />
                                 </li>
                             ))}
                         </ul>
                     </div>
                     <div className="view-all">
-                        <Link to="/land-listing" className='link'>View All Properties</Link>
+                        <Button variant='outline' my={'xl'} mx={'auto'}>
+                            <Link to="/land-listing" className='link'>View All Properties</Link>
+                        </Button>
                     </div>
                 </div>
             </div>

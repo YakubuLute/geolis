@@ -17,9 +17,7 @@ import { TLandDetails } from '../../../Types/types';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../../../config/firebaseConfig';
-import cld from '../../../config/claudinaryConfig';
 import { toast } from 'react-toastify';
-import { Notification } from '@mantine/core';
 
 export function UploadLandComponent() {
   const [active, setActive] = useState(0);
@@ -30,31 +28,26 @@ export function UploadLandComponent() {
     setLandDetails(prev => ({ ...prev, [field]: value }));
   };
 
-  const uploadToCloudinary = async (file: File, resourceType: 'image' | 'video') => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'geolis');
-    formData.append('cloud_name', 'dl6ibklbe');
+  const parseCoordinates = (input: string): number[] => {
+    return input.split(',').map(coord => parseFloat(coord.trim()));
+  };
 
-    // https://api.cloudinary.com/v1_1/${cloudName}/upload
-    const response = await fetch(`https://api.cloudinary.com/v1_1/dl6ibklbe/dl6ibklbe/upload`, {
-      method: 'POST',
-      body: formData
-    });
-
-    if (!response.ok) {
-      console.log('Error uploading files');
-      // throw new Error('Failed to upload to Cloudinary');
-      return (<>
-        <Notification title="Error">
-          Error uploading images/videos
-        </Notification>
-      </>)
+  const handleCoordinateChange = (field: 'initialCood' | 'polygon', value: string) => {
+    if (field === 'initialCood') {
+      const coords = parseCoordinates(value);
+      if (coords.length === 2) {
+        handleInputChange('initialCood', coords);
+      } else {
+        toast.error('Initial coordinates should be two numbers: latitude, longitude');
+      }
+    } else if (field === 'polygon') {
+      const polygonPoints = value.split('|').map(parseCoordinates);
+      if (polygonPoints.every(point => point.length === 2)) {
+        handleInputChange('polygon', polygonPoints);
+      } else {
+        toast.error('Polygon coordinates should be in format: lat1,lon1|lat2,lon2|lat3,lon3...');
+      }
     }
-
-    const data = await response.json();
-    console.log("Response from claudinary", data)
-    return data.secure_url;
   };
 
   const validateFields = () => {
@@ -93,54 +86,6 @@ export function UploadLandComponent() {
     }
   };
 
-
-  // const handleSubmit = async () => {
-  //   if (!validateFields()) return;
-
-  //   setIsSubmitting(true);
-  //   try {
-  //     let imageUrls: string[] = [];
-  //     let videoUrls: string[] = [];
-
-  //     // Upload images to Cloudinary if present
-  //     if (landDetails.images && landDetails.images.length > 0) {
-  //       imageUrls = await Promise.all(
-  //         (landDetails.images as File[]).map(file => uploadToCloudinary(file, 'image'))
-  //       );
-  //     }
-
-  //     // Upload videos to Cloudinary if present
-  //     if (landDetails.videos && landDetails.videos.length > 0) {
-  //       videoUrls = await Promise.all(
-  //         (landDetails.videos as File[]).map(file => uploadToCloudinary(file, 'video'))
-  //       );
-  //     }
-
-  //     // Prepare the data to be sent to Firebase
-  //     const landData = {
-  //       ...landDetails,
-  //       images: imageUrls,
-  //       videos: videoUrls,
-  //       createdAt: new Date(),
-  //     };
-
-  //     // Add the document to Firestore
-  //     const docRef = await addDoc(collection(db, 'geolis'), landData);
-
-  //     toast.success('Land details uploaded successfully!');
-  //     console.log('Document written with ID: ', docRef.id);
-
-  //     // Reset the form or navigate to another page
-  //     setLandDetails({});
-  //     setActive(0);
-  //   } catch (error) {
-  //     console.error('Error submitting land details: ', error);
-  //     toast.error('Failed to upload land details. Please try again.');
-
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
   const handleSubmit = async () => {
     if (!validateFields()) return;
 
@@ -168,7 +113,6 @@ export function UploadLandComponent() {
       setIsSubmitting(false);
     }
   };
-
 
   const nextStep = () => setActive((current) => (current < 2 ? current + 1 : current));
   const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
@@ -306,7 +250,7 @@ export function UploadLandComponent() {
                 placeholder="Upload land images"
                 accept="image/*"
                 multiple
-                onChange={(files) => handleInputChange('images', files)}
+                onChange={(files) => handleImageUpload(files)}
                 classNames={classes}
               />
               <FileInput
@@ -318,18 +262,18 @@ export function UploadLandComponent() {
                 classNames={classes}
               />
               <TextInput
-                label="Polygon Coordinates"
-                placeholder="Enter polygon coordinates"
-                value={landDetails.polygon?.join(', ') || ''}
-                onChange={(e) => handleInputChange('polygon', e.target.value.split(', '))}
+                label="Initial Coordinates"
+                placeholder="e.g., 51.505, -0.09"
+                value={landDetails.initialCood?.join(', ') || ''}
+                onChange={(e) => handleCoordinateChange('initialCood', e.target.value)}
                 classNames={classes}
                 required
               />
-              <TextInput
-                label="Initial Coordinates"
-                placeholder="Enter initial coordinates"
-                value={landDetails.initialCood?.join(', ') || ''}
-                onChange={(e) => handleInputChange('initialCood', e.target.value.split(', '))}
+              <Textarea
+                label="Polygon Coordinates"
+                placeholder="e.g., 51.505,-0.09|51.51,-0.1|51.51,-0.08"
+                value={landDetails.polygon?.map(point => point.join(',')).join('|') || ''}
+                onChange={(e) => handleCoordinateChange('polygon', e.target.value)}
                 classNames={classes}
                 required
               />
@@ -352,7 +296,7 @@ export function UploadLandComponent() {
 
       <Group justify="flex-end" mt="xl">
         {active !== 0 && (
-          <Button leftSection={<KeyboardBackspaceIcon size={14} />} variant="light" onClick={prevStep}>
+          <Button leftSection={<KeyboardBackspaceIcon />} variant="light" onClick={prevStep}>
             Back
           </Button>
         )}

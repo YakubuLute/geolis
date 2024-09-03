@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import "./App.css";
+import 'leaflet/dist/leaflet.css';
 import App from "./App.tsx";
 import { AuthProvider } from "./context/AuthContext.js";
 import { FireStoreDataContext } from "./context/FireStoreContext.js";

@@ -1,3 +1,4 @@
+import { Notification } from '@mantine/core';
 import { format, getTime, formatDistanceToNow } from 'date-fns';
 
 // ----------------------------------------------------------------------
@@ -25,3 +26,31 @@ export function fToNow(date) {
       })
     : '';
 }
+
+
+const uploadToCloudinary = async (file, resourceType) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', 'geolis');
+  formData.append('cloud_name', 'dl6ibklbe');
+
+  // https://api.cloudinary.com/v1_1/${cloudName}/upload
+  const response = await fetch(`https://api.cloudinary.com/v1_1/dl6ibklbe/dl6ibklbe/upload`, {
+    method: 'POST',
+    body: formData
+  });
+
+  if (!response.ok) {
+    console.log('Error uploading files');
+    // throw new Error('Failed to upload to Cloudinary');
+    return (<>
+      <Notification title="Error">
+        Error uploading images/videos
+      </Notification>
+    </>)
+  }
+
+  const data = await response.json();
+  console.log("Response from claudinary", data)
+  return data.secure_url;
+};
