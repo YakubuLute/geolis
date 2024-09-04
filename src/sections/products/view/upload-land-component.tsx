@@ -20,6 +20,7 @@ import { collection, addDoc } from 'firebase/firestore';
 import { db, storage } from '../../../config/firebaseConfig';
 import { toast } from 'react-toastify';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { Toast } from '../../../component/shared/Toast/Toast';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
@@ -30,6 +31,11 @@ export function UploadLandComponent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
 
+  const [coordinateInputs, setCoordinateInputs] = useState({
+    initialCood: '',
+    polygon: ''
+  });
+
   const handleInputChange = (field: keyof TLandDetails, value: any) => {
     setLandDetails(prev => ({ ...prev, [field]: value }));
   };
@@ -39,19 +45,17 @@ export function UploadLandComponent() {
   };
 
   const handleCoordinateChange = (field: 'initialCood' | 'polygon', value: string) => {
+    setCoordinateInputs(prev => ({ ...prev, [field]: value }));
+
     if (field === 'initialCood') {
       const coords = parseCoordinates(value);
       if (coords.length === 2) {
         handleInputChange('initialCood', coords);
-      } else {
-        toast.error('Initial coordinates should be two numbers: latitude, longitude');
       }
     } else if (field === 'polygon') {
-      const polygonPoints = value.split('|').map(parseCoordinates);
-      if (polygonPoints.every(point => point.length === 2)) {
+      const polygonPoints = value.split('|').map(parseCoordinates).filter(point => point.length === 2);
+      if (polygonPoints.length > 0) {
         handleInputChange('polygon', polygonPoints);
-      } else {
-        toast.error('Polygon coordinates should be in format: lat1,lon1|lat2,lon2|lat3,lon3...');
       }
     }
   };
@@ -66,7 +70,7 @@ export function UploadLandComponent() {
     const missingFields = requiredFields.filter(field => !landDetails[field]);
 
     if (missingFields.length > 0) {
-      toast.error(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      <Toast message={`Please fill in all required fields: ${missingFields.join(', ')}`} />;
       return false;
     }
 
@@ -77,11 +81,11 @@ export function UploadLandComponent() {
     if (files && files.length > 0) {
       const validFiles = files.filter(file => {
         if (file.size > MAX_FILE_SIZE) {
-          toast.error(`File ${file.name} is too large. Maximum size is 5MB.`);
+          <Toast message={`File ${file.name} is too large. Maximum size is 5MB.`} />;
           return false;
         }
         if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-          toast.error(`File ${file.name} is not a supported image type.`);
+          <Toast message={`File ${file.name} is not a supported image type.`} />;
           return false;
         }
         return true;
@@ -97,6 +101,7 @@ export function UploadLandComponent() {
             (snapshot) => {
               const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
               setUploadProgress(prev => ({ ...prev, [file.name]: progress }));
+              <Toast message={'Images uploaded successfully.'} />
             },
             (error) => {
               console.error('Error uploading file:', error);
@@ -117,14 +122,15 @@ export function UploadLandComponent() {
 
       try {
         const imageUrls = await Promise.all(promises);
-        setLandDetails(prev => ({ 
-          ...prev, 
-          images: [...(prev.images || []), ...imageUrls] 
+        setLandDetails(prev => ({
+          ...prev,
+          images: [...(prev.images || []), ...imageUrls]
         }) as any);
-        toast.success('Images uploaded successfully!');
+        <Toast message={'Images uploaded successfully!'} />;
       } catch (error) {
         console.error('Error uploading images:', error);
-        toast.error('Failed to upload some images. Please try again.');
+        <Toast message={'Failed to upload some images. Please try again.'} />;
+
       } finally {
         setUploadProgress({});
       }
@@ -143,14 +149,14 @@ export function UploadLandComponent() {
 
       const docRef = await addDoc(collection(db, 'geolis'), landData);
 
-      toast.success('Land details uploaded successfully!');
+      <Toast message={'Land details uploaded successfully!'} />;
       console.log('Document written with ID: ', docRef.id);
 
       setLandDetails({});
       setActive(0);
     } catch (error) {
       console.error('Error submitting land details: ', error);
-      toast.error('Failed to upload land details. Please try again.');
+      <Toast message={'Failed to upload land details. Please try again.'} />;
     } finally {
       setIsSubmitting(false);
     }
@@ -161,10 +167,10 @@ export function UploadLandComponent() {
 
   return (
     <Box maw={600} mx="auto">
-      <Stepper active={active} onStepClick={setActive} breakpoint="sm">
+      <Stepper active={active} onStepClick={setActive} >
         <Stepper.Step label="Basic Information" description="Enter basic land details">
           <Paper shadow="xs" p="md">
-            <Stack spacing="md">
+            <Stack >
               <SimpleGrid cols={2}>
                 <TextInput
                   label="Name"
@@ -192,7 +198,30 @@ export function UploadLandComponent() {
                 classNames={classes}
                 required
               />
-              {/* ... (other fields remain the same) */}
+              <TextInput
+                label="Plot Number"
+                placeholder="218 Block A Sector 2"
+                value={landDetails.plotNumber || ''}
+                onChange={(e) => handleInputChange('plotNumber', e.target.value)}
+                classNames={classes}
+                required
+              />
+              <NumberInput
+                label="Size (acres)"
+                placeholder="Land size in acres"
+                value={landDetails.size || 0}
+                onChange={(value) => handleInputChange('size', value)}
+                classNames={classes}
+                required
+              />
+              <TextInput
+                label="Purpose"
+                placeholder="Select land purpose"
+                value={landDetails.purpose || ''}
+                onChange={(e) => handleInputChange('purpose', e.target.value)}
+                classNames={classes}
+                required
+              />
             </Stack>
           </Paper>
         </Stepper.Step>
@@ -200,7 +229,70 @@ export function UploadLandComponent() {
         <Stepper.Step label="Additional Details" description="Enter additional information">
           <Paper shadow="xs" p="md">
             <SimpleGrid cols={2} spacing="md">
-              {/* ... (other fields remain the same) */}
+              <TextInput
+                label="Security"
+                placeholder="Security details"
+                value={landDetails.security || ''}
+                onChange={(e) => handleInputChange('security', e.target.value)}
+                classNames={classes}
+                required
+              />
+              <TextInput
+                label="Documentation"
+                placeholder="e.g allocation chit"
+                value={landDetails.documentation || ''}
+                onChange={(e) => handleInputChange('documentation', e.target.value)}
+                classNames={classes}
+                required
+              />
+              <TextInput
+                label="Environment"
+                placeholder="e.g new site"
+                value={landDetails.environment || ''}
+                onChange={(e) => handleInputChange('environment', e.target.value)}
+                classNames={classes}
+                required
+              />
+              <TextInput
+                label="Allodial Ownership"
+                placeholder="e.g stool land"
+                value={landDetails.allodialOwnership || ''}
+                onChange={(e) => handleInputChange('allodialOwnership', e.target.value)}
+                classNames={classes}
+                required
+              />
+              <TextInput
+                label="Ground"
+                placeholder="Ground details"
+                value={landDetails.ground || ''}
+                onChange={(e) => handleInputChange('ground', e.target.value)}
+                classNames={classes}
+                required
+              />
+              <NumberInput
+                label="Price"
+                placeholder="Land price"
+                value={landDetails.price || 0}
+                onChange={(value) => handleInputChange('price', value)}
+                classNames={classes}
+                required
+              />
+              <TextInput
+                label="ETA to CBD"
+                placeholder="Estimated time to Central Business District"
+                value={landDetails.etaToCBD || ''}
+                onChange={(e) => handleInputChange('etaToCBD', e.target.value)}
+                classNames={classes}
+                required
+              />
+              <NumberInput
+                label="Default Zooming"
+                placeholder="Default zoom level"
+                value={landDetails.defaultZooming || 0}
+                onChange={(value) => handleInputChange('defaultZooming', value)}
+                classNames={classes}
+                required
+              />
               <FileInput
                 label="Images"
                 placeholder="Upload land images"
@@ -213,15 +305,16 @@ export function UploadLandComponent() {
                 <Progress
                   key={fileName}
                   value={progress}
-                  label={`${fileName}: ${progress.toFixed(0)}%`}
-                  size="sm"
-                  mt="xs"
+                  color="primary"
+                  variant="determinate"
+                  size="md"
+                  title={`${fileName}: ${progress.toFixed(0)}%`}
                 />
               ))}
               <TextInput
                 label="Initial Coordinates"
                 placeholder="e.g., 51.505, -0.09"
-                value={landDetails.initialCood?.join(', ') || ''}
+                value={coordinateInputs.initialCood}
                 onChange={(e) => handleCoordinateChange('initialCood', e.target.value)}
                 classNames={classes}
                 required
@@ -229,7 +322,7 @@ export function UploadLandComponent() {
               <Textarea
                 label="Polygon Coordinates"
                 placeholder="e.g., 51.505,-0.09|51.51,-0.1|51.51,-0.08"
-                value={landDetails.polygon?.map(point => point.join(',')).join('|') || ''}
+                value={coordinateInputs.polygon}
                 onChange={(e) => handleCoordinateChange('polygon', e.target.value)}
                 classNames={classes}
                 required

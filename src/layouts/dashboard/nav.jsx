@@ -23,6 +23,7 @@ import Scrollbar from '../../component/Dashboard/scrollbar/index';
 import { NAV } from './config-layout';
 import navConfig from './config-navigation';
 import {useFireStoreContext} from '../../context/FireStoreContext'
+import { Link } from 'react-router-dom';
 
 export default function Nav({ openNav, onCloseNav }) {
   const pathname = usePathname();
@@ -87,7 +88,7 @@ if(!userProfile){
       }}
     >
       <Logo sx={{ mt: 3, ml: 4 }} />
-
+    
       {renderAccount}
 
       {renderMenu}
