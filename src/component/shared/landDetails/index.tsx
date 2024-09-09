@@ -13,7 +13,7 @@ import { Button, Title } from '@mantine/core';
 const LandDetailsComponent: React.FC = () => {
     const { landData, isLandDataLoading } = useFireStoreContext();
     const { id: landId } = useParams<{ id: string }>();
-
+   
     const { filteredLand, similarProperties } = useMemo(() => {
         if (!landData) return { filteredLand: null, similarProperties: [] };
 
@@ -29,7 +29,6 @@ const LandDetailsComponent: React.FC = () => {
         return (
             <div className="container">
                 <div className="loading-skeleton">
-
                     <Skeleton variant="rectangular" height={'300px'} width="40%" />
                     <Skeleton variant="text" height={'10px'} width="40%" />
                     <Skeleton variant="text" height={'10px'} width="40%" />
@@ -49,16 +48,9 @@ const LandDetailsComponent: React.FC = () => {
     return (
         <section className="" id="property">
             <div className="container">
-                <div className='slider-wrapper'>
-                    {/* <ImageComponent  /> */}
-                    {/* <LandSlider videos={[]} photos={filteredLand.imageUrls} altName={filteredLand.plotNumber}/>                     */}
-                </div>
-
                 <div className="property-wrapper">
                     <LandDetailPage />
                 </div>
-
-                {/* Similar properties */}
 
                 <div className="others">
 

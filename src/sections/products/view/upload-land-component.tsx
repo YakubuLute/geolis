@@ -53,10 +53,8 @@ export function UploadLandComponent() {
         handleInputChange('initialCood', coords);
       }
     } else if (field === 'polygon') {
-      const polygonPoints = value.split('|').map(parseCoordinates).filter(point => point.length === 2);
-      if (polygonPoints.length > 0) {
-        handleInputChange('polygon', polygonPoints);
-      }
+      // Store the polygon as a string
+      handleInputChange('polygon', value);
     }
   };
 
@@ -145,6 +143,8 @@ export function UploadLandComponent() {
       const landData = {
         ...landDetails,
         createdAt: new Date(),
+          initialCood: landDetails.initialCood ? landDetails.initialCood.join(',') : null,
+          polygon: landDetails.polygon,
       };
 
       const docRef = await addDoc(collection(db, 'geolis'), landData);

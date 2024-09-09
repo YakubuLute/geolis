@@ -16,8 +16,9 @@ import {
   SimpleGrid,
 } from '@mantine/core';
 import LeafletMap from '../Leaflet/leaflet-component.jsx';
-
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import LandSlider from '../LandSlider/LandSlider.tsx';
+import { CarouselCard } from '../CarouselCard/carousel-card.jsx';
 
 export function LandDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -47,8 +48,12 @@ export function LandDetailPage() {
     fetchLandDetails();
   }, [id]);
 
-  const parseCoordinates = (coordString) => {
-    return coordString.split(',').map(coord => (parseFloat(coord.trim())));
+  const parseCoordinates = (coordString: string): number[] => {
+    return coordString.split(',').map(coord => parseFloat(coord.trim()));
+  }
+
+  const parsePolygon = (polygonString: string): number[][] => {
+    return polygonString.split('|').map(parseCoordinates);
   }
 
   if (loading) {
@@ -77,6 +82,7 @@ export function LandDetailPage() {
   return (
     <Container size="lg" mt={15} mb={'4rem'}>
       <Paper shadow="xs" p="md">
+        {landDetails?.images && <CarouselCard images = {landDetails?.images}/>}
         <Title order={1} mb="md">{landDetails.plotNumber}</Title>
         <Text size="lg" mb="xs"><strong>Plot Number:</strong> {landDetails.plotNumber}</Text>
         <Text mb="md">{landDetails.description}</Text>
@@ -97,42 +103,25 @@ export function LandDetailPage() {
               <LandSpecificItem title="ETA to CBD" value={landDetails.etaToCBD} />
               <LandSpecificItem title="Default Zooming" value={landDetails.defaultZooming} />
             </SimpleGrid>
-            {/* leaflet map */}
+
             <Title order={3} mt="xl" mb="md">Property Location Map</Title>
             {landDetails.initialCood && (
               <LeafletMap
-                initialCoordinates={parseCoordinates(landDetails.initialCood)}
-                polygonCoordinates={landDetails.polygon ? landDetails.polygon.map(parseCoordinates) : []}
+                initialCoordinates={parseCoordinates(landDetails?.initialCood)}
+                polygonCoordinates={landDetails.polygon ? parsePolygon(landDetails?.polygon) : []}
               />
             )}
 
             <Title order={3} mt="xl" mb="md">Coordinates</Title>
             <LandSpecificItem
               title="Polygon Coordinates"
-              value={landDetails.polygon?.join(', ') || 'N/A'}
+              value={landDetails.polygon || 'N/A'}
             />
             <LandSpecificItem
               title="Initial Coordinates"
-              value={landDetails.initialCood?.join(', ') || 'N/A'}
+              value={landDetails.initialCood || 'N/A'}
             />
-            {/* end leaflet map */}
 
-          </Grid.Col>
-
-          <Grid.Col span={4}>
-            {landDetails.images && landDetails.images.length > 0 && (
-              <>
-                <Title order={3} mb="sm">Images</Title>
-                {landDetails.images.map((image, index) => (
-                  <Image
-                    key={index}
-                    src={image}
-                    alt={`Land image ${index + 1}`}
-                    mb="sm"
-                  />
-                ))}
-              </>
-            )}
           </Grid.Col>
         </Grid>
       </Paper>

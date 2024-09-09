@@ -30,7 +30,7 @@ const LeafletMap = ({ initialCoordinates, polygonCoordinates }) => {
     };
   }, [initialCoordinates, polygonCoordinates]);
 
-  return <div ref={mapRef} style={{ height: '400px', width: '100%' }} />;
+  return <div ref={mapRef} style={{ height: '420px', width: '100%' }} />;
 };
 
 export default LeafletMap;

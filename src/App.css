@@ -188,7 +188,10 @@ legend+* {
     outline-offset: -2px;
     -webkit-appearance: textfield;
 }
-
+.leaflet-container{
+    z-index:0 !important;
+    min-width:80vw;
+}
 /* rtl:raw:
 [type="tel"],
 [type="url"],
