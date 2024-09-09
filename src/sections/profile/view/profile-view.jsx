@@ -39,6 +39,15 @@ export default function ProfileView() {
           <Divider />
           <List>
             <ListItem>
+              <ListItemText primary="First Name" secondary={userProfile?.firstName || 'Not provided'} />
+            </ListItem>
+            <ListItem>
+              <ListItemText primary="Last Name" secondary={userProfile?.lastName || 'Not provided'} />
+            </ListItem>
+            <ListItem>
+              <ListItemText primary="Username" secondary={userProfile?.displayName || 'Not provided'} />
+            </ListItem>
+            <ListItem>
               <ListItemText primary="Email" secondary={userProfile?.email} />
             </ListItem>
             <ListItem>

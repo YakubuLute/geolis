@@ -898,6 +898,9 @@ text-wrap: wrap;
 word-break: normal;
 line-break: auto;
 }
+.property-card .card-text.sliceText{
+  height:max-content !important;
+}
 
 .property-card .card-list {
   display: flex;

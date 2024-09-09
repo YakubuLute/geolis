@@ -7,7 +7,7 @@ import SquareFootOutlinedIcon from '@mui/icons-material/SquareFootOutlined';
 import DefaultImg from '../../Assets/Images/General/land_1.jpg';
 import SecurityIcon from '@mui/icons-material/Security';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
-
+import {truncateWord} from '../../utils/utils.ts'
 interface LandProps {
     id: number;
     imageUrl: string[];
@@ -19,16 +19,19 @@ interface LandProps {
     security: string;
     environment: string;
     purpose: string;
+    images:string[];
 }
 interface PropertyCardProps {
     land: LandProps;
+    sliceText:false|true;
 }
-export default function PropertyCard({ land }: PropertyCardProps) {
+export default function PropertyCard({ land, sliceText=false }: PropertyCardProps) {
+console.log('S;licing text', sliceText, land)
     return <div className="property-card">
         <figure className="card-banner">
             <Link to={`/land/details/${land.id}`}>
                 <img
-                    src={land.imageUrl || `${DefaultImg}`}
+                    src={land?.images || `${DefaultImg}`}
                     alt={land.plotNumber || "Property Image"}
                     className="w-100"
                 />
@@ -68,8 +71,8 @@ export default function PropertyCard({ land }: PropertyCardProps) {
                 <Link to={`/land/details/${land.id}`}>{land.plotNumber}</Link>
             </h3>
 
-            <p className="card-text">
-                {land?.description}
+            <p className={`card-text ${sliceText && 'sliceText'}`} >
+                {sliceText?  truncateWord(land.description, 120) : land?.description  }
             </p>
 
             <ul className="card-list">
