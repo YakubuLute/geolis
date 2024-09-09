@@ -1,6 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
 import { auth } from "../config/firebaseConfig";
-import { toast } from "react-toastify";
+import { getDoc, doc } from 'firebase/firestore';
+import { showToast } from '../component/shared/Toast/Toast';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -24,19 +25,6 @@ export function AuthProvider({ children }) {
   const [successMsg, setSuccessMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const showToast = (message, type = "dark") => {
-    toast(message, {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: type,
-    });
-  };
-
   const handleAsyncOperation = async (operation, successMessage) => {
     setIsLoading(true);
     setError("");
@@ -52,6 +40,18 @@ export function AuthProvider({ children }) {
       throw err;
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const getUser = async (email) => {
+    try {
+       const userDocRef = doc(auth, 'users', email);
+       const userDocSnapshot = await getDoc(userDocRef);
+      // Return the user document snapshot
+      return userDocSnapshot;
+    } catch (error) {
+      console.error('Error fetching user document:', error);
+      throw error;
     }
   };
 
@@ -82,12 +82,30 @@ export function AuthProvider({ children }) {
       return result;
     }, "Account created successfully");
 
-  const signInUser = (email, password) =>
-    handleAsyncOperation(async () => {
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      updateUserProfile(result.user);
-      return result;
-    }, "Login successful. Please wait ...");
+const signInUser = async (email, password) => {
+  try {
+    // Check if the user is already registered
+    const userCredential = await getUser(email);
+    if (!userCredential.exists()) {
+      // User is not registered, throw an error or display a message
+      throw new Error('User is not registered. Please sign up first.');
+    }
+
+    // User is registered, proceed with sign-in
+    const result = await handleAsyncOperation(async () => {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      updateUserProfile(userCredential.user);
+      return userCredential;
+    }, 'Login successful. Please wait ...');
+
+    return result;
+  } catch (err) {
+    setError(err.message);
+    showToast(`Error: ${err.message}`, 'error');
+    console.error('Sign-in failed:', err);
+    throw err;
+  }
+};
 
     const signInUserWithGoogle = () =>
       handleAsyncOperation(async () => {

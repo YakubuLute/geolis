@@ -14,6 +14,7 @@ import {
   LoadingOverlay,
   Alert,
   SimpleGrid,
+  Card,
 } from '@mantine/core';
 import LeafletMap from '../Leaflet/leaflet-component.jsx';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
@@ -81,7 +82,7 @@ export function LandDetailPage() {
 
   return (
     <Container size="lg" mt={15} mb={'4rem'}>
-      <Paper shadow="xs" p="md">
+      <Card radius="md" withBorder padding="xl">
         {landDetails?.images && <CarouselCard images = {landDetails?.images}/>}
         <Title order={1} mb="md">{landDetails.plotNumber}</Title>
         <Text size="lg" mb="xs"><strong>Plot Number:</strong> {landDetails.plotNumber}</Text>
@@ -124,7 +125,7 @@ export function LandDetailPage() {
 
           </Grid.Col>
         </Grid>
-      </Paper>
+      </Card>
     </Container>
   );
 }

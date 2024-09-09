@@ -22,7 +22,7 @@
 // const {userData, userProfile, isUserDataLoading} = useFireStoreContext();  
 // if(isUserDataLoading){
 //   return <div>Please wait. Loading...</div>;
- 
+
 // }  
 //   return (
 //     <>
@@ -35,7 +35,7 @@
 //           <Route path="/auth/reset-password" element={<ForgotPassword />} />
 //           <Route path="/contact" element={<ContactPage />} />
 //           <Route 
-        
+
 //             path="/dashboard" 
 //             element={
 //               <PrivateRoute   
@@ -68,10 +68,10 @@ import Header from "../component/shared/Header/index.jsx";
 import Footer from "../component/shared/Footer/index.jsx";
 import Home from "../Pages/Home/index.jsx";
 import PageNotFound from "../component/shared/404/index.jsx";
-import {ContactPage} from "../Pages/Home/Menu/Contact/index.jsx";
-import Dashboard from "../Pages/Dashboard/index.jsx";
+import { ContactPage } from "../Pages/Home/Menu/Contact/index.jsx";
+// import Dashboard from "../Pages/Dashboard/index.jsx";
 import AuthPage from "../component/Auth/index";
-import BlogPage from "../Pages/Dashboard/blog.jsx";
+// import BlogPage from "../Pages/Dashboard/blog.jsx";
 import IndexPage from "../Pages/Dashboard/app.jsx"
 import ProductsPage from "../Pages/Dashboard/products.jsx"
 import UserPage from "../Pages/Dashboard/user.jsx"
@@ -83,14 +83,15 @@ import LandDetails from "../Pages/Home/Menu/LandDetails/index.tsx";
 import { useFireStoreContext } from '../context/FireStoreContext.js';
 // Dashboard components
 import DashboardLayout from '../layouts/dashboard/index.jsx';
-
+import Loading from "../component/shared/Loader/loader.jsx"
+import { ToastContainer } from 'react-toastify';
 
 
 const PrivateRoute = ({ children }) => {
   const { userData, isUserDataLoading } = useFireStoreContext();
 
   if (isUserDataLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (!userData) {
@@ -114,13 +115,20 @@ const PublicLayout = ({ children }) => {
 };
 
 const MainRouter = () => {
+  const { userData, isUserDataLoading } = useFireStoreContext();
+
+  if (isUserDataLoading) {
+    return <Loading />;
+  }
+
   return (
     <BrowserRouter>
+      <ToastContainer />
       <Routes>
         {/* Public routes */}
         <Route element={<PublicLayout><Outlet /></PublicLayout>}>
           <Route path="/" element={<Home />} />
-          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/auth" element={userData ? <Navigate to='/dashboard' /> : <AuthPage />} />
           <Route path="/auth/reset-password" element={<ForgotPassword />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/land-listing" element={<LandListing />} />
@@ -141,7 +149,6 @@ const MainRouter = () => {
           <Route index element={<IndexPage />} />
           <Route path="user" element={<UserPage />} />
           <Route path="land" element={<ProductsPage />} />
-          {/* <Route path="blog" element={<BlogPage />} /> */}
         </Route>
 
         {/* 404 and catch-all */}

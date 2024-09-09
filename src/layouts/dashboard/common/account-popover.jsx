@@ -8,36 +8,44 @@ import { alpha } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import { account } from '../../../_mock/account';
-import {useFireStoreContext} from '../../../context/FireStoreContext'
-
+import { useFireStoreContext } from '../../../context/FireStoreContext'
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext'
 const MENU_OPTIONS = [
   {
     label: 'Home',
     icon: 'eva:home-fill',
+    link: '/'
   },
-  {
-    label: 'Profile',
-    icon: 'eva:person-fill',
-  },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-  },
+  // {
+  //   label: 'Profile',
+  //   icon: 'eva:person-fill',
+  // },
+  // {
+  //   label: 'Settings',
+  //   icon: 'eva:settings-2-fill',
+  // },
 ];
 
 
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
-  const {userProfile, userData} = useFireStoreContext();
-
+  const { userProfile, userData } = useFireStoreContext();
+  const { signOutUser } = useAuth();
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (link) => {
+    console.log("Link", link)
+    { link && <Link to={`${link}`} /> }
     setOpen(null);
   };
+
+  const handleLogout = () => {
+    signOutUser()
+    setOpen(null);
+  }
 
   return (
     <>
@@ -54,15 +62,15 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={userProfile.photoURL}
-          alt={userProfile.displayName}
+          src={userProfile?.photoURL}
+          alt={userProfile?.displayName}
           sx={{
             width: 36,
             height: 36,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {userProfile.displayName.charAt(0).toUpperCase()}
+          {userProfile?.displayName?.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
@@ -93,7 +101,7 @@ export default function AccountPopover() {
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         {MENU_OPTIONS.map((option) => (
-          <MenuItem key={option.label} onClick={handleClose}>
+          <MenuItem key={option.label} onClick={() => handleClose(option?.link)}>
             {option.label}
           </MenuItem>
         ))}
@@ -103,7 +111,7 @@ export default function AccountPopover() {
         <MenuItem
           disableRipple
           disableTouchRipple
-          onClick={handleClose}
+          onClick={handleLogout}
           sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
         >
           Logout

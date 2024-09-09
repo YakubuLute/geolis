@@ -18,9 +18,8 @@ import { TLandDetails } from '../../../Types/types';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { collection, addDoc } from 'firebase/firestore';
 import { db, storage } from '../../../config/firebaseConfig';
-import { toast } from 'react-toastify';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { Toast } from '../../../component/shared/Toast/Toast';
+import { showToast } from '../../../component/shared/Toast/Toast';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
@@ -68,7 +67,7 @@ export function UploadLandComponent() {
     const missingFields = requiredFields.filter(field => !landDetails[field]);
 
     if (missingFields.length > 0) {
-      <Toast message={`Please fill in all required fields: ${missingFields.join(', ')}`} />;
+      showToast(`Please fill in all required fields: ${missingFields.join(', ')}`);
       return false;
     }
 
@@ -79,11 +78,13 @@ export function UploadLandComponent() {
     if (files && files.length > 0) {
       const validFiles = files.filter(file => {
         if (file.size > MAX_FILE_SIZE) {
-          <Toast message={`File ${file.name} is too large. Maximum size is 5MB.`} />;
+          showToast(`File ${file.name} is too large. Maximum size is 5MB.`);
+
           return false;
         }
         if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-          <Toast message={`File ${file.name} is not a supported image type.`} />;
+
+          showToast(`File ${file.name} is not a supported image type.`);
           return false;
         }
         return true;
@@ -99,7 +100,9 @@ export function UploadLandComponent() {
             (snapshot) => {
               const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
               setUploadProgress(prev => ({ ...prev, [file.name]: progress }));
-              <Toast message={'Images uploaded successfully.'} />
+
+              showToast('Images uploaded successfully.');
+
             },
             (error) => {
               console.error('Error uploading file:', error);
@@ -124,11 +127,11 @@ export function UploadLandComponent() {
           ...prev,
           images: [...(prev.images || []), ...imageUrls]
         }) as any);
-        <Toast message={'Images uploaded successfully!'} />;
+        showToast('Images uploaded successfully.');
+
       } catch (error) {
         console.error('Error uploading images:', error);
-        <Toast message={'Failed to upload some images. Please try again.'} />;
-
+        showToast('Failed to upload some images. Please try again.');
       } finally {
         setUploadProgress({});
       }
@@ -143,20 +146,21 @@ export function UploadLandComponent() {
       const landData = {
         ...landDetails,
         createdAt: new Date(),
-          initialCood: landDetails.initialCood ? landDetails.initialCood.join(',') : null,
-          polygon: landDetails.polygon,
+        initialCood: landDetails.initialCood ? landDetails.initialCood.join(',') : null,
+        polygon: landDetails.polygon,
       };
 
       const docRef = await addDoc(collection(db, 'geolis'), landData);
+      showToast('Land details uploaded successfully!');
 
-      <Toast message={'Land details uploaded successfully!'} />;
       console.log('Document written with ID: ', docRef.id);
 
       setLandDetails({});
       setActive(0);
     } catch (error) {
       console.error('Error submitting land details: ', error);
-      <Toast message={'Failed to upload land details. Please try again.'} />;
+      showToast('Failed to upload land details. Please try again.');
+
     } finally {
       setIsSubmitting(false);
     }
