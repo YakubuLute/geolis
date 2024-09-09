@@ -85,6 +85,7 @@ import { useFireStoreContext } from '../context/FireStoreContext.js';
 import DashboardLayout from '../layouts/dashboard/index.jsx';
 import Loading from "../component/shared/Loader/loader.jsx"
 import { ToastContainer } from 'react-toastify';
+import ProfilePage from '../Pages/Dashboard/profile.jsx';
 
 
 const PrivateRoute = ({ children }) => {
@@ -148,6 +149,7 @@ const MainRouter = () => {
         }>
           <Route index element={<IndexPage />} />
           <Route path="user" element={<UserPage />} />
+          <Route path="profile" element={<ProfilePage />} />
           <Route path="land" element={<ProductsPage />} />
         </Route>
 

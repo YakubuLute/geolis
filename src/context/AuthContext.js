@@ -96,7 +96,7 @@ const signInUser = async (email, password) => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       updateUserProfile(userCredential.user);
       return userCredential;
-    }, 'Login successful. Please wait ...');
+    }, 'Login successful.');
 
     return result;
   } catch (err) {
@@ -122,7 +122,7 @@ const signInUser = async (email, password) => {
             throw error;
           }
         }
-      }, "Login successful. Please wait ...");
+      }, "Login successful.");
 
   const signOutUser = () =>
     handleAsyncOperation(async () => {
