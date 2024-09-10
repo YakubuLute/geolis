@@ -1,7 +1,7 @@
 import React from 'react';
-import './slider.module.css';
+import './slider.css';
 import Slider from 'react-slick';
-import  Settings from 'react-slick';
+import Settings from 'react-slick';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -14,7 +14,7 @@ function SampleNextArrow(props) {
   const { style, onClick } = props;
   return (
     <div className={`sample_arrow next_arrow `} style={style} onClick={onClick}>
-      <SliderNextIcon />
+      <SliderPrevIcon />
     </div>
   );
 }
@@ -23,7 +23,8 @@ function SamplePrevArrow(props) {
   const { style, onClick } = props;
   return (
     <div className={`sample_arrow prev_arrow`} style={style} onClick={onClick}>
-      <SliderPrevIcon />
+
+      <SliderNextIcon />
     </div>
   );
 }
@@ -72,21 +73,7 @@ export const LandSlider = ({ photos, altName, videos }: Props) => {
         <Slider {...settings}>
           {combined?.map((url: string, index: number) => (
             <div key={index} className="event_photos">
-              {isYouTubeUrl(url) ? (
-                <iframe
-                  className=""
-                  name='ifram'
-                  width="560"
-                  height="315"
-                  src={`https://www.youtube.com/embed/${getYouTubeVideoID(
-                    url
-                  )}?controls=1`}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              ) : (
-                <img src={url} alt={altName} width={100} height={100} />
-              )}
+              <img src={url} alt={altName} width={100} height={100} />
             </div>
           ))}
         </Slider>

@@ -1,10 +1,10 @@
 
 .land_slider_container {
   width: 100%;
-  height: 500px;
+  height: 300px;
 }
 img {
-    object-fit: cover;
+    object-fit: contain;
     width: 100%;
     height: 100%;
     border-radius: 8px;
@@ -13,7 +13,7 @@ img {
 
 .event_photos {
   width: 100%;
-  height: 500px;
+  height: 300px;
   border-radius: 8px;
   margin: 0 auto;
   padding: 0;
@@ -44,24 +44,24 @@ img {
   background-color: rgba(255, 255, 255, 0.76);
   cursor: pointer;
 }
-.sample_arrow .next_arrow ,  .sample_arrow .prev_arrow  {
+.sample_arrow.next_arrow ,  .sample_arrow.prev_arrow  {
     right: 30px;
     display: flex !important;
     justify-content: center;
     align-items: center;
   }
-  .sample_arrow .next_arrow:hover ,  .sample_arrow .prev_arrow:hover {
-      background: crimson;
-    }
+  /* .sample_arrow.next_arrow:hover,  .sample_arrow.prev_arrow:hover {
+      background: rgb(164, 161, 162);
+    } */
 
     .sample_arrow svg {
-      color: #9999;
+      color: #2d2c2c99;
       width: 18px;
       height: 18px;
     }
   
 
-    .sample_arrow .prev_arrow {
+    .sample_arrow.prev_arrow {
     right: auto;
     left: 30px;
 }
@@ -98,7 +98,7 @@ img {
 
 .swiper {
   width: 100%;
-  height: 80vh;
+  height: 300px;
 }
 
 .swiper-button-prev,

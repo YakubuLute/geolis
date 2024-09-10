@@ -83,7 +83,10 @@ export function LandDetailPage() {
   return (
     <Container size="lg" mt={15} mb={'4rem'}>
       <Card radius="md" withBorder padding="xl">
-        {landDetails?.images && <CarouselCard images = {landDetails?.images}/>}
+        {Array.isArray(landDetails?.images) && landDetails.images.length > 0 && (
+        <LandSlider photos={landDetails?.images} altName={`${landDetails?.images}`} videos={[]} />
+        )}
+
         <Title order={1} mb="md">{landDetails.plotNumber}</Title>
         <Text size="lg" mb="xs"><strong>Plot Number:</strong> {landDetails.plotNumber}</Text>
         <Text mb="md">{landDetails.description}</Text>

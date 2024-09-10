@@ -49,14 +49,14 @@ console.log('S;licing text', sliceText, land)
                 <button className="banner-actions-btn">
                     <PhotoLibraryOutlinedIcon />
 
-                    <span>4</span>
+                    <span>{land?.images?.length}</span>
                 </button>
 
-                <button className="banner-actions-btn">
+                {/* <button className="banner-actions-btn">
                     < MovieFilterOutlinedIcon />
 
                     <span>2</span>
-                </button>
+                </button> */}
             </div>
         </figure>
 

@@ -1,26 +1,57 @@
-.price {
-    color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
-  }
-  
-  .carousel {
-    @mixin hover {
-      .carouselControls {
-        opacity: 1;
-      }
-    }
-  }
-  
-  .carouselControls {
-    transition: opacity 150ms ease;
-    opacity: 0;
-  }
-  
-  .carouselIndicator {
-    width: 6px;
-    height: 6px;
-    transition: width 250ms ease;
-  
-    &[data-active] {
-      width: 16px;
-    }
-  }
+.carouselWrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.carousel {
+  width: 100%;
+}
+
+.carouselContainer {
+  display: flex;
+  flex-direction: row;
+  transition: transform 0.5s ease;
+}
+
+.slideWrapper {
+  width: 100%;
+  flex: 0 0 100%;
+}
+
+.carousel:hover .carouselControls {
+  opacity: 1;
+}
+
+.carouselControls {
+  transition: opacity 150ms ease;
+  opacity: 0;
+}
+
+.carouselIndicator {
+  width: 6px;
+  height: 6px;
+  transition: width 250ms ease;
+}
+
+.carouselIndicator[data-active] {
+  width: 16px;
+}
+
+/* Ensure slides are full width */
+.carousel :global(.mantine-Carousel-slide) {
+  width: 100% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure images maintain aspect ratio */
+.carousel :global(.mantine-Image-root) {
+  width: 100%;
+  height: 320px;
+}
+
+.carousel :global(.mantine-Image-image) {
+  object-fit: cover;
+}
