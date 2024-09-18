@@ -70,10 +70,10 @@ export default function ProductsView() {
               variant="outlined"
               sx={{ marginBlock: "1rem", borderRadius: "7px", padding: "1.5rem 2rem" }}
             >
-              <ul className="land-listing-items">
+              <ul className="land-listing-items dashboard-listing">
                 {landData?.map((land) => (
                   <li key={land.id}>
-                    <PropertyCard land={land} sliceText/>
+                    <PropertyCard land={land} sliceText showActionBtn/>
                   </li>
                 ))}
               </ul>

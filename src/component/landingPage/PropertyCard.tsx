@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom'
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PhotoLibraryOutlinedIcon from '@mui/icons-material/PhotoLibraryOutlined';
-import MovieFilterOutlinedIcon from '@mui/icons-material/MovieFilterOutlined';
 import SquareFootOutlinedIcon from '@mui/icons-material/SquareFootOutlined';
 import DefaultImg from '../../Assets/Images/General/land_1.jpg';
 import SecurityIcon from '@mui/icons-material/Security';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import {truncateWord} from '../../utils/utils.ts'
+import {  IconButton, MenuItem, Popover } from '@mui/material';
+import Iconify from '../Dashboard/iconify/iconify.jsx';
+import { useFireStoreContext } from '../../context/FireStoreContext.js';
+
 interface LandProps {
     id: number;
     imageUrl: string[];
@@ -24,9 +27,10 @@ interface LandProps {
 interface PropertyCardProps {
     land: LandProps;
     sliceText:false|true;
+    showActionBtn:false|true;
 }
 export default function PropertyCard({ land, sliceText=false }: PropertyCardProps) {
-console.log('S;licing text', sliceText, land)
+
     return <div className="property-card">
         <figure className="card-banner">
             <Link to={`/land/details/${land.id}`}>
@@ -61,10 +65,11 @@ console.log('S;licing text', sliceText, land)
         </figure>
 
         <div className="card-content">
-            <div className="card-price">
+            <div className="card-price card-price-wrapper">
                 <div className="card-price">
                     <strong>GHC {land?.price ?? 'N/A'}</strong>
                 </div>
+                <ActionMenu land={land}/>
             </div>
 
             <h3 className="h3 card-title">
@@ -72,9 +77,9 @@ console.log('S;licing text', sliceText, land)
             </h3>
 
             <p className={`card-text ${sliceText && 'sliceText'}`} >
-                {sliceText?  truncateWord(land.description, 120) : land?.description  }
+                {sliceText?  truncateWord(land.description, 100) : land?.description  }
             </p>
-
+           
             <ul className="card-list">
                 <li className="card-item">
                     <div className="flex">
@@ -104,3 +109,47 @@ console.log('S;licing text', sliceText, land)
         </div>
     </div>
 }
+
+
+function ActionMenu({ land }) {
+    const [open, setOpen] = useState(null);
+  const {isDeleting, handleDeleteLand} = useFireStoreContext();
+    const handleOpenMenu = (event) => {
+      setOpen(event.currentTarget);
+    };
+  
+    const handleCloseMenu = () => {
+      setOpen(null);
+    };
+
+  
+    const handleDelete = () => {
+      handleCloseMenu();
+      handleDeleteLand('geolis', land.id)
+      console.info('DELETE', land.id);
+    };
+  
+    return (
+      <>
+     
+        <IconButton color={open ? 'inherit' : 'default'} onClick={handleOpenMenu}>
+            <Iconify icon="eva:more-vertical-fill" />
+          </IconButton>
+  
+        <Popover
+          open={!!open}
+          anchorEl={open}
+          onClose={handleCloseMenu}
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+     
+  
+          <MenuItem onClick={handleDelete} sx={{ color: 'error.main', marginBlock:'10px' }}>
+            <Iconify icon="solar:trash-bin-trash-bold" sx={{ mr: 2 }} />
+            Delete
+          </MenuItem>
+        </Popover>
+      </>
+    );
+  }

@@ -792,6 +792,8 @@ svg.icon {
   padding-block: var(--section-padding);
 }
 
+
+
 .property-card {
   border: 1px solid var(--alice-blue);
   box-shadow: var(--shadow-2);
@@ -860,10 +862,15 @@ svg.icon {
   color: var(--orange-soda);
 }
 
+
+
 .property-card .card-content {
   padding: 30px 15px 15px;
   border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
   min-height: 390px;
+}
+.dashboard-listing .property-card .card-content{
+  min-height: min-content !important;
 }
 
 .card-price {
@@ -878,6 +885,11 @@ svg.icon {
   font-weight: var(--fw-600);
 }
 
+.card-price.card-price-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .property-card .card-title {
   --font-weight: var(--fw-600);
   margin-bottom: 15px;
@@ -1897,7 +1909,13 @@ width: 100% !important;
   row-gap: 2rem;
   column-gap: 1rem;
 }
-
+.land-listing-items.dashboard-listing{
+  row-gap: 3rem;
+  column-gap: 1.5rem;
+}
+.dashboard-listing .card-list ul li{
+  font-size: 10px !important;
+}
 @media(max-width:1200px){
   .land-listing-items{
     width:100%;

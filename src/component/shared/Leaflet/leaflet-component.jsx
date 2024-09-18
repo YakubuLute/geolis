@@ -90,7 +90,7 @@ const LeafletMap = ({ initialCoordinates, polygonCoordinates }) => {
       "Draw Layer": drawLayer,
     };
 
-    L.control.layers(baseLayers, overlays).addTo(map);
+    L.control.layers(baseLayers, overlays, { collapsed: false }).addTo(map);
 
     // Cleanup function
     return () => {

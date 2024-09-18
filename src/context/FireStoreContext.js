@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { useAuth } from "./AuthContext";
+// import { useAuth } from "./AuthContext";
 import { db } from '../config/firebaseConfig';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-
+import { showToast } from '../component/shared/Toast/Toast';
 const FireStoreContext = createContext();
 
 export function useFireStoreContext() {
@@ -17,6 +17,7 @@ export function FireStoreDataContext({ children }) {
   const [landData, setLandData] = useState([]);
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
   const [isLandDataLoading, setIsLandDataLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     setIsLandDataLoading(true);
@@ -61,10 +62,27 @@ export function FireStoreDataContext({ children }) {
     return () => unsubscribe();
   }, [auth]);
 
+  const handleDeleteLand = async (collectionName, documentId) => {
+    setIsDeleting(true)
+  try {
+    const docRef = db.collection(collectionName).doc(documentId);
+    await docRef.delete();
+    console.log('Document deleted successfully!');
+    showToast('Document deleted successfully!')
+  } catch (err) {
+    showToast(err.message || 'Error deleting document')
+  } finally {
+    setIsDeleting(false);
+  }
+};
+
+
   const value = {
     userProfile,
     userData,
     landData,
+    isDeleting,
+    handleDeleteLand,
     isLandDataLoading,
     isUserDataLoading,
   };

@@ -190,7 +190,7 @@ legend+* {
 }
 .leaflet-container{
     z-index:0 !important;
-    min-width:80vw;
+    min-width:65vw;
 }
 /* rtl:raw:
 [type="tel"],
