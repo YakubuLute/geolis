@@ -28,8 +28,9 @@ interface PropertyCardProps {
     land: LandProps;
     sliceText:false|true;
     showActionBtn:false|true;
+    isDashboardListing:false|true;
 }
-export default function PropertyCard({ land, sliceText=false }: PropertyCardProps) {
+export default function PropertyCard({ land, sliceText=false, showActionBtn=false, isDashboardListing=false}: PropertyCardProps) {
 
     return <div className="property-card">
         <figure className="card-banner">
@@ -69,7 +70,7 @@ export default function PropertyCard({ land, sliceText=false }: PropertyCardProp
                 <div className="card-price">
                     <strong>GHC {land?.price ?? 'N/A'}</strong>
                 </div>
-                <ActionMenu land={land}/>
+               {showActionBtn && <ActionMenu land={land}/>}
             </div>
 
             <h3 className="h3 card-title">
@@ -80,7 +81,7 @@ export default function PropertyCard({ land, sliceText=false }: PropertyCardProp
                 {sliceText?  truncateWord(land.description, 100) : land?.description  }
             </p>
            
-            <ul className="card-list">
+          {!isDashboardListing &&  <ul className="card-list">
                 <li className="card-item">
                     <div className="flex">
                         <span>Security</span>
@@ -105,7 +106,7 @@ export default function PropertyCard({ land, sliceText=false }: PropertyCardProp
                     </div>
                     <strong>{land.size}</strong>
                 </li>
-            </ul>
+            </ul>}
         </div>
     </div>
 }
@@ -114,7 +115,7 @@ export default function PropertyCard({ land, sliceText=false }: PropertyCardProp
 function ActionMenu({ land }) {
     const [open, setOpen] = useState(null);
   const {isDeleting, handleDeleteLand} = useFireStoreContext();
-    const handleOpenMenu = (event) => {
+    const handleOpenMenu = (event:any) => {
       setOpen(event.currentTarget);
     };
   
@@ -142,9 +143,7 @@ function ActionMenu({ land }) {
           onClose={handleCloseMenu}
           anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        >
-     
-  
+        >  
           <MenuItem onClick={handleDelete} sx={{ color: 'error.main', marginBlock:'10px' }}>
             <Iconify icon="solar:trash-bin-trash-bold" sx={{ mr: 2 }} />
             Delete

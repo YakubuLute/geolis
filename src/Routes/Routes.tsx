@@ -124,7 +124,7 @@ const MainRouter = () => {
 
   return (
     <BrowserRouter>
-      <ToastContainer />
+      <ToastContainer autoClose={5000} />
       <Routes>
         {/* Public routes */}
         <Route element={<PublicLayout><Outlet /></PublicLayout>}>

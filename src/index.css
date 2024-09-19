@@ -870,7 +870,10 @@ svg.icon {
   min-height: 390px;
 }
 .dashboard-listing .property-card .card-content{
-  min-height: min-content !important;
+  height: 260px !important;
+  min-height: max-content;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .card-price {
@@ -884,15 +887,23 @@ svg.icon {
   font-size: var(--fs-4);
   font-weight: var(--fw-600);
 }
+.dashboard-listing  .card-price strong {
+  font-size: var(--fs-5);
+}
 
 .card-price.card-price-wrapper{
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+
 .property-card .card-title {
-  --font-weight: var(--fw-600);
-  margin-bottom: 15px;
+  font-weight: var(--fw-600);
+}
+
+.dashboard-listing .property-card .card-title {
+ font-size: 18px;
+ font-weight: var(--fw-700);
 }
 
 .property-card .card-title > a:is(:hover, :focus) {
@@ -924,7 +935,7 @@ line-break: auto;
 .property-card .card-item {
   padding-block: 5px;
   color: var(--cadet);
-  font-size: var(--fs-5);
+  /* font-size: var(--fs-5); */
   text-transform: capitalize;
   font-size: 12px;
 }

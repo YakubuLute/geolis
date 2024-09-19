@@ -101,11 +101,11 @@ function Header() {
                     Contact
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/faqs" className="navbar-link" data-nav-link>
                     FAQS
                   </Link>
-                </li>
+                </li> */}
 
               </ul>
             </div>

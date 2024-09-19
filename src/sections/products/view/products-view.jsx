@@ -73,7 +73,7 @@ export default function ProductsView() {
               <ul className="land-listing-items dashboard-listing">
                 {landData?.map((land) => (
                   <li key={land.id}>
-                    <PropertyCard land={land} sliceText showActionBtn/>
+                    <PropertyCard land={land} sliceText showActionBtn isDashboardListing/>
                   </li>
                 ))}
               </ul>

@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 // import { useAuth } from "./AuthContext";
 import { db } from '../config/firebaseConfig';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { showToast } from '../component/shared/Toast/Toast';
+import { showToast, showErrorToast } from '../component/shared/Toast/Toast';
 const FireStoreContext = createContext();
 
 export function useFireStoreContext() {
@@ -63,17 +63,18 @@ export function FireStoreDataContext({ children }) {
   }, [auth]);
 
   const handleDeleteLand = async (collectionName, documentId) => {
-    setIsDeleting(true)
-  try {
-    const docRef = db.collection(collectionName).doc(documentId);
-    await docRef.delete();
-    console.log('Document deleted successfully!');
-    showToast('Document deleted successfully!')
-  } catch (err) {
-    showToast(err.message || 'Error deleting document')
-  } finally {
-    setIsDeleting(false);
-  }
+    setIsDeleting(true);
+    try {
+      const docRef = doc(db, collectionName, documentId);
+      await deleteDoc(docRef);
+      showToast('Land deleted successfully!');
+    } catch (err) {
+      console.error('Error deleting land:', err);
+      showErrorToast(err.message || 'Error deleting document');
+    } finally {
+      setIsDeleting(false);
+    }
+  
 };
 
 

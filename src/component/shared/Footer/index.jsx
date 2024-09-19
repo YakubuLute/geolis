@@ -106,11 +106,11 @@ function Footer() {
                   About Geolis
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a href="/faqs" className="footer-link">
                   Geolis FAQS
                 </a>
-              </li>
+              </li> */}
 
               <li>
                 <a href="/contact" className="footer-link">
