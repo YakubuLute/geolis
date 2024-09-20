@@ -16,16 +16,16 @@ function LandListing() {
     return landData.filter((land) => {
       const matchesLocation =
         searchCriteria.locations?.length === 0 ||
-        searchCriteria.locations?.includes(land.location);
+        searchCriteria.locations?.includes(land?.location);
       const matchesZoning =
-        searchCriteria.zoning?.length === 0 ||
-        searchCriteria.zoning?.includes(land.zoning);
+        searchCriteria.environment?.length === 0 ||
+        searchCriteria.environment?.includes(land?.environment);
       const matchesSize =
         searchCriteria.size?.length === 0 ||
-        searchCriteria.size?.includes(land.size);
+        searchCriteria.size?.includes(land?.size);
       const matchesSlope =
         searchCriteria.slope?.length === 0 ||
-        searchCriteria.slope?.includes(land.slope);
+        searchCriteria.slope?.includes(land?.ground);
 
       return matchesLocation && matchesZoning && matchesSize && matchesSlope;
     });

@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+
+import { Button, MultiSelect } from '@mantine/core';
 import {
   PillsInput,
   Pill,
@@ -12,11 +14,13 @@ import {
 import {
   ScreenSearchDesktopRounded,
 } from "@mui/icons-material";
-import MultiselectComponent from "../shared/mutiselect/multiselect";
+// import MultiselectComponent from "../shared/mutiselect/multiselect";
 import { useFireStoreContext } from "../../context/FireStoreContext";
+import { useLocation, useNavigate } from "react-router-dom";
 
+const LAND_LISTING_PATH = '/land-listing';
 
-const zoning = [
+const environment = [
   "Residential",
   "Commercial",
   "Agricultural",
@@ -32,7 +36,7 @@ const size = [
   "More than 10 acres",
 ];
 
-const slope = ["Mostly Flat", "Rolling", "Sloped"];
+const slope = ["Mostly Flat", "Rolling", "Sloped", "Dry", "Wet"];
 
 function SearchComponent({ onSearch }) {
   const { landData } = useFireStoreContext();
@@ -42,6 +46,8 @@ function SearchComponent({ onSearch }) {
   const [sizeState, setSizeState] = useState([]);
   const [search, setSearch] = useState("");
   const [value, setValue] = useState([]);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -50,17 +56,53 @@ function SearchComponent({ onSearch }) {
 
   useEffect(() => {
     // Extract unique locations from landData
+    console.log("Extracting land data", landData);
     const uniqueLocations = [...new Set(landData.map(land => land.location))];
     setLocations(uniqueLocations);
   }, [landData]);
 
-  const handleValueSelect = (val) =>
+  const performSearch = useCallback((criteria) => {
+    onSearch(criteria);
+    // Reset URL parameters after search
+    if (location.pathname === LAND_LISTING_PATH) {
+      navigate(LAND_LISTING_PATH, { replace: true });
+    }
+  }, [onSearch, navigate, location.pathname]);
+
+  
+  useEffect(() => {
+    // Extract search criteria from URL query parameters
+    const searchParams = new URLSearchParams(location.search);
+    const extractedCriteria = {
+      locations: searchParams.getAll('locations'),
+      environment: searchParams.getAll('environment'),
+      size: searchParams.getAll('size'),
+      slope: searchParams.getAll('slope'),
+    };
+  
+    // Only update state if there are actual parameters
+    if (Object.values(extractedCriteria).some(arr => arr.length > 0)) {
+      setValue(extractedCriteria.locations);
+      setZoneState(extractedCriteria.environment);
+      setSizeState(extractedCriteria.size);
+      setSlopeState(extractedCriteria.slope);
+  
+      // Perform search with extracted criteria
+      performSearch(extractedCriteria);
+    }
+  }, [location.search, performSearch]);
+
+  const handleValueSelect = (val) => {
     setValue((current) =>
       current.includes(val)
         ? current.filter((v) => v !== val)
         : [...current, val]
     );
+    setSearch("");
+  };
 
+
+  
   const handleValueRemove = (val) =>
     setValue((current) => current.filter((v) => v !== val));
 
@@ -84,11 +126,27 @@ function SearchComponent({ onSearch }) {
   const handleSubmit = () => {
     const searchCriteria = {
       locations: value,
-      zoning: zoneState,
+      environment: zoneState,
       size: sizeState,
       slope: slopeState,
     };
-    onSearch(searchCriteria);
+
+    if (location.pathname !== LAND_LISTING_PATH) {
+      // Convert searchCriteria to query string
+      const queryString = new URLSearchParams();
+      Object.entries(searchCriteria).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach(item => queryString.append(key, item));
+        } else if (value) {
+          queryString.append(key, value);
+        }
+      });
+
+      // Navigate to the land listing page with the query parameters
+      navigate(`${LAND_LISTING_PATH}?${queryString.toString()}`);
+    } else {
+      performSearch(searchCriteria);
+    }
   };
 
   return (
@@ -114,7 +172,8 @@ function SearchComponent({ onSearch }) {
                         onKeyDown={(event) => {
                           if (
                             event.key === "Backspace" &&
-                            search.length === 0
+                            search.length === 0 &&
+                            value.length > 0
                           ) {
                             event.preventDefault();
                             handleValueRemove(value[value.length - 1]);
@@ -131,7 +190,10 @@ function SearchComponent({ onSearch }) {
                   {options.length > 0 ? (
                     options
                   ) : (
+                   <>
                     <Combobox.Empty>Nothing found...</Combobox.Empty>
+                    
+                   </>
                   )}
                 </Combobox.Options>
               </Combobox.Dropdown>
@@ -158,7 +220,7 @@ function SearchComponent({ onSearch }) {
                     <div className="accordion__content position-relative">
                       <MultiselectComponent
                         label={"Any Zone"}
-                        value={zoning}
+                        value={environment}
                         handleChange={(event) => setZoneState(event.target.value)}
                         setvalueState={setZoneState}
                         valueState={zoneState}
@@ -172,6 +234,7 @@ function SearchComponent({ onSearch }) {
                       />
                       <MultiselectComponent
                         label={"Any Slope"}
+                        // placeholder={`Select ${label}`}
                         value={slope}
                         handleChange={(event) => setSlopeState(event.target.value)}
                         setvalueState={setSlopeState}
@@ -198,3 +261,21 @@ function SearchComponent({ onSearch }) {
 }
 
 export default SearchComponent;
+
+
+
+function MultiselectComponent({ label, value, handleChange, setvalueState, valueState }) {
+  return (
+    <MultiSelect
+      data={value}
+      label={label}
+      placeholder={`Select ${label}`}
+      searchable
+      nothingFound="No options"
+      value={valueState}
+      onChange={setvalueState}
+    />
+  );
+}
+
+// export default MultiselectComponent;
