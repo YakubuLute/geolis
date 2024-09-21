@@ -1843,6 +1843,12 @@ section.auth{
 .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input{
   color: var(--light-white) !important;
 } 
+.normal__search{
+  max-width: 22rem;
+}
+.advance__search{
+  max-width: 30rem;
+}
 .advance__search svg{
   color: var(--light-white) !important;
 }

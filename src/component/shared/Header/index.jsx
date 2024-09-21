@@ -29,7 +29,9 @@ function Header() {
     };
   }, []);
 
-
+const handleNavClick = () =>{
+  console.log('Nav is clicked')
+}
 
   return (
     <header className="header" data-header>
@@ -138,7 +140,7 @@ function Header() {
               className="nav-actions-btn"
               data-nav-open-btn
               aria-label="Open Menu"
-
+onClick={handleNavClick}
             >
               <MenuOutlinedIcon className="icon" />
               <span>Menu</span>

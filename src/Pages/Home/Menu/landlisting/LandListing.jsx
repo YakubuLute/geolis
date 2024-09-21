@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from "react";
-import { Box, Card, Divider, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, Divider, Stack, Typography } from "@mui/material";
 import SearchComponent from "../../../../component/landingPage/SearchComponent.jsx";
 import LandlistingSkeleton from "../../../../component/shared/Skeleton/land-skeleton.jsx";
 import { useFireStoreContext } from "../../../../context/FireStoreContext.js";
-import EmptyField from "../../../../component/landingPage/EmptyField.jsx";
+// import EmptyField from "../../../../component/landingPage/EmptyField.jsx";
 import PropertyCard from "../../../../component/landingPage/PropertyCard.tsx";
 
 function LandListing() {
@@ -17,17 +17,26 @@ function LandListing() {
       const matchesLocation =
         searchCriteria.locations?.length === 0 ||
         searchCriteria.locations?.includes(land?.location);
-      const matchesZoning =
-        searchCriteria.environment?.length === 0 ||
-        searchCriteria.environment?.includes(land?.environment);
+
+      const matchesPrice =
+        searchCriteria.price?.length === 0 ||
+        searchCriteria.price?.some(range => {
+          const [min, max] = range.split('-').map(Number);
+          return land.price >= min && (isFinite(max) ? land.price <= max : true);
+        });
+
       const matchesSize =
         searchCriteria.size?.length === 0 ||
-        searchCriteria.size?.includes(land?.size);
+        searchCriteria.size?.some(range => {
+          const [min, max] = range.split('-').map(Number);
+          return land.size >= min && (isFinite(max) ? land.size <= max : true);
+        });
+
       const matchesSlope =
         searchCriteria.slope?.length === 0 ||
         searchCriteria.slope?.includes(land?.ground);
 
-      return matchesLocation && matchesZoning && matchesSize && matchesSlope;
+      return matchesLocation && matchesPrice && matchesSize && matchesSlope;
     });
   }, [landData, searchCriteria]);
 
@@ -39,9 +48,12 @@ function LandListing() {
     return <LandlistingSkeleton />;
   }
 
-  if (filteredLandData?.length === 0) {
-    return <EmptyField fieldName="Land" />;
-  }
+  // if (filteredLandData?.length === 0) {
+  //   return <EmptyField fieldName="Land" />;
+  // }
+  const handleClearSearch = () => {
+    setSearchCriteria(null);
+  };
 
   return (
     <>
@@ -57,29 +69,44 @@ function LandListing() {
                 Search for Land
               </Typography>
               <Typography variant="p" color={"#c9c9c9"}>
-                Select at least one quality to start search
+                Select at least one property to start search
               </Typography>
             </Box>
             <SearchComponent onSearch={handleSearch} />
           </Box>
           <Box className="container listing-main-content" maxWidth="1400px">
-            <h2 className="h3 text-center text">
-              Displaying {filteredLandData?.length} land available
-            </h2>
+          <h2 className="h3 text-center text mb-">
+            Displaying {filteredLandData.length} land available
+          </h2>
+          {filteredLandData.length === 0 ? (
+            <Card
+              elevation={0}
+              variant="outlined"
+              sx={{ marginBlock: "1rem", borderRadius: "7px", padding: "2.5rem 3rem", textAlign: "center" }}
+            >
+              <Typography variant="h6" gutterBottom>
+                No results found for your search criteria
+              </Typography>
+              <Button variant="contained" mt={'30px'} disableElevation color="primary" onClick={handleClearSearch}>
+                Clear Search
+              </Button>
+            </Card>
+          ) : (
             <Card
               elevation={0}
               variant="outlined"
               sx={{ marginBlock: "1rem", borderRadius: "7px", padding: "1.5rem 2rem" }}
             >
               <ul className="land-listing-items">
-                {filteredLandData?.map((land) => (
+                {filteredLandData.map((land) => (
                   <li key={land.id}>
                     <PropertyCard land={land} />
                   </li>
                 ))}
               </ul>
             </Card>
-          </Box>
+          )}
+        </Box>
         </Stack>
       </section>
     </>

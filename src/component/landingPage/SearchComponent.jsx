@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-
-import { Button, MultiSelect } from '@mantine/core';
+import { MultiSelect } from '@mantine/core';
 import {
   PillsInput,
   Pill,
@@ -14,34 +13,39 @@ import {
 import {
   ScreenSearchDesktopRounded,
 } from "@mui/icons-material";
-// import MultiselectComponent from "../shared/mutiselect/multiselect";
 import { useFireStoreContext } from "../../context/FireStoreContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ResizeObserverErrorBoundary } from "../shared/ResizedObserverErrorBoundary/ResizedObserverErrorBoundary";
 
 const LAND_LISTING_PATH = '/land-listing';
 
-const environment = [
-  "Residential",
-  "Commercial",
-  "Agricultural",
-  "Recreational",
-  "Forest/Conservation",
-  "Not Zoned/Unclassified",
-];
+const price = {
+  "Less than ₵10,000": "0-10000",
+  "₵10,000 - ₵15,000": "10000-15000",
+  "₵15,000 - ₵20,000": "15000-20000",
+  "₵20,000 - ₵30,000": "20000-30000",
+  "Greater than ₵30,000": "30000-Infinity"
+};
 
-const size = [
-  "Less than 1 acre",
-  "1-5 acres",
-  "5.1 - 10 acres",
-  "More than 10 acres",
-];
+const size = {
+  "Less than 1 acre": "0-1",
+  "1-5 acres": "1-5",
+  "5.1 - 10 acres": "5.1-10",
+  "More than 10 acres": "10-Infinity"
+};
 
-const slope = ["Mostly Flat", "Rolling", "Sloped", "Dry", "Wet"];
+const slope = {
+  "Mostly Flat": 'flat',
+  "Rolling": 'rolling',
+  "Sloped": 'sloped',
+  "Dry": 'dry',
+  "Wet": 'wet'
+};
 
 function SearchComponent({ onSearch }) {
   const { landData } = useFireStoreContext();
   const [locations, setLocations] = useState([]);
-  const [zoneState, setZoneState] = useState([]);
+  const [priceState, setPriceState] = useState([]);
   const [slopeState, setSlopeState] = useState([]);
   const [sizeState, setSizeState] = useState([]);
   const [search, setSearch] = useState("");
@@ -55,54 +59,42 @@ function SearchComponent({ onSearch }) {
   });
 
   useEffect(() => {
-    // Extract unique locations from landData
-    console.log("Extracting land data", landData);
-    const uniqueLocations = [...new Set(landData.map(land => land.location))];
+    const uniqueLocations = [...new Set(landData?.map(land => land.location))];
     setLocations(uniqueLocations);
   }, [landData]);
 
   const performSearch = useCallback((criteria) => {
     onSearch(criteria);
-    // Reset URL parameters after search
     if (location.pathname === LAND_LISTING_PATH) {
       navigate(LAND_LISTING_PATH, { replace: true });
     }
   }, [onSearch, navigate, location.pathname]);
 
-  
   useEffect(() => {
-    // Extract search criteria from URL query parameters
     const searchParams = new URLSearchParams(location.search);
     const extractedCriteria = {
       locations: searchParams.getAll('locations'),
-      environment: searchParams.getAll('environment'),
+      price: searchParams.getAll('price'),
       size: searchParams.getAll('size'),
       slope: searchParams.getAll('slope'),
     };
   
-    // Only update state if there are actual parameters
     if (Object.values(extractedCriteria).some(arr => arr.length > 0)) {
       setValue(extractedCriteria.locations);
-      setZoneState(extractedCriteria.environment);
+      setPriceState(extractedCriteria.price);
       setSizeState(extractedCriteria.size);
       setSlopeState(extractedCriteria.slope);
-  
-      // Perform search with extracted criteria
       performSearch(extractedCriteria);
     }
   }, [location.search, performSearch]);
 
   const handleValueSelect = (val) => {
     setValue((current) =>
-      current.includes(val)
-        ? current.filter((v) => v !== val)
-        : [...current, val]
+      current.includes(val) ? current.filter((v) => v !== val) : [...current, val]
     );
     setSearch("");
   };
 
-
-  
   const handleValueRemove = (val) =>
     setValue((current) => current.filter((v) => v !== val));
 
@@ -126,13 +118,12 @@ function SearchComponent({ onSearch }) {
   const handleSubmit = () => {
     const searchCriteria = {
       locations: value,
-      environment: zoneState,
+      price: priceState,
       size: sizeState,
       slope: slopeState,
     };
 
     if (location.pathname !== LAND_LISTING_PATH) {
-      // Convert searchCriteria to query string
       const queryString = new URLSearchParams();
       Object.entries(searchCriteria).forEach(([key, value]) => {
         if (Array.isArray(value)) {
@@ -141,8 +132,6 @@ function SearchComponent({ onSearch }) {
           queryString.append(key, value);
         }
       });
-
-      // Navigate to the land listing page with the query parameters
       navigate(`${LAND_LISTING_PATH}?${queryString.toString()}`);
     } else {
       performSearch(searchCriteria);
@@ -154,7 +143,7 @@ function SearchComponent({ onSearch }) {
       <div className="container " id="search">
         <div className="flex flex-wrap gap-10 search__container">
           <div className="normal__search">
-            <Combobox store={combobox} onOptionSubmit={handleValueSelect}>
+              <Combobox store={combobox} onOptionSubmit={handleValueSelect}>
               <Combobox.DropdownTarget>
                 <PillsInput onClick={() => combobox.openDropdown()}>
                   <Pill.Group>
@@ -199,6 +188,7 @@ function SearchComponent({ onSearch }) {
               </Combobox.Dropdown>
             </Combobox>
           </div>
+          
           <div className="advance__search">
             <Accordion transitionDuration={700}>
               <div className="flex">
@@ -217,39 +207,38 @@ function SearchComponent({ onSearch }) {
                     <p className="text-white">Advance Search</p>
                   </Accordion.Control>
                   <Accordion.Panel>
-                    <div className="accordion__content position-relative">
+                  <ResizeObserverErrorBoundary>
+                  <div className="accordion__content position-relative">
                       <MultiselectComponent
-                        label={"Any Zone"}
-                        value={environment}
-                        handleChange={(event) => setZoneState(event.target.value)}
-                        setvalueState={setZoneState}
-                        valueState={zoneState}
+                        label={"Price Range"}
+                        data={Object.entries(price).map(([key, value]) => ({ value, label: key }))}
+                        setValue={setPriceState}
+                        value={priceState}
                       />
                       <MultiselectComponent
-                        label={"Any Size"}
-                        value={size}
-                        handleChange={(event) => setSizeState(event.target.value)}
-                        setvalueState={setSizeState}
-                        valueState={sizeState}
+                        label={"Size Range"}
+                        data={Object.entries(size).map(([key, value]) => ({ value, label: key }))}
+                        setValue={setSizeState}
+                        value={sizeState}
                       />
                       <MultiselectComponent
-                        label={"Any Slope"}
-                        // placeholder={`Select ${label}`}
-                        value={slope}
-                        handleChange={(event) => setSlopeState(event.target.value)}
-                        setvalueState={setSlopeState}
-                        valueState={slopeState}
+                        label={"Slope Type"}
+                        data={Object.entries(slope).map(([key, value]) => ({ value, label: key }))}
+                        setValue={setSlopeState}
+                        value={slopeState}
                       />
                     </div>
+                  </ResizeObserverErrorBoundary>
+                  
                   </Accordion.Panel>
                 </Accordion.Item>
               </div>
             </Accordion>
           </div>
-
+          
           <button
             className="btn"
-            style={{ maxHeight: "3.7rem" }}
+            style={{ maxHeight: "3.5rem" }}
             onClick={handleSubmit}
           >
             Search For Land
@@ -260,22 +249,18 @@ function SearchComponent({ onSearch }) {
   );
 }
 
-export default SearchComponent;
-
-
-
-function MultiselectComponent({ label, value, handleChange, setvalueState, valueState }) {
+function MultiselectComponent({ label, data, setValue, value }) {
   return (
     <MultiSelect
-      data={value}
+      data={data}
       label={label}
       placeholder={`Select ${label}`}
       searchable
       nothingFound="No options"
-      value={valueState}
-      onChange={setvalueState}
+      value={value}
+      onChange={setValue}
     />
   );
 }
 
-// export default MultiselectComponent;
+export default SearchComponent;
