@@ -1,37 +1,75 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useFireStoreContext } from '../../../context/FireStoreContext';
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SupportAgentOutlinedIcon from "@mui/icons-material/SupportAgentOutlined";
-import { Link } from "react-router-dom";
-import { useFireStoreContext } from '../../../context/FireStoreContext'
-import Avatar from '@mui/material/Avatar';
+import {
+  useMediaQuery,
+  useTheme,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Avatar
+} from '@mui/material';
 
 function Header() {
-  const { userProfile, userData } = useFireStoreContext();
+  const { userProfile } = useFireStoreContext();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     const header = document.querySelector("[data-header]");
-    window.addEventListener("scroll", function () {
+    const handleScroll = () => {
       window.scrollY >= 400
         ? header.classList.add("active")
         : header.classList.remove("active");
-    });
+    };
+
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener("scroll", function () {
-        window.scrollY >= 400
-          ? header.classList.add("active")
-          : header.classList.remove("active");
-      });
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-const handleNavClick = () =>{
-  console.log('Nav is clicked')
-}
+  const handleNavClick = () => {
+    setDrawerOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
+
+  const menuItems = [
+    { text: 'Land Listing', link: '/land-listing' },
+    { text: 'Contact', link: '/contact' },
+  ];
+
+  const drawer = (
+    <div>
+      <div className="navbar-top">
+        <Link to="/" className="logo" onClick={handleDrawerClose}>
+          <h1 className="h1">
+            GEO<span>LIS</span>
+          </h1>
+        </Link>
+        <IconButton onClick={handleDrawerClose}>
+          <CloseOutlinedIcon />
+        </IconButton>
+      </div>
+      <List>
+        {menuItems.map((item) => (
+          <ListItem button key={item.text} component={Link} to={item.link} onClick={handleDrawerClose}>
+            <ListItemText primary={item.text} />
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
 
   return (
     <header className="header" data-header>
@@ -40,7 +78,7 @@ const handleNavClick = () =>{
         <div className="container">
           <ul className="header-top-list">
             <li>
-              <Link to="mailto:info@rento.com" className="header-top-link">
+              <Link to="mailto:info@geolis.com" className="header-top-link">
                 <MailOutlineIcon className="icon" />
                 <span>info@geolis.com</span>
               </Link>
@@ -65,63 +103,28 @@ const handleNavClick = () =>{
         <div className="container">
           <Link to="/" className="logo">
             <h1 className="h1">
-              GEO
-              <span>LIS</span>
+              GEO<span>LIS</span>
             </h1>
           </Link>
-          <nav className="navbar" data-navbar>
-            <div className="navbar-top">
-              <Link to="/" className="logo">
-                <h1 className="h1">
-                  GEO
-                  <span>LIS</span>
-                </h1>
-              </Link>
-
-              <button
-                className="nav-close-btn"
-                data-nav-close-btn
-                aria-label="Close Menu"
-              >
-                <CloseOutlinedIcon className="icon" />
-              </button>
-            </div>
-
-            <div className="navbar-bottom">
-              <ul className="navbar-list">
-                <li>
-                  <Link
-                    to="/land-listing"
-                    className="navbar-link"
-                    data-nav-link
-                  >
-                    Land Listing
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/contact" className="navbar-link" data-nav-link>
-                    Contact
-                  </Link>
-                </li>
-                {/* <li>
-                  <Link to="/faqs" className="navbar-link" data-nav-link>
-                    FAQS
-                  </Link>
-                </li> */}
-
-              </ul>
-            </div>
-          </nav>
+          {!isMobile && (
+            <nav className="navbar" data-navbar>
+              <div className="navbar-bottom">
+                <ul className="navbar-list">
+                  {menuItems.map((item) => (
+                    <li key={item.text}>
+                      <Link to={item.link} className="navbar-link" data-nav-link>
+                        {item.text}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </nav>
+          )}
 
           <div className="header-bottom-actions">
-            {/* <button className="nav-actions-btn" aria-label="Search" title="Search for a land">
-              <Link to={"/advance-search"}> <SearchOutlinedIcon className="icon" />
-                <span>Search</span></Link>
-            </button> */}
-
             <button className="nav-actions-bt" aria-label="Profile" title="Dashboard">
               <Link to="/dashboard" className="icon">
-
                 <Avatar
                   src={userProfile?.photoURL}
                   alt={userProfile?.displayName}
@@ -133,21 +136,34 @@ const handleNavClick = () =>{
                 >
                   {userProfile?.displayName?.charAt(0).toUpperCase()}
                 </Avatar>
-
               </Link>
             </button>
-            <button
-              className="nav-actions-btn"
-              data-nav-open-btn
-              aria-label="Open Menu"
-onClick={handleNavClick}
-            >
-              <MenuOutlinedIcon className="icon" />
-              <span>Menu</span>
-            </button>
+            {isMobile && (
+              <button
+                className="nav-actions-btn"
+                data-nav-open-btn
+                aria-label="Open Menu"
+                onClick={handleNavClick}
+              >
+                <MenuOutlinedIcon className="icon" />
+                <span>Menu</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
-    </header>)
+
+      {isMobile && (
+        <Drawer
+          anchor="right"
+          open={drawerOpen}
+          onClose={handleDrawerClose}
+        >
+          {drawer}
+        </Drawer>
+      )}
+    </header>
+  );
 }
+
 export default Header;
