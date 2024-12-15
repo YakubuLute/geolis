@@ -1,45 +1,33 @@
-import SvgColor from '../../component/Dashboard/svg-color';
+import SvgColor from "../../component/Dashboard/svg-color";
 
 const icon = (name) => (
-  <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />
+  <SvgColor
+    src={`/assets/icons/navbar/${name}.svg`}
+    sx={{ width: 1, height: 1 }}
+  />
 );
 
 const navConfig = [
   {
-    title: 'dashboard',
-    path: '/dashboard/',
-    icon: icon('ic_analytics'),
-  },
-  // {
-  //   title: 'user',
-  //   path: '/dashboard/user',
-  //   icon: icon('ic_user'),
-  // },
-  {
-    title: 'profile',
-    path: '/dashboard/profile',
-    icon: icon('ic_user'),
+    title: "dashboard",
+    path: "/dashboard/",
+    icon: icon("ic_analytics"),
   },
   {
-    title: 'Properties',
-    path: '/dashboard/land',
-    icon: icon('ic_cart'),
+    title: "user",
+    path: "/dashboard/user",
+    icon: icon("ic_user"),
   },
-  // {
-  //   title: 'blog',
-  //   path: '/dashboard/blog',
-  //   icon: icon('ic_blog'),
-  // },
-  // {
-  //   title: 'login',
-  //   path: '/dashboard/login',
-  //   icon: icon('ic_lock'),
-  // },
-  // {
-  //   title: 'Not found',
-  //   path: '/dashboard/404',
-  //   icon: icon('ic_disabled'),
-  // },
+  {
+    title: "profile",
+    path: "/dashboard/profile",
+    icon: icon("ic_gear"),
+  },
+  {
+    title: "Land",
+    path: "/dashboard/land",
+    icon: icon("ic_cart"),
+  },
 ];
 
 export default navConfig;

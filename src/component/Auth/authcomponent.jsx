@@ -7,7 +7,6 @@ import {
   Text,
   Paper,
   Group,
-  PaperProps,
   Box,
   Button,
   Divider,
@@ -20,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 import { ArrowBack } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext.js";
 import { showErrorToast, showToast } from "../shared/Toast/Hot-Toast.jsx";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../../config/firebaseConfig.js";
 
 export function AuthenticationForm(props) {
   const navigate = useNavigate();
@@ -31,7 +32,11 @@ export function AuthenticationForm(props) {
     getUser,
   } = useAuth();
 
-  const ADMIN_EMAILS = ["saaqib56@gmail.com", "younlutabey@gmail.com"];
+  const ADMIN_EMAILS = [
+    "saaqib56@gmail.com",
+    "younlutabey@gmail.com",
+    "yakubulute@outlook.com",
+  ];
 
   const [type, toggle] = useToggle(["login", "register"]);
   const form = useForm({
@@ -75,20 +80,26 @@ export function AuthenticationForm(props) {
   });
 
   const handleSubmit = async (values) => {
-    // if (!ADMIN_EMAILS.includes(values.email)) {
-    //   showErrorToast(
-    //     type === "register"
-    //       ? "Denied! Only admins can signup"
-    //       : "Dashboard access denied! Only admins can login"
-    //   );
-    //   return;
-    // }
-
     try {
       if (type === "register") {
         if (values.terms) {
-          await signUpNewUser(values.email, values.password);
-          showToast("Account created successfully. Please log in.");
+          // Create authentication user
+          const userCredential = await signUpNewUser(
+            values.email,
+            values.password
+          );
+
+          // Store additional user data in Firestore
+          const userRef = doc(db, "users", userCredential.user.uid);
+          await setDoc(userRef, {
+            name: values.name,
+            email: values.email,
+            organization: values.org,
+            isAdmin: ADMIN_EMAILS.includes(values.email),
+            createdAt: serverTimestamp(),
+          });
+
+          showToast("Account created successfully.");
           toggle();
         } else {
           showToast("Please accept the terms and conditions to sign up.");

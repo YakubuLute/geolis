@@ -1,7 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
 import { auth, db } from "../config/firebaseConfig";
-import { getDoc, doc } from 'firebase/firestore';
-import { showToast } from '../component/shared/Toast/Toast';
+import { getDoc, doc, setDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
+import { showToast } from '../component/shared/Toast/Hot-Toast';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -45,11 +45,11 @@ export function AuthProvider({ children }) {
 
   const getUser = async (email) => {
     try {
-      const userDocRef = doc(db, 'users', email);
-      const userDocSnapshot = await getDoc(userDocRef);
-      return userDocSnapshot;
+      // Query Firestore to find user by email
+      const q = query(collection(db, "users"), where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs[0]; // Returns the first matching document
     } catch (error) {
-      console.error('Error fetching user document:', error);
       throw error;
     }
   };
@@ -69,17 +69,23 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const signUpNewUser = (email, password) =>
-    handleAsyncOperation(async () => {
-      console.log("Inside auth", auth)
-      const result = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      updateUserProfile(result.user);
-      return result;
-    }, "Account created successfully");
+  const signUpNewUser = async (email, password, userData) => {
+    try {
+      // Create the user in Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Store additional user data in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        ...userData,
+        createdAt: serverTimestamp(),
+      });
+
+      return userCredential;
+    } catch (error) {
+      throw error;
+    }
+  };
 
   const signInUser = async (email, password) => {
     try {
