@@ -1,6 +1,6 @@
-import React from 'react';
-import { useToggle, upperFirst } from '@mantine/hooks';
-import { useForm } from '@mantine/form';
+import React from "react";
+import { useToggle, upperFirst } from "@mantine/hooks";
+import { useForm } from "@mantine/form";
 import {
   TextInput,
   PasswordInput,
@@ -14,12 +14,12 @@ import {
   Checkbox,
   Anchor,
   Stack,
-} from '@mantine/core';
-import { GoogleButton } from './googlebutton.jsx';
-import { useNavigate } from 'react-router-dom';
-import { ArrowBack } from '@mui/icons-material';
+} from "@mantine/core";
+import { GoogleButton } from "./googlebutton.jsx";
+import { useNavigate } from "react-router-dom";
+import { ArrowBack } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext.js";
-import { showErrorToast, showToast } from '../shared/Toast/Toast.jsx';
+import { showErrorToast, showToast } from "../shared/Toast/Hot-Toast.jsx";
 
 export function AuthenticationForm(props) {
   const navigate = useNavigate();
@@ -31,44 +31,61 @@ export function AuthenticationForm(props) {
     getUser,
   } = useAuth();
 
-  const ADMIN_EMAILS = ['saaqib56@gmail.com', 'younlutabey@gmail.com'];
+  const ADMIN_EMAILS = ["saaqib56@gmail.com", "younlutabey@gmail.com"];
 
-  const [type, toggle] = useToggle(['login', 'register']);
+  const [type, toggle] = useToggle(["login", "register"]);
   const form = useForm({
     initialValues: {
-      email: '',
-      name: '',
-      password: '',
-      confirmPassword: '',
-      org: '',
+      email: "",
+      name: "",
+      password: "",
+      confirmPassword: "",
+      org: "",
       terms: true,
     },
 
     validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
+      email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
       password: (val) => {
-        if (type === 'login') return val.length < 1 ? 'Password is required' : null;
-        return (val.length < 8 ? 'Password must be at least 8 characters long' :
-          !/\d/.test(val) ? 'Password must include at least one number' :
-            !/[a-z]/.test(val) ? 'Password must include at least one lowercase letter' :
-              !/[A-Z]/.test(val) ? 'Password must include at least one uppercase letter' :
-                null);
+        if (type === "login")
+          return val.length < 1 ? "Password is required" : null;
+        return val.length < 8
+          ? "Password must be at least 8 characters long"
+          : !/\d/.test(val)
+          ? "Password must include at least one number"
+          : !/[a-z]/.test(val)
+          ? "Password must include at least one lowercase letter"
+          : !/[A-Z]/.test(val)
+          ? "Password must include at least one uppercase letter"
+          : null;
       },
       confirmPassword: (val, values) =>
-        type === 'register' && val !== values.password ? 'Passwords do not match' : null,
-      name: (val) => type === 'register' && val.length < 2 ? 'Name must have at least 2 characters' : null,
-      terms: (val) => type === 'register' && !val ? 'You must accept the terms and conditions' : null,
+        type === "register" && val !== values.password
+          ? "Passwords do not match"
+          : null,
+      name: (val) =>
+        type === "register" && val.length < 2
+          ? "Name must have at least 2 characters"
+          : null,
+      terms: (val) =>
+        type === "register" && !val
+          ? "You must accept the terms and conditions"
+          : null,
     },
   });
 
   const handleSubmit = async (values) => {
-    if (!ADMIN_EMAILS.includes(values.email)) {
-      showErrorToast(type === 'register' ? 'Denied! Only admins can signup' : 'Dashboard access denied! Only admins can login');
-      return;
-    }
+    // if (!ADMIN_EMAILS.includes(values.email)) {
+    //   showErrorToast(
+    //     type === "register"
+    //       ? "Denied! Only admins can signup"
+    //       : "Dashboard access denied! Only admins can login"
+    //   );
+    //   return;
+    // }
 
     try {
-      if (type === 'register') {
+      if (type === "register") {
         if (values.terms) {
           await signUpNewUser(values.email, values.password);
           showToast("Account created successfully. Please log in.");
@@ -79,12 +96,12 @@ export function AuthenticationForm(props) {
       } else {
         const userDoc = await getUser(values.email);
         if (!userDoc.exists()) {
-          showErrorToast('User is not registered. Please sign up first.');
+          showErrorToast("User is not registered. Please sign up first.");
           return;
         }
         await signInUser(values.email, values.password);
-        showToast("Login successful.");
-        navigate('/dashboard');
+        showToast("Login successful. Redirecting to dashboard...");
+        navigate("/dashboard");
       }
     } catch (error) {
       showErrorToast(error.message);
@@ -95,28 +112,36 @@ export function AuthenticationForm(props) {
     try {
       const result = await signInUserWithGoogle();
       const user = result.user;
-      
+
       if (!ADMIN_EMAILS.includes(user.email)) {
-        showErrorToast('Access denied! Only authorized admins can use this application.');
+        showErrorToast(
+          "Access denied! Only authorized admins can use this application."
+        );
         await signOutUser();
         return;
       }
 
       showToast(`Welcome, ${user.displayName || user.email}!`);
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (error) {
-      if (error.code === 'auth/cancelled-popup-request') {
-        showErrorToast('The sign-in popup was closed. Please try again.');
+      if (error.code === "auth/cancelled-popup-request") {
+        showErrorToast("The sign-in popup was closed. Please try again.");
       } else {
-        showErrorToast('Google sign-in failed. Please try again.');
+        showErrorToast("Google sign-in failed. Please try again.");
       }
-      console.error('Google sign-in error:', error);
+      console.error("Google sign-in error:", error);
     }
   };
 
   return (
     <Paper radius="md" p="xl" withBorder {...props} w={"35vw"}>
-      <Anchor c="dimmed" size="sm" href="/" display={'flex'} style={{ alignItems: "center", marginBottom: "1rem" }}>
+      <Anchor
+        c="dimmed"
+        size="sm"
+        href="/"
+        display={"flex"}
+        style={{ alignItems: "center", marginBottom: "1rem" }}
+      >
         <ArrowBack style={{ width: "12px", height: "12px" }} stroke={1.5} />
         <Box ml={5}>Back to Home</Box>
       </Anchor>
@@ -126,22 +151,28 @@ export function AuthenticationForm(props) {
 
       <Group grow mb="md" mt="md">
         <GoogleButton radius="xl" onClick={handleGoogleSignIn}>
-          {type === 'register' ? 'Sign up' : 'Sign in'} with Google
+          {type === "register" ? "Sign up" : "Sign in"} with Google
         </GoogleButton>
       </Group>
 
-      <Divider label="Or continue with email and password" labelPosition="center" my="lg" />
+      <Divider
+        label="Or continue with email and password"
+        labelPosition="center"
+        my="lg"
+      />
 
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack>
-          {type === 'register' && (
+          {type === "register" && (
             <>
               <TextInput
                 required
                 label="Name"
                 placeholder="Your name"
                 value={form.values.name}
-                onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
+                onChange={(event) =>
+                  form.setFieldValue("name", event.currentTarget.value)
+                }
                 error={form.errors.name}
                 radius="md"
               />
@@ -150,7 +181,9 @@ export function AuthenticationForm(props) {
                 label="Organization"
                 placeholder="Lands Commissions"
                 value={form.values.org}
-                onChange={(event) => form.setFieldValue('org', event.currentTarget.value)}
+                onChange={(event) =>
+                  form.setFieldValue("org", event.currentTarget.value)
+                }
                 error={form.errors.org}
                 radius="md"
               />
@@ -162,7 +195,9 @@ export function AuthenticationForm(props) {
             label="Email"
             placeholder="hello@example.com"
             value={form.values.email}
-            onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
+            onChange={(event) =>
+              form.setFieldValue("email", event.currentTarget.value)
+            }
             error={form.errors.email}
             radius="md"
           />
@@ -172,28 +207,34 @@ export function AuthenticationForm(props) {
             label="Password"
             placeholder="Your password"
             value={form.values.password}
-            onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
+            onChange={(event) =>
+              form.setFieldValue("password", event.currentTarget.value)
+            }
             error={form.errors.password}
             radius="md"
           />
 
-          {type === 'register' && (
+          {type === "register" && (
             <PasswordInput
               required
               label="Confirm Password"
               placeholder="Confirm your password"
               value={form.values.confirmPassword}
-              onChange={(event) => form.setFieldValue('confirmPassword', event.currentTarget.value)}
+              onChange={(event) =>
+                form.setFieldValue("confirmPassword", event.currentTarget.value)
+              }
               error={form.errors.confirmPassword}
               radius="md"
             />
           )}
 
-          {type === 'register' && (
+          {type === "register" && (
             <Checkbox
               label="I accept the terms and conditions"
               checked={form.values.terms}
-              onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
+              onChange={(event) =>
+                form.setFieldValue("terms", event.currentTarget.checked)
+              }
               error={form.errors.terms}
             />
           )}
@@ -207,12 +248,12 @@ export function AuthenticationForm(props) {
             onClick={() => toggle()}
             size="xs"
           >
-            {type === 'register'
-              ? 'Already have an account? Login'
+            {type === "register"
+              ? "Already have an account? Login"
               : "Don't have an account? Register"}
           </Anchor>
 
-          {type === 'login' && (
+          {type === "login" && (
             <Anchor
               component="button"
               type="button"

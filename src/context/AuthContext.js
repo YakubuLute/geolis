@@ -1,5 +1,5 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
-import { auth } from "../config/firebaseConfig";
+import { auth, db } from "../config/firebaseConfig";
 import { getDoc, doc } from 'firebase/firestore';
 import { showToast } from '../component/shared/Toast/Toast';
 import {
@@ -45,9 +45,8 @@ export function AuthProvider({ children }) {
 
   const getUser = async (email) => {
     try {
-       const userDocRef = doc(auth, 'users', email);
-       const userDocSnapshot = await getDoc(userDocRef);
-      // Return the user document snapshot
+      const userDocRef = doc(db, 'users', email);
+      const userDocSnapshot = await getDoc(userDocRef);
       return userDocSnapshot;
     } catch (error) {
       console.error('Error fetching user document:', error);
@@ -82,47 +81,47 @@ export function AuthProvider({ children }) {
       return result;
     }, "Account created successfully");
 
-const signInUser = async (email, password) => {
-  try {
-    // Check if the user is already registered
-    const userCredential = await getUser(email);
-    if (!userCredential.exists()) {
-      // User is not registered, throw an error or display a message
-      throw new Error('User is not registered. Please sign up first.');
+  const signInUser = async (email, password) => {
+    try {
+      // Check if the user is already registered
+      const userCredential = await getUser(email);
+      if (!userCredential.exists()) {
+        // User is not registered, throw an error or display a message
+        throw new Error('User is not registered. Please sign up first.');
+      }
+
+      // User is registered, proceed with sign-in
+      const result = await handleAsyncOperation(async () => {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        updateUserProfile(userCredential.user);
+        return userCredential;
+      }, 'Login successful.');
+
+      return result;
+    } catch (err) {
+      setError(err.message);
+      showToast(`Error: ${err.message}`, 'error');
+      console.error('Sign-in failed:', err);
+      throw err;
     }
+  };
 
-    // User is registered, proceed with sign-in
-    const result = await handleAsyncOperation(async () => {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      updateUserProfile(userCredential.user);
-      return userCredential;
-    }, 'Login successful.');
-
-    return result;
-  } catch (err) {
-    setError(err.message);
-    showToast(`Error: ${err.message}`, 'error');
-    console.error('Sign-in failed:', err);
-    throw err;
-  }
-};
-
-    const signInUserWithGoogle = () =>
-      handleAsyncOperation(async () => {
-        try {
-          const provider = new GoogleAuthProvider();
-          const result = await signInWithPopup(auth, provider);
-          updateUserProfile(result.user);
-          return result;
-        } catch (error) {
-          if (error.code === 'auth/cancelled-popup-request') {
-            console.log('Sign-in popup was closed before finalizing');
-            throw new Error('The sign-in popup was closed. Please try again.');
-          } else {
-            throw error;
-          }
+  const signInUserWithGoogle = () =>
+    handleAsyncOperation(async () => {
+      try {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+        updateUserProfile(result.user);
+        return result;
+      } catch (error) {
+        if (error.code === 'auth/cancelled-popup-request') {
+          console.log('Sign-in popup was closed before finalizing');
+          throw new Error('The sign-in popup was closed. Please try again.');
+        } else {
+          throw error;
         }
-      }, "Login successful.");
+      }
+    }, "Login successful.");
 
   const signOutUser = () =>
     handleAsyncOperation(async () => {
@@ -155,7 +154,7 @@ const signInUser = async (email, password) => {
     });
     return unsubscribe;
   }, []);
-  
+
 
   const value = {
     currentUser,
@@ -165,6 +164,7 @@ const signInUser = async (email, password) => {
     signInUser,
     signOutUser,
     resetPassword,
+    getUser,
     updateProfile,
     setSuccessMsg,
     successMsg,
