@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
-import { auth, db } from "../config/firebaseConfig";
-import { getDoc, doc, setDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
+import { auth, db, storage } from "../config/firebaseConfig";
+import { getDoc, doc, setDoc, serverTimestamp, collection, query, where, getDocs, updateDoc } from 'firebase/firestore';
 import { showToast } from '../component/shared/Toast/Hot-Toast';
 import {
   createUserWithEmailAndPassword,
@@ -10,7 +10,9 @@ import {
   signOut,
   sendPasswordResetEmail,
   onAuthStateChanged,
+  updateProfile as firebaseUpdateProfile
 } from "firebase/auth";
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const AuthContext = createContext();
 
@@ -142,15 +144,64 @@ export function AuthProvider({ children }) {
       "Password reset email was sent to your address"
     );
 
-  const updateProfile = async (updates) => {
-    if (!currentUser) {
-      throw new Error("No authenticated user");
-    }
+  // const updateProfile = async (updates) => {
+  //   if (!currentUser) {
+  //     throw new Error("No authenticated user");
+  //   }
 
-    return handleAsyncOperation(async () => {
-      await currentUser.updateProfile(updates);
-      updateUserProfile(currentUser);
-    }, "Profile updated successfully");
+  //   return handleAsyncOperation(async () => {
+  //     await updateProfile(updates);
+  //     updateUserProfile(currentUser);
+  //   }, "Profile updated successfully");
+  // };
+
+  const updateProfile = async (newData) => {
+    if (!currentUser) throw new Error('No user logged in');
+
+    try {
+      // Update auth profile (only for displayName and photoURL)
+      if (newData.displayName) {
+        await firebaseUpdateProfile(auth.currentUser, {
+          displayName: newData.displayName
+        });
+      }
+
+      // Update custom profile data in your database
+      const userRef = doc(db, 'users', currentUser.uid);
+
+      // Only include fields that are defined in newData
+      const updateData = {};
+      if (newData.firstName !== undefined) updateData.firstName = newData.firstName;
+      if (newData.lastName !== undefined) updateData.lastName = newData.lastName;
+      if (newData.displayName !== undefined) updateData.displayName = newData.displayName;
+
+      // Check if document exists
+      const docSnap = await getDoc(userRef);
+
+      if (!docSnap.exists()) {
+        // If document doesn't exist, create it with initial data
+        await setDoc(userRef, {
+          email: currentUser.email,
+          ...updateData,
+          createdAt: serverTimestamp(),
+        });
+      } else {
+        // If document exists, update it
+        await updateDoc(userRef, updateData);
+      }
+
+      // Update local state
+      setUserProfile(prev => ({
+        ...prev,
+        ...newData
+      }));
+
+      showToast("Profile updated successfully");
+
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      throw error;
+    }
   };
 
   useEffect(() => {
@@ -165,6 +216,7 @@ export function AuthProvider({ children }) {
   const value = {
     currentUser,
     userProfile,
+    setUserProfile,
     signUpNewUser,
     signInUserWithGoogle,
     signInUser,

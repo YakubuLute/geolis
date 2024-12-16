@@ -46,6 +46,7 @@ export function AuthenticationForm(props) {
       password: "",
       confirmPassword: "",
       org: "",
+      role: "",
       terms: true,
     },
 
@@ -76,6 +77,10 @@ export function AuthenticationForm(props) {
         type === "register" && !val
           ? "You must accept the terms and conditions"
           : null,
+      role: (val) =>
+        type === "register" && val.length < 2
+          ? "Role must have at least 2 characters"
+          : null,
     },
   });
 
@@ -95,7 +100,10 @@ export function AuthenticationForm(props) {
             name: values.name,
             email: values.email,
             organization: values.org,
+            role: ADMIN_EMAILS.includes(values.email) ? "admin" : values.role,
             isAdmin: ADMIN_EMAILS.includes(values.email),
+            verified: false,
+            status: "active",
             createdAt: serverTimestamp(),
           });
 
@@ -179,7 +187,7 @@ export function AuthenticationForm(props) {
               <TextInput
                 required
                 label="Name"
-                placeholder="Your name"
+                placeholder="Your Full Name"
                 value={form.values.name}
                 onChange={(event) =>
                   form.setFieldValue("name", event.currentTarget.value)
@@ -198,13 +206,24 @@ export function AuthenticationForm(props) {
                 error={form.errors.org}
                 radius="md"
               />
+              <TextInput
+                required
+                label="Role"
+                placeholder="UI/UX Designer"
+                value={form.values.role}
+                onChange={(event) =>
+                  form.setFieldValue("role", event.currentTarget.value)
+                }
+                error={form.errors.role}
+                radius="md"
+              />
             </>
           )}
 
           <TextInput
             required
             label="Email"
-            placeholder="hello@example.com"
+            placeholder="name@domain.com"
             value={form.values.email}
             onChange={(event) =>
               form.setFieldValue("email", event.currentTarget.value)
@@ -216,7 +235,7 @@ export function AuthenticationForm(props) {
           <PasswordInput
             required
             label="Password"
-            placeholder="Your password"
+            placeholder="Your Password"
             value={form.values.password}
             onChange={(event) =>
               form.setFieldValue("password", event.currentTarget.value)
@@ -229,7 +248,7 @@ export function AuthenticationForm(props) {
             <PasswordInput
               required
               label="Confirm Password"
-              placeholder="Confirm your password"
+              placeholder="Confirm Your Password"
               value={form.values.confirmPassword}
               onChange={(event) =>
                 form.setFieldValue("confirmPassword", event.currentTarget.value)

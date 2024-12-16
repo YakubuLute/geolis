@@ -38,7 +38,6 @@ export function FireStoreDataContext({ children }) {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsUserDataLoading(true);
       if (user) {
-        console.log("User is signed in:", user);
         setUserData(user);
         const profile = {
           uid: user.uid,
@@ -74,8 +73,8 @@ export function FireStoreDataContext({ children }) {
     } finally {
       setIsDeleting(false);
     }
-  
-};
+
+  };
 
 
   const value = {
