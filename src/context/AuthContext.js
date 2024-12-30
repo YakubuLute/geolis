@@ -1,7 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
 import { auth, db, storage } from "../config/firebaseConfig";
 import { getDoc, doc, setDoc, serverTimestamp, collection, query, where, getDocs, updateDoc } from 'firebase/firestore';
-import { showToast } from '../component/shared/Toast/Hot-Toast';
+import { showErrorToast, showToast } from '../component/shared/Toast/Hot-Toast';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -200,6 +200,7 @@ export function AuthProvider({ children }) {
 
     } catch (error) {
       console.error('Error updating profile:', error);
+      showErrorToast(`Error: ${error.message}`);
       throw error;
     }
   };

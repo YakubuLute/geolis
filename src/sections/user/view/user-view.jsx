@@ -1,46 +1,266 @@
-import { useState } from 'react';
+// import { useState } from "react";
 
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import TableBody from '@mui/material/TableBody';
-import Typography from '@mui/material/Typography';
-import TableContainer from '@mui/material/TableContainer';
-import TablePagination from '@mui/material/TablePagination';
+// import Card from "@mui/material/Card";
+// import Stack from "@mui/material/Stack";
+// import Table from "@mui/material/Table";
+// import Button from "@mui/material/Button";
+// import Container from "@mui/material/Container";
+// import TableBody from "@mui/material/TableBody";
+// import Typography from "@mui/material/Typography";
+// import TableContainer from "@mui/material/TableContainer";
+// import TablePagination from "@mui/material/TablePagination";
 
-import { users } from '../../../_mock/user';
+// import { users } from "../../../_mock/user";
 
-import Iconify from '../../../component/Dashboard/iconify';
-import Scrollbar from '../../../component/Dashboard/scrollbar';
+// import Iconify from "../../../component/Dashboard/iconify";
+// import Scrollbar from "../../../component/Dashboard/scrollbar";
 
-import TableNoData from '../table-no-data';
-import UserTableRow from '../user-table-row';
-import UserTableHead from '../user-table-head';
-import TableEmptyRows from '../table-empty-rows';
-import UserTableToolbar from '../user-table-toolbar';
-import { emptyRows, applyFilter, getComparator } from '../utils';
+// import TableNoData from "../table-no-data";
+// import UserTableRow from "../user-table-row";
+// import UserTableHead from "../user-table-head";
+// import TableEmptyRows from "../table-empty-rows";
+// import UserTableToolbar from "../user-table-toolbar";
+// import { emptyRows, applyFilter, getComparator } from "../utils";
 
+// export default function UserPage() {
+//   const [page, setPage] = useState(0);
+
+//   const [order, setOrder] = useState("asc");
+
+//   const [selected, setSelected] = useState([]);
+
+//   const [orderBy, setOrderBy] = useState("name");
+
+//   const [filterName, setFilterName] = useState("");
+
+//   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+//   const handleSort = (event, id) => {
+//     const isAsc = orderBy === id && order === "asc";
+//     if (id !== "") {
+//       setOrder(isAsc ? "desc" : "asc");
+//       setOrderBy(id);
+//     }
+//   };
+
+//   const handleSelectAllClick = (event) => {
+//     if (event.target.checked) {
+//       const newSelecteds = users.map((n) => n.name);
+//       setSelected(newSelecteds);
+//       return;
+//     }
+//     setSelected([]);
+//   };
+
+//   const handleClick = (event, name) => {
+//     const selectedIndex = selected.indexOf(name);
+//     let newSelected = [];
+//     if (selectedIndex === -1) {
+//       newSelected = newSelected.concat(selected, name);
+//     } else if (selectedIndex === 0) {
+//       newSelected = newSelected.concat(selected.slice(1));
+//     } else if (selectedIndex === selected.length - 1) {
+//       newSelected = newSelected.concat(selected.slice(0, -1));
+//     } else if (selectedIndex > 0) {
+//       newSelected = newSelected.concat(
+//         selected.slice(0, selectedIndex),
+//         selected.slice(selectedIndex + 1)
+//       );
+//     }
+//     setSelected(newSelected);
+//   };
+
+//   const handleChangePage = (event, newPage) => {
+//     setPage(newPage);
+//   };
+
+//   const handleChangeRowsPerPage = (event) => {
+//     setPage(0);
+//     setRowsPerPage(parseInt(event.target.value, 10));
+//   };
+
+//   const handleFilterByName = (event) => {
+//     setPage(0);
+//     setFilterName(event.target.value);
+//   };
+
+//   const dataFiltered = applyFilter({
+//     inputData: users,
+//     comparator: getComparator(order, orderBy),
+//     filterName,
+//   });
+
+//   const notFound = !dataFiltered.length && !!filterName;
+
+//   return (
+//     <Container>
+//       <Stack
+//         direction="row"
+//         alignItems="center"
+//         justifyContent="space-between"
+//         mb={5}
+//       >
+//         <Typography variant="h4">Agents</Typography>
+
+//         <Button
+//           variant="contained"
+//           color="inherit"
+//           startIcon={<Iconify icon="eva:plus-fill" />}
+//         >
+//           Invite An Agent
+//         </Button>
+//       </Stack>
+
+//       <Card>
+//         <UserTableToolbar
+//           numSelected={selected.length}
+//           filterName={filterName}
+//           onFilterName={handleFilterByName}
+//         />
+
+//         <Scrollbar>
+//           <TableContainer sx={{ overflow: "unset" }}>
+//             <Table sx={{ minWidth: 800 }}>
+//               <UserTableHead
+//                 order={order}
+//                 orderBy={orderBy}
+//                 rowCount={users.length}
+//                 numSelected={selected.length}
+//                 onRequestSort={handleSort}
+//                 onSelectAllClick={handleSelectAllClick}
+//                 headLabel={[
+//                   { id: "name", label: "Name" },
+//                   { id: "company", label: "Company" },
+//                   { id: "role", label: "Role" },
+//                   { id: "isVerified", label: "Verified", align: "center" },
+//                   { id: "status", label: "Status" },
+//                   { id: "" },
+//                 ]}
+//               />
+//               <TableBody>
+//                 {dataFiltered
+//                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+//                   .map((row) => (
+//                     <UserTableRow
+//                       key={row.id}
+//                       name={row.name}
+//                       role={row.role}
+//                       status={row.status}
+//                       company={row.company}
+//                       avatarUrl={row.avatarUrl}
+//                       isVerified={row.isVerified}
+//                       selected={selected.indexOf(row.name) !== -1}
+//                       handleClick={(event) => handleClick(event, row.name)}
+//                     />
+//                   ))}
+
+//                 <TableEmptyRows
+//                   height={77}
+//                   emptyRows={emptyRows(page, rowsPerPage, users.length)}
+//                 />
+
+//                 {notFound && <TableNoData query={filterName} />}
+//               </TableBody>
+//             </Table>
+//           </TableContainer>
+//         </Scrollbar>
+
+//         <TablePagination
+//           page={page}
+//           component="div"
+//           count={users.length}
+//           rowsPerPage={rowsPerPage}
+//           onPageChange={handleChangePage}
+//           rowsPerPageOptions={[5, 10, 25]}
+//           onRowsPerPageChange={handleChangeRowsPerPage}
+//         />
+//       </Card>
+//     </Container>
+//   );
+// }
+
+import { useState, useEffect } from "react";
+import {
+  collection,
+  query,
+  onSnapshot,
+  orderBy as firestoreOrderBy,
+} from "firebase/firestore";
+
+import Card from "@mui/material/Card";
+import Stack from "@mui/material/Stack";
+import Table from "@mui/material/Table";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import TableBody from "@mui/material/TableBody";
+import Typography from "@mui/material/Typography";
+import TableContainer from "@mui/material/TableContainer";
+import TablePagination from "@mui/material/TablePagination";
+import CircularProgress from "@mui/material/CircularProgress";
+
+import TableNoData from "../table-no-data";
+import UserTableRow from "../user-table-row";
+import UserTableHead from "../user-table-head";
+import TableEmptyRows from "../table-empty-rows";
+import UserTableToolbar from "../user-table-toolbar";
+import { emptyRows, getComparator } from "../utils";
+import { db } from "../../../config/firebaseConfig";
+import Iconify from "../../../component/Dashboard/iconify";
+import Scrollbar from "../../../component/Dashboard/scrollbar";
 
 export default function UserPage() {
   const [page, setPage] = useState(0);
-
-  const [order, setOrder] = useState('asc');
-
+  const [sortOrder, setSortOrder] = useState("asc");
   const [selected, setSelected] = useState([]);
-
-  const [orderBy, setOrderBy] = useState('name');
-
-  const [filterName, setFilterName] = useState('');
-
+  const [sortField, setSortField] = useState("name");
+  const [filterName, setFilterName] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Create a query to fetch users from Firestore
+    const usersRef = collection(db, "users");
+
+    // Basic query without sorting (since we'll sort client-side)
+    const q = query(usersRef);
+
+    // Set up real-time listener
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const userData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          // Map Firestore fields to match your table structure
+          name:
+            doc.data().displayName ||
+            `${doc.data().firstName || ""} ${doc.data().lastName || ""}`.trim(),
+          company: doc.data().company || "N/A",
+          role: doc.data().role || "User",
+          isVerified: doc.data().emailVerified || false,
+          status: doc.data().status || "active",
+          avatarUrl:
+            doc.data().photoURL || "/assets/images/avatars/avatar_default.jpg",
+        }));
+        setUsers(userData);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching users:", error);
+        setLoading(false);
+      }
+    );
+
+    // Cleanup subscription
+    return () => unsubscribe();
+  }, []); // Removed dependencies since we'll sort client-side
 
   const handleSort = (event, id) => {
-    const isAsc = orderBy === id && order === 'asc';
-    if (id !== '') {
-      setOrder(isAsc ? 'desc' : 'asc');
-      setOrderBy(id);
+    const isAsc = sortField === id && sortOrder === "asc";
+    if (id !== "") {
+      setSortOrder(isAsc ? "desc" : "asc");
+      setSortField(id);
     }
   };
 
@@ -85,21 +305,67 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
-  const dataFiltered = applyFilter({
-    inputData: users,
-    comparator: getComparator(order, orderBy),
-    filterName,
-  });
+  // Filter and sort function
+  const applyFilter = (users, query) => {
+    let filteredUsers = users;
 
+    // Apply name filter
+    if (query) {
+      filteredUsers = users.filter(
+        (user) => user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
+      );
+    }
+
+    // Apply sorting
+    filteredUsers.sort((a, b) => {
+      const aValue = a[sortField];
+      const bValue = b[sortField];
+
+      if (sortOrder === "asc") {
+        return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+      } else {
+        return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
+      }
+    });
+
+    return filteredUsers;
+  };
+
+  const dataFiltered = applyFilter(users, filterName);
   const notFound = !dataFiltered.length && !!filterName;
+
+  if (loading) {
+    return (
+      <Container
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "400px",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Container>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        mb={5}
+      >
         <Typography variant="h4">Agents</Typography>
 
-        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
-          New Agent
+        <Button
+          disabled
+          variant="contained"
+          color="inherit"
+          startIcon={<Iconify icon="eva:plus-fill" />}
+        >
+          Invite An Agent
         </Button>
       </Stack>
 
@@ -111,22 +377,22 @@ export default function UserPage() {
         />
 
         <Scrollbar>
-          <TableContainer sx={{ overflow: 'unset' }}>
+          <TableContainer sx={{ overflow: "unset" }}>
             <Table sx={{ minWidth: 800 }}>
               <UserTableHead
-                order={order}
-                orderBy={orderBy}
+                order={sortOrder}
+                orderBy={sortField}
                 rowCount={users.length}
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'name', label: 'Name' },
-                  { id: 'company', label: 'Company' },
-                  { id: 'role', label: 'Role' },
-                  { id: 'isVerified', label: 'Verified', align: 'center' },
-                  { id: 'status', label: 'Status' },
-                  { id: '' },
+                  { id: "name", label: "Name" },
+                  { id: "company", label: "Company" },
+                  { id: "role", label: "Role" },
+                  { id: "isVerified", label: "Verified", align: "center" },
+                  { id: "status", label: "Status" },
+                  { id: "" },
                 ]}
               />
               <TableBody>
@@ -167,6 +433,34 @@ export default function UserPage() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
+      {/* Delete confirmation dialogue */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteCancel}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Delete User</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure you want to delete the user "{userToDelete?.name}"?
+            This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} disabled={isDeleting}>
+            Cancel
+          </Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            color="error"
+            disabled={isDeleting}
+            autoFocus
+          >
+            {isDeleting ? "Deleting..." : "Delete"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }
