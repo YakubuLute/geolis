@@ -24,8 +24,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-// import { showToast, showErrorToast } from "../component/shared/Toast/Toast";
-
 import TableNoData from "../table-no-data";
 import UserTableRow from "../user-table-row";
 import UserTableHead from "../user-table-head";
@@ -220,6 +218,7 @@ export default function UserPage() {
         <Button
           variant="contained"
           color="inherit"
+          disabled
           startIcon={<Iconify icon="eva:plus-fill" />}
         >
           Invite An Agent
@@ -258,6 +257,7 @@ export default function UserPage() {
                   .map((row) => (
                     <UserTableRow
                       key={row.id}
+                      id={row.id}
                       name={row.name}
                       role={row.role}
                       status={row.status}
@@ -266,15 +266,7 @@ export default function UserPage() {
                       isVerified={row.isVerified}
                       selected={selected.indexOf(row.name) !== -1}
                       handleClick={(event) => handleClick(event, row.name)}
-                      actions={
-                        <Button
-                          color="error"
-                          onClick={() => handleDeleteClick(row)}
-                          disabled={isDeleting}
-                        >
-                          Delete
-                        </Button>
-                      }
+                      onDelete={handleDeleteClick}
                     />
                   ))}
 
