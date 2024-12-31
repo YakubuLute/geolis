@@ -79,25 +79,24 @@ export default function ProductsView() {
                 textAlign: "center",
                 py: 10,
                 px: 3,
-                borderRadius: 2,
-                border: "1px dashed #b3d9ff",
+                borderRadius: 1,
                 // bgcolor: "#f3f9ff",
               }}
             >
-              <IllustrationEmpty
+              {/* <IllustrationEmpty
                 sx={{
                   mb: 3,
                   height: 160,
                 }}
-              />
+              /> */}
 
               <Typography variant="h6" sx={{ mb: 1 }}>
                 No Land Listings Yet
               </Typography>
 
               <Typography sx={{ color: "text.secondary", mb: 3 }}>
-                There are currently no land listings available. Be the first to
-                add one!
+                There are currently no land listings available. Click add new
+                listing to add one! add one!
               </Typography>
 
               <Button

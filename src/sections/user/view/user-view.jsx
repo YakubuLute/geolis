@@ -37,8 +37,11 @@ import {
   showErrorToast,
   showToast,
 } from "../../../component/shared/Toast/Toast";
+import { useFireStoreContext } from "../../../context/FireStoreContext";
 
 export default function UserPage() {
+  const { userData: currentUser, isUserDataLoading } = useFireStoreContext();
+
   const [page, setPage] = useState(0);
   const [sortOrder, setSortOrder] = useState("asc");
   const [selected, setSelected] = useState([]);
@@ -62,9 +65,12 @@ export default function UserPage() {
           id: doc.id,
           ...doc.data(),
           name:
+            `${doc.data().firstName || ""} ${
+              doc.data().lastName || ""
+            }`.trim() ||
             doc.data().displayName ||
-            `${doc.data().firstName || ""} ${doc.data().lastName || ""}`.trim(),
-          company: doc.data().company || "N/A",
+            "N/A",
+          company: doc.data().organization || "N/A",
           role: doc.data().role || "User",
           isVerified: doc.data().emailVerified || false,
           status: doc.data().status || "active",
@@ -73,6 +79,7 @@ export default function UserPage() {
         }));
         setUsers(userData);
         setLoading(false);
+        console.log("User data ", userData);
       },
       (error) => {
         console.error("Error fetching users:", error);
@@ -80,7 +87,6 @@ export default function UserPage() {
         setLoading(false);
       }
     );
-
     return () => unsubscribe();
   }, []);
 
@@ -145,7 +151,22 @@ export default function UserPage() {
 
   const handleDeleteConfirm = async () => {
     if (!userToDelete) return;
+    if (currentUser.uid === userToDelete.id) {
+      showErrorToast("You cannot delete yourself");
+      setIsDeleting(false);
+      setDeleteDialogOpen(false);
+      setUserToDelete(null);
+      return;
+    }
 
+    // let's ensure that only admin can delete users
+    if (currentUser.role !== "admin") {
+      showErrorToast("Only admins can delete users");
+      setIsDeleting(false);
+      setDeleteDialogOpen(false);
+      setUserToDelete(null);
+      return;
+    }
     setIsDeleting(true);
     try {
       await deleteDoc(doc(db, "users", userToDelete.id));
@@ -190,7 +211,7 @@ export default function UserPage() {
   const dataFiltered = applyFilter(users, filterName);
   const notFound = !dataFiltered.length && !!filterName;
 
-  if (loading) {
+  if (loading || isUserDataLoading) {
     return (
       <Container
         sx={{

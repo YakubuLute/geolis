@@ -64,16 +64,12 @@ export default function Nav({ openNav, onCloseNav }) {
       />
 
       <Box sx={{ ml: 2 }}>
-        <Typography
-          variant="subtitle2"
-          sx={{ display: "flex", alignItems: "center", gap: "5px" }}
-        >
-          <HandIcon size={16} />
+        <Typography variant="subtitle1" textTransform={"capitalize"}>
           {userProfile.displayName ? userProfile.displayName : "Hello!"}
         </Typography>
 
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          Administrator
+          {userData?.role}
         </Typography>
       </Box>
     </Box>

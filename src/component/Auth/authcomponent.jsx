@@ -47,6 +47,7 @@ export function AuthenticationForm(props) {
       confirmPassword: "",
       org: "",
       role: "",
+      staus: "active", // or [banned]
       terms: true,
     },
 
