@@ -4,7 +4,7 @@ import SearchComponent from "../../../../component/landingPage/SearchComponent.j
 import LandlistingSkeleton from "../../../../component/shared/Skeleton/land-skeleton.jsx";
 import { useFireStoreContext } from "../../../../context/FireStoreContext.js";
 // import EmptyField from "../../../../component/landingPage/EmptyField.jsx";
-import PropertyCard from "../../../../component/landingPage/PropertyCard.tsx";
+import PropertyCard from "../../../../component/landingPage/PropertyCard.jsx";
 
 function LandListing() {
   const { landData, isLandDataLoading } = useFireStoreContext();

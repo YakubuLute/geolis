@@ -1,6 +1,6 @@
 import React from "react";
 import EmptyField from "./EmptyField.jsx";
-import PropertyCard from "./PropertyCard.tsx";
+import PropertyCard from "./PropertyCard.jsx";
 import { useFireStoreContext } from "../../context/FireStoreContext.js";
 import LandlistingSkeleton from "../shared/Skeleton/land-skeleton.jsx";
 import { Grid } from "@mui/material";

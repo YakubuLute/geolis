@@ -1,15 +1,6 @@
 import React from "react";
 
-type AddProps = {
-  fill?: string;
-  color?: string;
-  width?: string | number;
-  height?: string | number;
-};
-
-const SliderPrevIcon: React.FC<AddProps> = (
-  props: React.SVGProps<SVGSVGElement>
-) => {
+const SliderNextIcon = (props) => {
   return (
     <svg
       width="32"
@@ -20,7 +11,7 @@ const SliderPrevIcon: React.FC<AddProps> = (
       {...props}
     >
       <path
-        d="M20 24L12 16L20 8"
+        d="M12 24L20 16L12 8"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
@@ -30,4 +21,4 @@ const SliderPrevIcon: React.FC<AddProps> = (
   );
 };
 
-export default SliderPrevIcon;
+export default SliderNextIcon;
