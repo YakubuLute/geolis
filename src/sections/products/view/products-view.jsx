@@ -15,13 +15,12 @@ import CustomModal from "../../../component/shared/Modal";
 import { useFireStoreContext } from "../../../context/FireStoreContext.js";
 import { UploadLandComponent } from "./upload-land-component.tsx";
 import PropertyCard from "../../../component/landingPage/PropertyCard.tsx";
-import { alpha } from "@mui/material/styles";
-import IllustrationEmpty from "../../../component/shared/Illustrations/EmptyContent.jsx";
+import PropertyListingLayout from "../../../component/landingPage/PropertyLayout.jsx";
 
 export default function ProductsView() {
   const [openFilter, setOpenFilter] = useState(false);
   const [open, setOpen] = useState(false);
-  const { landData } = useFireStoreContext();
+  const { landData, isLandDataLoading } = useFireStoreContext();
 
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
@@ -32,6 +31,10 @@ export default function ProductsView() {
 
   const handleCloseFilter = () => {
     setOpenFilter(false);
+  };
+
+  const handleIsSubmitting = (isSubmitting) => {
+    if (isSubmitting) setOpen(isSubmitting);
   };
 
   return (
@@ -80,16 +83,8 @@ export default function ProductsView() {
                 py: 10,
                 px: 3,
                 borderRadius: 1,
-                // bgcolor: "#f3f9ff",
               }}
             >
-              {/* <IllustrationEmpty
-                sx={{
-                  mb: 3,
-                  height: 160,
-                }}
-              /> */}
-
               <Typography variant="h6" sx={{ mb: 1 }}>
                 No Land Listings Yet
               </Typography>
@@ -109,34 +104,24 @@ export default function ProductsView() {
             </Card>
           </Grid>
         ) : (
-          <Card
-            elevation={0}
-            variant="outlined"
-            sx={{
-              marginBlock: "1rem",
-              borderRadius: "7px",
-              padding: "1.5rem 2rem",
-              width: "100%",
-            }}
-          >
-            <ul className="land-listing-items dashboard-listing">
+          <Grid xs={12}>
+            <PropertyListingLayout>
               {landData?.map((land) => (
-                <li key={land.id}>
-                  <PropertyCard
-                    land={land}
-                    sliceText
-                    showActionBtn
-                    isDashboardListing
-                  />
-                </li>
+                <PropertyCard
+                  key={land.id}
+                  land={land}
+                  sliceText
+                  showActionBtn
+                  isDashboardListing
+                />
               ))}
-            </ul>
-          </Card>
+            </PropertyListingLayout>
+          </Grid>
         )}
       </Grid>
 
       <CustomModal title={"Add New Land"} open={open} handleClose={handleClose}>
-        <UploadLandComponent />
+        <UploadLandComponent getIsSubmitting={handleIsSubmitting} />
       </CustomModal>
 
       <Box mt={10}>

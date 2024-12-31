@@ -20,15 +20,17 @@ function LandListing() {
 
       const matchesPrice =
         searchCriteria.price?.length === 0 ||
-        searchCriteria.price?.some(range => {
-          const [min, max] = range.split('-').map(Number);
-          return land.price >= min && (isFinite(max) ? land.price <= max : true);
+        searchCriteria.price?.some((range) => {
+          const [min, max] = range.split("-").map(Number);
+          return (
+            land.price >= min && (isFinite(max) ? land.price <= max : true)
+          );
         });
 
       const matchesSize =
         searchCriteria.size?.length === 0 ||
-        searchCriteria.size?.some(range => {
-          const [min, max] = range.split('-').map(Number);
+        searchCriteria.size?.some((range) => {
+          const [min, max] = range.split("-").map(Number);
           return land.size >= min && (isFinite(max) ? land.size <= max : true);
         });
 
@@ -75,38 +77,59 @@ function LandListing() {
             <SearchComponent onSearch={handleSearch} />
           </Box>
           <Box className="container listing-main-content" maxWidth="1400px">
-          <h2 className="h3 text-center text mb-">
-            Displaying {filteredLandData.length} land available
-          </h2>
-          {filteredLandData.length === 0 ? (
-            <Card
-              elevation={0}
-              variant="outlined"
-              sx={{ marginBlock: "1rem", borderRadius: "7px", padding: "2.5rem 3rem", textAlign: "center" }}
-            >
-              <Typography variant="h6" gutterBottom>
-                No results found for your search criteria
-              </Typography>
-              <Button variant="contained" mt={'30px'} disableElevation color="primary" onClick={handleClearSearch}>
-                Clear Search
-              </Button>
-            </Card>
-          ) : (
-            <Card
-              elevation={0}
-              variant="outlined"
-              sx={{ marginBlock: "1rem", borderRadius: "7px", padding: "1.5rem 2rem" }}
-            >
-              <ul className="land-listing-items">
-                {filteredLandData.map((land) => (
-                  <li key={land.id}>
-                    <PropertyCard land={land} />
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          )}
-        </Box>
+            <h2 className="h3 text-center text mb-">
+              Displaying {filteredLandData.length} land available
+            </h2>
+            {filteredLandData.length === 0 ? (
+              <Card
+                elevation={0}
+                variant="outlined"
+                sx={{
+                  marginBlock: "1rem",
+                  borderRadius: "7px",
+                  padding: "2.5rem 3rem",
+                  textAlign: "center",
+                }}
+              >
+                <Typography variant="h6" gutterBottom>
+                  No results found for your search criteria
+                </Typography>
+                <Button
+                  variant="contained"
+                  mt={"30px"}
+                  disableElevation
+                  color="primary"
+                  onClick={handleClearSearch}
+                >
+                  Clear Search
+                </Button>
+              </Card>
+            ) : (
+              <Card
+                elevation={0}
+                variant="outlined"
+                sx={{
+                  marginBlock: "1rem",
+                  borderRadius: "7px",
+                  padding: "1.5rem 2rem",
+                }}
+              >
+                <ul className="land-listing-items">
+                  {filteredLandData.map((land) => (
+                    <li key={land.id} className="items-list">
+                      <PropertyCard
+                        key={land.id}
+                        land={land}
+                        sliceText
+                        showActionBtn
+                        isDashboardListing
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            )}
+          </Box>
         </Stack>
       </section>
     </>

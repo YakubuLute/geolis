@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   TextInput,
   NumberInput,
@@ -12,217 +12,244 @@ import {
   Paper,
   SimpleGrid,
   Progress
-} from '@mantine/core';
-import classes from './contained-input.module.css';
-import { TLandDetails } from '../../../Types/types';
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import { collection, addDoc } from 'firebase/firestore';
-import { db, storage } from '../../../config/firebaseConfig';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { showToast } from '../../../component/shared/Toast/Toast';
+} from '@mantine/core'
+import classes from './contained-input.module.css'
+import { TLandDetails } from '../../../Types/types'
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
+import { collection, addDoc } from 'firebase/firestore'
+import { db, storage } from '../../../config/firebaseConfig'
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import { showToast } from '../../../component/shared/Toast/Hot-Toast'
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+const MAX_FILE_SIZE = 3 * 1024 * 1024 // 3MB
+const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif']
 
-export function UploadLandComponent() {
-  const [active, setActive] = useState(0);
-  const [landDetails, setLandDetails] = useState<Partial<TLandDetails>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
+export function UploadLandComponent ({ getIsSubmitting }) {
+  const [active, setActive] = useState(0)
+  const [landDetails, setLandDetails] = useState<Partial<TLandDetails>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState<{
+    [key: string]: number
+  }>({})
 
   const [coordinateInputs, setCoordinateInputs] = useState({
     initialCood: '',
     polygon: ''
-  });
+  })
 
   const handleInputChange = (field: keyof TLandDetails, value: any) => {
-    setLandDetails(prev => ({ ...prev, [field]: value }));
-  };
+    setLandDetails(prev => ({ ...prev, [field]: value }))
+  }
 
   const parseCoordinates = (input: string): number[] => {
-    return input.split(',').map(coord => parseFloat(coord.trim()));
-  };
+    return input.split(',').map(coord => parseFloat(coord.trim()))
+  }
 
-  const handleCoordinateChange = (field: 'initialCood' | 'polygon', value: string) => {
-    setCoordinateInputs(prev => ({ ...prev, [field]: value }));
+  const handleCoordinateChange = (
+    field: 'initialCood' | 'polygon',
+    value: string
+  ) => {
+    setCoordinateInputs(prev => ({ ...prev, [field]: value }))
 
     if (field === 'initialCood') {
-      const coords = parseCoordinates(value);
+      const coords = parseCoordinates(value)
       if (coords.length === 2) {
-        handleInputChange('initialCood', coords);
+        handleInputChange('initialCood', coords)
       }
     } else if (field === 'polygon') {
       // Store the polygon as a string
-      handleInputChange('polygon', value);
+      handleInputChange('polygon', value)
     }
-  };
+  }
 
   const validateFields = () => {
     const requiredFields: (keyof TLandDetails)[] = [
-      'name', 'location', 'description', 'plotNumber', 'size', 'purpose',
-      'security', 'documentation', 'environment', 'allodialOwnership',
-      'ground', 'price', 'etaToCBD', 'defaultZooming', 'polygon', 'initialCood'
-    ];
+      'name',
+      'location',
+      'description',
+      'plotNumber',
+      // 'size',
+      'purpose',
+      'security',
+      'documentation',
+      'environment',
+      // 'allodialOwnership',
+      'ground',
+      'price',
+      'etaToCBD',
+      'defaultZooming',
+      'polygon',
+      'initialCood'
+    ]
 
-    const missingFields = requiredFields.filter(field => !landDetails[field]);
+    const missingFields = requiredFields.filter(field => !landDetails[field])
 
     if (missingFields.length > 0) {
-      showToast(`Please fill in all required fields: ${missingFields.join(', ')}`);
-      return false;
+      showToast(
+        `Please fill in all required fields: ${missingFields.join(', ')}`
+      )
+      return false
     }
 
-    return true;
-  };
+    return true
+  }
 
   const handleImageUpload = async (files: File[]) => {
     if (files && files.length > 0) {
       const validFiles = files.filter(file => {
         if (file.size > MAX_FILE_SIZE) {
-          showToast(`File ${file.name} is too large. Maximum size is 5MB.`);
+          showToast(`File ${file.name} is too large. Maximum size is 3MB.`)
 
-          return false;
+          return false
         }
         if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-
-          showToast(`File ${file.name} is not a supported image type.`);
-          return false;
+          showToast(`File ${file.name} is not a supported image type.`)
+          return false
         }
-        return true;
-      });
+        return true
+      })
 
-      const promises = validFiles.map(async (file) => {
-        const storageRef = ref(storage, `images/${file.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, file);
+      const promises = validFiles.map(async file => {
+        const storageRef = ref(storage, `images/${file.name}`)
+        const uploadTask = uploadBytesResumable(storageRef, file)
 
         return new Promise((resolve, reject) => {
           uploadTask.on(
             'state_changed',
-            (snapshot) => {
-              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              setUploadProgress(prev => ({ ...prev, [file.name]: progress }));
+            snapshot => {
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+              setUploadProgress(prev => ({ ...prev, [file.name]: progress }))
 
-              showToast('Images uploaded successfully.');
-
+              // showToast('Images uploaded successfully.')
             },
-            (error) => {
-              console.error('Error uploading file:', error);
-              reject(error);
+            error => {
+              console.error('Error uploading file:', error)
+              reject(error)
             },
             async () => {
               try {
-                const url = await getDownloadURL(uploadTask.snapshot.ref);
-                resolve(url);
+                const url = await getDownloadURL(uploadTask.snapshot.ref)
+                resolve(url)
               } catch (error) {
-                console.error('Error getting download URL:', error);
-                reject(error);
+                console.error('Error getting download URL:', error)
+                reject(error)
               }
             }
-          );
-        });
-      });
+          )
+        })
+      })
 
       try {
-        const imageUrls = await Promise.all(promises);
-        setLandDetails(prev => ({
-          ...prev,
-          images: [...(prev.images || []), ...imageUrls]
-        }) as any);
-        showToast('Images uploaded successfully.');
-
+        const imageUrls = await Promise.all(promises)
+        setLandDetails(
+          prev =>
+            ({
+              ...prev,
+              images: [...(prev.images || []), ...imageUrls]
+            } as any)
+        )
+        showToast('Images uploaded successfully.')
       } catch (error) {
-        console.error('Error uploading images:', error);
-        showToast('Failed to upload some images. Please try again.');
+        console.error('Error uploading images:', error)
+        showToast('Failed to upload some images. Please try again.')
       } finally {
-        setUploadProgress({});
+        setUploadProgress({})
       }
     }
-  };
+  }
 
   const handleSubmit = async () => {
-    if (!validateFields()) return;
+    if (!validateFields()) return
 
-    setIsSubmitting(true);
+    setIsSubmitting(true)
     try {
       const landData = {
         ...landDetails,
         createdAt: new Date(),
-        initialCood: landDetails.initialCood ? landDetails.initialCood.join(',') : null,
-        polygon: landDetails.polygon,
-      };
+        initialCood: landDetails.initialCood
+          ? landDetails.initialCood.join(',')
+          : null,
+        polygon: landDetails.polygon
+      }
 
-      const docRef = await addDoc(collection(db, 'geolis'), landData);
-      showToast('Land details uploaded successfully!');
+      const docRef = await addDoc(collection(db, 'geolis'), landData)
+      showToast('Land details uploaded successfully!')
 
-      console.log('Document written with ID: ', docRef.id);
+      console.log('Document written with ID: ', docRef.id)
 
-      setLandDetails({});
-      setActive(0);
+      setLandDetails({})
+      setActive(0)
     } catch (error) {
-      console.error('Error submitting land details: ', error);
-      showToast('Failed to upload land details. Please try again.');
-
+      console.error('Error submitting land details: ', error)
+      showToast('Failed to upload land details. Please try again.')
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
+      getIsSubmitting(isSubmitting)
     }
-  };
+  }
 
-  const nextStep = () => setActive((current) => (current < 2 ? current + 1 : current));
-  const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
+  const nextStep = () =>
+    setActive(current => (current < 2 ? current + 1 : current))
+  const prevStep = () =>
+    setActive(current => (current > 0 ? current - 1 : current))
 
   return (
-    <Box maw={600} mx="auto">
-      <Stepper active={active} onStepClick={setActive} >
-        <Stepper.Step label="Basic Information" description="Enter basic land details">
-          <Paper shadow="xs" p="md">
-            <Stack >
+    <Box maw={600} mx='auto'>
+      <Stepper active={active} onStepClick={setActive}>
+        <Stepper.Step
+          label='Basic Information'
+          description='Enter basic land details'
+        >
+          <Paper shadow='xs' p='md'>
+            <Stack>
               <SimpleGrid cols={2}>
                 <TextInput
-                  label="Name"
-                  placeholder="Land Name"
+                  label='Name'
+                  placeholder='Land Name'
                   value={landDetails.name || ''}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  onChange={e => handleInputChange('name', e.target.value)}
                   classNames={classes}
                   required
                 />
                 <TextInput
-                  label="Location"
-                  placeholder="Land Location"
+                  label='Location'
+                  placeholder='Land Location'
                   value={landDetails.location || ''}
-                  onChange={(e) => handleInputChange('location', e.target.value)}
+                  onChange={e => handleInputChange('location', e.target.value)}
                   classNames={classes}
                   required
                 />
               </SimpleGrid>
 
               <Textarea
-                label="Description"
-                placeholder="Describe the land"
+                label='Description'
+                placeholder='Describe the land'
                 value={landDetails.description || ''}
-                onChange={(e) => handleInputChange('description', e.target.value)}
+                onChange={e => handleInputChange('description', e.target.value)}
                 classNames={classes}
                 required
               />
               <TextInput
-                label="Plot Number"
-                placeholder="218 Block A Sector 2"
+                label='Plot Number'
+                placeholder='218 Block A Sector 2'
                 value={landDetails.plotNumber || ''}
-                onChange={(e) => handleInputChange('plotNumber', e.target.value)}
+                onChange={e => handleInputChange('plotNumber', e.target.value)}
                 classNames={classes}
                 required
               />
               <NumberInput
-                label="Size (acres)"
-                placeholder="Land size in acres"
+                label='Size (acres)'
+                placeholder='Land size in acres'
                 value={landDetails.size || 0}
-                onChange={(value) => handleInputChange('size', value)}
+                onChange={value => handleInputChange('size', value)}
                 classNames={classes}
-                required
               />
               <TextInput
-                label="Purpose"
-                placeholder="Select land purpose"
+                label='Purpose'
+                placeholder='Select land purpose'
                 value={landDetails.purpose || ''}
-                onChange={(e) => handleInputChange('purpose', e.target.value)}
+                onChange={e => handleInputChange('purpose', e.target.value)}
                 classNames={classes}
                 required
               />
@@ -230,104 +257,114 @@ export function UploadLandComponent() {
           </Paper>
         </Stepper.Step>
 
-        <Stepper.Step label="Additional Details" description="Enter additional information">
-          <Paper shadow="xs" p="md">
-            <SimpleGrid cols={2} spacing="md">
+        <Stepper.Step
+          label='Additional Details'
+          description='Enter additional information'
+        >
+          <Paper shadow='xs' p='md'>
+            <SimpleGrid cols={2} spacing='md'>
               <TextInput
-                label="Security"
-                placeholder="Security details"
+                label='Security'
+                placeholder='Security details'
                 value={landDetails.security || ''}
-                onChange={(e) => handleInputChange('security', e.target.value)}
+                onChange={e => handleInputChange('security', e.target.value)}
                 classNames={classes}
                 required
               />
               <TextInput
-                label="Documentation"
-                placeholder="e.g allocation chit"
+                label='Documentation'
+                placeholder='e.g allocation chit'
                 value={landDetails.documentation || ''}
-                onChange={(e) => handleInputChange('documentation', e.target.value)}
+                onChange={e =>
+                  handleInputChange('documentation', e.target.value)
+                }
                 classNames={classes}
                 required
               />
               <TextInput
-                label="Environment"
-                placeholder="e.g new site"
+                label='Environment'
+                placeholder='e.g new site'
                 value={landDetails.environment || ''}
-                onChange={(e) => handleInputChange('environment', e.target.value)}
+                onChange={e => handleInputChange('environment', e.target.value)}
                 classNames={classes}
                 required
               />
               <TextInput
-                label="Allodial Ownership"
-                placeholder="e.g stool land"
+                label='Allodial Ownership'
+                placeholder='e.g stool land'
                 value={landDetails.allodialOwnership || ''}
-                onChange={(e) => handleInputChange('allodialOwnership', e.target.value)}
+                onChange={e =>
+                  handleInputChange('allodialOwnership', e.target.value)
+                }
                 classNames={classes}
-                required
               />
               <TextInput
-                label="Ground"
-                placeholder="Ground details"
+                label='Ground'
+                placeholder='Ground details'
                 value={landDetails.ground || ''}
-                onChange={(e) => handleInputChange('ground', e.target.value)}
+                onChange={e => handleInputChange('ground', e.target.value)}
                 classNames={classes}
                 required
               />
               <NumberInput
-                label="Price"
-                placeholder="Land price"
+                label='Price'
+                placeholder='Land price'
                 value={landDetails.price || 0}
-                onChange={(value) => handleInputChange('price', value)}
+                onChange={value => handleInputChange('price', value)}
                 classNames={classes}
                 required
               />
               <TextInput
-                label="ETA to CBD"
-                placeholder="Estimated time to Central Business District"
+                label='ETA to CBD'
+                placeholder='Estimated time to Central Business District'
                 value={landDetails.etaToCBD || ''}
-                onChange={(e) => handleInputChange('etaToCBD', e.target.value)}
+                onChange={e => handleInputChange('etaToCBD', e.target.value)}
                 classNames={classes}
                 required
               />
               <NumberInput
-                label="Default Zooming"
-                placeholder="Default zoom level"
+                label='Default Zooming'
+                placeholder='Default zoom level'
                 value={landDetails.defaultZooming || 0}
-                onChange={(value) => handleInputChange('defaultZooming', value)}
+                onChange={value => handleInputChange('defaultZooming', value)}
                 classNames={classes}
                 required
               />
               <FileInput
-                label="Images"
-                placeholder="Upload land images"
+                label='Images'
+                placeholder='Upload land images'
                 accept={ALLOWED_FILE_TYPES.join(',')}
                 multiple
-                onChange={(files) => handleImageUpload(files)}
+                onChange={files => handleImageUpload(files)}
                 classNames={classes}
               />
               {Object.entries(uploadProgress).map(([fileName, progress]) => (
                 <Progress
                   key={fileName}
                   value={progress}
-                  color="primary"
-                  variant="determinate"
-                  size="md"
+                  color='primary'
+                  variant='determinate'
+                  size='md'
                   title={`${fileName}: ${progress.toFixed(0)}%`}
                 />
               ))}
               <TextInput
-                label="Initial Coordinates"
-                placeholder="e.g., 51.505, -0.09"
+                label='Initial Coordinates'
+                placeholder='e.g., 51.505, -0.09'
                 value={coordinateInputs.initialCood}
-                onChange={(e) => handleCoordinateChange('initialCood', e.target.value)}
+                onChange={e =>
+                  handleCoordinateChange('initialCood', e.target.value)
+                }
                 classNames={classes}
                 required
               />
               <Textarea
-                label="Polygon Coordinates"
-                placeholder="e.g., 51.505,-0.09|51.51,-0.1|51.51,-0.08"
+                label='Polygon Coordinates'
+                placeholder='e.g., 51.505,-0.09|51.51,-0.1|51.51,-0.08'
                 value={coordinateInputs.polygon}
-                onChange={(e) => handleCoordinateChange('polygon', e.target.value)}
+                onChange={e =>
+                  handleCoordinateChange('polygon', e.target.value)
+                }
                 classNames={classes}
                 required
               />
@@ -336,7 +373,7 @@ export function UploadLandComponent() {
         </Stepper.Step>
 
         <Stepper.Completed>
-          <Paper shadow="xs" p="md">
+          <Paper shadow='xs' p='md'>
             <Stack gap={2}>
               <h2>Form Submission Complete!</h2>
               <p>Please review your entries before final submission.</p>
@@ -348,14 +385,18 @@ export function UploadLandComponent() {
         </Stepper.Completed>
       </Stepper>
 
-      <Group justify="flex-end" mt="xl">
+      <Group justify='flex-end' mt='xl'>
         {active !== 0 && (
-          <Button leftSection={<KeyboardBackspaceIcon />} variant="light" onClick={prevStep}>
+          <Button
+            leftSection={<KeyboardBackspaceIcon />}
+            variant='light'
+            onClick={prevStep}
+          >
             Back
           </Button>
         )}
         {active !== 2 && <Button onClick={nextStep}>Next step</Button>}
       </Group>
     </Box>
-  );
+  )
 }

@@ -36,7 +36,7 @@ import Scrollbar from "../../../component/Dashboard/scrollbar";
 import {
   showErrorToast,
   showToast,
-} from "../../../component/shared/Toast/Toast";
+} from "../../../component/shared/Toast/Hot-Toast";
 import { useFireStoreContext } from "../../../context/FireStoreContext";
 
 export default function UserPage() {

@@ -309,15 +309,17 @@ svg.icon {
 }
 
 .card-badge {
-  background: var(--black);
+  /* background: var(--black); */
   color: var(--white);
   font-size: var(--fs-7);
   text-transform: uppercase;
   position: absolute;
   top: 15px;
+  border-radius: 3px;
   right: 15px;
   padding: 4px 10px;
 }
+
 
 .card-badge.green {
   background: var(--yellow-green);
@@ -358,6 +360,15 @@ svg.icon {
 
 .has-scrollbar::-webkit-scrollbar-button {
   width: 15%;
+}
+
+.items-list{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
+  gap: 20px;
+  grid-gap: 2rem;
+  padding: 2rem;
+  justify-content: space-between;
 }
 
 .header {
@@ -798,26 +809,30 @@ svg.icon {
 }
 
 
-
 .property-card {
   border: 1px solid var(--alice-blue);
   box-shadow: var(--shadow-2);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .property-card .card-banner {
   position: relative;
-  aspect-ratio: 2 / 1.5;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
 }
 
 .property-card .card-banner a {
   height: 100%;
+  display: block;
 }
 
 .property-card .card-banner img {
   height: 100%;
+  width: 100%;
   object-fit: cover;
-  transition: 0.5s ease;
+  transition: transform 0.3s ease;
 }
 
 .property-card:hover .card-banner img {
@@ -845,6 +860,37 @@ svg.icon {
   z-index: 1;
 }
 
+.property-card .card-content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.property-card .card-title {
+  margin-bottom: 0.5rem;
+}
+
+.property-card .card-text {
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.property-card .card-list {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-bottom: 1.25rem;
+  /* gap: 1rem; */
+}
+
+.property-card .card-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 .banner-actions-btn {
   color: var(--white);
   font-size: var(--fs-6);
@@ -869,11 +915,11 @@ svg.icon {
 
 
 
-.property-card .card-content {
+/* .property-card .card-content {
   padding: 30px 15px 15px;
   border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
-  min-height: 390px;
-}
+  height: 350px;
+} */
 .dashboard-listing .property-card .card-content{
   height: 260px !important;
   min-height: max-content;
@@ -920,9 +966,10 @@ svg.icon {
   font-size: var(--fs-5);
   line-height: 1.8;
   margin-bottom: 25px;
-  height:200px;
+  /* height:200px; */
   overflow-y: scroll;
 text-wrap: wrap;
+text-wrap-mode:auto;
 word-break: normal;
 line-break: auto;
 }
@@ -965,6 +1012,54 @@ line-break: auto;
 }
 .property-card .card-item strong {
   margin-top: 5px;
+}
+
+.property-card .card-content {
+  padding: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.property-card .price-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.property-card .price {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #FF6B6B;
+}
+
+.property-card .title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2D3436;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+
+.property-card .description {
+  color: #636E72;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.property-card .location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #636E72;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.property-card .action-menu {
+  margin-left: auto;
 }
 
 .card-footer {
@@ -1576,7 +1671,7 @@ line-break: auto;
   }
 
   .property-card .card-content {
-    padding-inline: 30px;
+    padding-inline: 20px;
   }
 
   .card-footer {

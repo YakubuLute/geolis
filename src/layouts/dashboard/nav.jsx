@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Drawer from "@mui/material/Drawer";
-import Button from "@mui/material/Button";
+
 import Avatar from "@mui/material/Avatar";
 import { alpha } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
@@ -15,16 +15,12 @@ import RouterLink from "../../Routes/dashboardroutes/components/router-link";
 
 import { useResponsive } from "../../hooks/use-responsive";
 
-import { account } from "../../_mock/account";
-
 import Logo from "../../component/Dashboard/logo";
 import Scrollbar from "../../component/Dashboard/scrollbar/index";
 
 import { NAV } from "./config-layout";
 import navConfig from "./config-navigation";
 import { useFireStoreContext } from "../../context/FireStoreContext";
-import { Link } from "react-router-dom";
-import { HandIcon } from "lucide-react";
 
 export default function Nav({ openNav, onCloseNav }) {
   const pathname = usePathname();
@@ -143,8 +139,6 @@ Nav.propTypes = {
   openNav: PropTypes.bool,
   onCloseNav: PropTypes.func,
 };
-
-// ----------------------------------------------------------------------
 
 function NavItem({ item }) {
   const pathname = usePathname();

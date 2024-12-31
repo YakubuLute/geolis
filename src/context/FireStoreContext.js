@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { db } from '../config/firebaseConfig';
 import { collection, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { showToast, showErrorToast } from '../component/shared/Toast/Toast';
+import { showToast, showErrorToast } from '../component/shared/Toast/Hot-Toast';
 const FireStoreContext = createContext();
 
 export function useFireStoreContext() {
