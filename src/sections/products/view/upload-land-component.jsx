@@ -176,7 +176,7 @@ export function UploadLandComponent({ getIsSubmitting }) {
       showToast("Failed to upload land details. Please try again.");
     } finally {
       setIsSubmitting(false);
-      getIsSubmitting(isSubmitting);
+      getIsSubmitting(true);
     }
   };
 

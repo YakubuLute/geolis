@@ -104,8 +104,8 @@ export default function ProductsView() {
             </Card>
           </Grid>
         ) : (
-          <Grid xs={12}>
-            <PropertyListingLayout>
+          <>
+            <div className="items-list gap-3">
               {landData?.map((land) => (
                 <PropertyCard
                   key={land.id}
@@ -115,8 +115,8 @@ export default function ProductsView() {
                   isDashboardListing
                 />
               ))}
-            </PropertyListingLayout>
-          </Grid>
+            </div>
+          </>
         )}
       </Grid>
 

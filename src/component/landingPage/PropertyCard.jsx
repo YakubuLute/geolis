@@ -20,7 +20,7 @@ export default function PropertyCard({
   return (
     <div className="property-card">
       <figure className="card-banner">
-        <Link to={`/land/details/${land.id}`}>
+        <Link to={`/land/details/${land.id}`} title="Click to view details">
           <img
             src={land?.images[0] || `${DefaultImg}`}
             alt={land.plotNumber || "Property Image"}
@@ -75,7 +75,7 @@ export default function PropertyCard({
                 <span>purpose</span>
                 <HomeWorkIcon />
               </div>
-              <strong>{land?.purpose}</strong>
+              <strong>{land?.purpose || "Construction"}</strong>
             </li>
 
             <li className="card-item">

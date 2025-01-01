@@ -92,7 +92,7 @@ function Header() {
           </ul>
 
           <div className="wrapper">
-            <Link to={"/auth"} className="header-top-btn">
+            <Link to={"/dashboard/land"} className="header-top-btn">
               Add Listing
             </Link>
           </div>
@@ -112,7 +112,11 @@ function Header() {
                 <ul className="navbar-list">
                   {menuItems.map((item) => (
                     <li key={item.text}>
-                      <Link to={item.link} className="navbar-link" data-nav-link>
+                      <Link
+                        to={item.link}
+                        className="navbar-link"
+                        data-nav-link
+                      >
                         {item.text}
                       </Link>
                     </li>
@@ -123,7 +127,11 @@ function Header() {
           )}
 
           <div className="header-bottom-actions">
-            <button className="nav-actions-bt" aria-label="Profile" title="Dashboard">
+            <button
+              className="nav-actions-bt"
+              aria-label="Profile"
+              title="Dashboard"
+            >
               <Link to="/dashboard" className="icon">
                 <Avatar
                   src={userProfile?.photoURL}
@@ -131,7 +139,8 @@ function Header() {
                   sx={{
                     width: 36,
                     height: 36,
-                    border: (theme) => `solid 2px ${theme.palette.background.default}`,
+                    border: (theme) =>
+                      `solid 2px ${theme.palette.background.default}`,
                   }}
                 >
                   {userProfile?.displayName?.charAt(0).toUpperCase()}
@@ -154,11 +163,7 @@ function Header() {
       </div>
 
       {isMobile && (
-        <Drawer
-          anchor="right"
-          open={drawerOpen}
-          onClose={handleDrawerClose}
-        >
+        <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}>
           {drawer}
         </Drawer>
       )}

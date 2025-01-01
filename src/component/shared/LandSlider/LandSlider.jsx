@@ -70,6 +70,7 @@ export const LandSlider = ({ photos, altName, videos }) => {
   }
 
   if (combined.length === 1) {
+    console.log("This is a combined", combined);
     return (
       <div className="slider_container">
         <div className="event_photos">

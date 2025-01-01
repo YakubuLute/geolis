@@ -52,18 +52,20 @@ const LandDetailsComponent = () => {
 
         {similarProperties.length > 0 && (
           <div className="others">
-            <Title size={"2.5rem"} fw={800} c={"#3F4254"} order={1} mb="md">
+            <Title fw={800} c={"#3F4254"} order={1} mb="md">
               Similar Properties
             </Title>
 
             <div className="similar-properties mt-4">
-              <ul className="property-list has-scrollbar">
-                {similarProperties.map((land) => (
-                  <li key={land.id}>
-                    <PropertyCard land={land} />
-                  </li>
-                ))}
-              </ul>
+              <div className="property-list has-scrollbar">
+                <ul className="items-list">
+                  {similarProperties.map((land) => (
+                    <li key={land.id}>
+                      <PropertyCard land={land} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
             <div className="view-all">
               <Button variant="outline" my={"xl"} mx={"auto"}>
