@@ -558,7 +558,7 @@ export default function ProfileView() {
                       size="small"
                       variant="contained"
                       onClick={async () => {
-                        console.log("Updating displayName to:", editValue); // Debug log
+                        // console.log("Updating displayName to:", editValue); // Debug log
                         try {
                           await updateProfile({
                             displayName: editValue,

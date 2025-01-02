@@ -22,7 +22,6 @@ export default function ProductsView() {
 
   const {
     landData,
-    userData,
     userProfile,
     selectedLand,
     setSelectedLand,

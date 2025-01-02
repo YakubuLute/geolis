@@ -79,7 +79,7 @@ export default function UserPage() {
         }));
         setUsers(userData);
         setLoading(false);
-        console.log("User data ", userData);
+        // console.log("User data ", userData);
       },
       (error) => {
         console.error("Error fetching users:", error);
