@@ -1,33 +1,31 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   minWidth: 670,
-  minHeight:300,
-  height:'100%',
-  bgcolor: 'background.paper',
+  minHeight: 300,
+  // height:'100%',
+  bgcolor: "background.paper",
   boxShadow: 24,
-  borderRadius:1,
+  borderRadius: 1,
   p: 4,
-  marginBlock:'1rem',
-  overflow:'scroll',
-  scrollbarWidth: 'none',
-  '&::-webkit-scrollbar': {
-    width: '0',
-    height: '0',
-    backgroundColor: 'transparent',
-  }
-
+  marginBlock: "1rem",
+  overflow: "scroll",
+  scrollbarWidth: "none",
+  "&::-webkit-scrollbar": {
+    width: "0",
+    height: "0",
+    backgroundColor: "transparent",
+  },
 };
 
-export default function CustomModal({ handleClose, open, title, children}) {
-
+export default function CustomModal({ handleClose, open, title, children }) {
   return (
     <div>
       <Modal
@@ -41,7 +39,7 @@ export default function CustomModal({ handleClose, open, title, children}) {
             {title}
           </Typography>
           <Box id="modal-modal-description" sx={{ mt: 2 }}>
-           {children}
+            {children}
           </Box>
         </Box>
       </Modal>

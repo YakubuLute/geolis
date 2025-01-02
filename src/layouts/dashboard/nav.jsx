@@ -25,7 +25,6 @@ import { useFireStoreContext } from "../../context/FireStoreContext";
 export default function Nav({ openNav, onCloseNav }) {
   const pathname = usePathname();
   const { userProfile, userData } = useFireStoreContext();
-  console.log("Userprofile", userProfile);
   const upLg = useResponsive("up", "lg");
   useEffect(() => {
     if (openNav) {

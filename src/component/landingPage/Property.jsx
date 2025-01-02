@@ -3,8 +3,7 @@ import EmptyField from "./EmptyField.jsx";
 import PropertyCard from "./PropertyCard.jsx";
 import { useFireStoreContext } from "../../context/FireStoreContext.js";
 import LandlistingSkeleton from "../shared/Skeleton/land-skeleton.jsx";
-import { Grid } from "@mui/material";
-import PropertyListingLayout from "./PropertyLayout.jsx";
+
 function Property() {
   const { landData, isLandDataLoading } = useFireStoreContext();
 
@@ -22,12 +21,6 @@ function Property() {
           <p className="section-subtitle">Properties</p>
           <h2 className="h2 section-title">Featured Land Listings</h2>
           <ul className="property-list has-scrollbar">
-            {/* {landData.map((land) => (
-                            <li key={land.id}>
-                                <PropertyCard land={land} />
-                            </li>
-                        ))} */}
-
             <li className="items-list">
               {landData?.map((land) => (
                 <PropertyCard

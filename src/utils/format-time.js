@@ -41,7 +41,7 @@ const uploadToCloudinary = async (file, resourceType) => {
   });
 
   if (!response.ok) {
-    console.log('Error uploading files');
+    // console.log('Error uploading files');
     // throw new Error('Failed to upload to Cloudinary');
     return (<>
       <Notification title="Error">
@@ -51,6 +51,5 @@ const uploadToCloudinary = async (file, resourceType) => {
   }
 
   const data = await response.json();
-  console.log("Response from claudinary", data)
   return data.secure_url;
 };

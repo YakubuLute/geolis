@@ -123,7 +123,7 @@ export function AuthProvider({ children }) {
         return result;
       } catch (error) {
         if (error.code === 'auth/cancelled-popup-request') {
-          console.log('Sign-in popup was closed before finalizing');
+          // console.log('Sign-in popup was closed before finalizing');
           throw new Error('The sign-in popup was closed. Please try again.');
         } else {
           throw error;

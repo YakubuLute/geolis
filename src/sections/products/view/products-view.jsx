@@ -20,7 +20,9 @@ import PropertyListingLayout from "../../../component/landingPage/PropertyLayout
 export default function ProductsView() {
   const [openFilter, setOpenFilter] = useState(false);
   const [open, setOpen] = useState(false);
-  const { landData, isLandDataLoading } = useFireStoreContext();
+
+  const { landData, selectedLand, setSelectedLand, openEdit, setOpenEdit } =
+    useFireStoreContext();
 
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
@@ -33,8 +35,16 @@ export default function ProductsView() {
     setOpenFilter(false);
   };
 
-  const handleIsSubmitting = (isSubmitting) => {
-    if (isSubmitting) setOpen(isSubmitting);
+  const handleIsSubmited = (isSubmitted) => {
+    if (isSubmitted) {
+      handleClose();
+      handleCloseEdit();
+    }
+  };
+
+  const handleCloseEdit = () => {
+    setOpenEdit(false);
+    setSelectedLand(null);
   };
 
   return (
@@ -121,7 +131,19 @@ export default function ProductsView() {
       </Grid>
 
       <CustomModal title={"Add New Land"} open={open} handleClose={handleClose}>
-        <UploadLandComponent getIsSubmitting={handleIsSubmitting} />
+        <UploadLandComponent setIsSubmited={handleIsSubmited} />
+      </CustomModal>
+
+      <CustomModal
+        title="Edit Land Details"
+        open={openEdit}
+        handleClose={handleCloseEdit}
+      >
+        <UploadLandComponent
+          setIsSubmited={handleIsSubmited}
+          isEdit={openEdit}
+          initialData={selectedLand}
+        />
       </CustomModal>
 
       <Box mt={10}>

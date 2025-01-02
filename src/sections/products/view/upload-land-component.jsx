@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TextInput,
   NumberInput,
@@ -15,7 +15,7 @@ import {
 } from "@mantine/core";
 import classes from "./contained-input.module.css";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 import { db, storage } from "../../../config/firebaseConfig";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { showToast } from "../../../component/shared/Toast/Hot-Toast";
@@ -23,7 +23,7 @@ import { showToast } from "../../../component/shared/Toast/Hot-Toast";
 const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3MB
 const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png", "image/gif"];
 
-export function UploadLandComponent({ getIsSubmitting }) {
+export function UploadLandComponent({ setIsSubmited, isEdit, initialData }) {
   const [active, setActive] = useState(0);
   const [landDetails, setLandDetails] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -150,6 +150,48 @@ export function UploadLandComponent({ getIsSubmitting }) {
     }
   };
 
+  useEffect(() => {
+    console.log("Initial Data:", initialData);
+    console.log("Get is edit", isEdit);
+    if (isEdit && initialData) {
+      setLandDetails(initialData);
+      setCoordinateInputs({
+        initialCood: initialData.initialCood?.join(",") || "",
+        polygon: initialData.polygon || "",
+      });
+    }
+  }, [isEdit, initialData]);
+
+  // const handleSubmit = async () => {
+  //   if (!validateFields()) return;
+
+  //   setIsSubmitting(true);
+  //   try {
+  //     const landData = {
+  //       ...landDetails,
+  //       createdAt: new Date(),
+  //       initialCood: landDetails.initialCood
+  //         ? landDetails.initialCood.join(",")
+  //         : null,
+  //       polygon: landDetails.polygon,
+  //     };
+
+  //     const docRef = await addDoc(collection(db, "geolis"), landData);
+  //     showToast("Land details uploaded successfully!");
+
+  //     console.log("Document written with ID: ", docRef.id);
+
+  //     setLandDetails({});
+  //     setActive(0);
+  //   } catch (error) {
+  //     console.error("Error submitting land details: ", error);
+  //     showToast("Failed to upload land details. Please try again.");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //     getIsSubmitting(true);
+  //   }
+  // };
+
   const handleSubmit = async () => {
     if (!validateFields()) return;
 
@@ -157,17 +199,23 @@ export function UploadLandComponent({ getIsSubmitting }) {
     try {
       const landData = {
         ...landDetails,
-        createdAt: new Date(),
+        updatedAt: new Date(),
         initialCood: landDetails.initialCood
           ? landDetails.initialCood.join(",")
           : null,
         polygon: landDetails.polygon,
       };
 
-      const docRef = await addDoc(collection(db, "geolis"), landData);
-      showToast("Land details uploaded successfully!");
-
-      console.log("Document written with ID: ", docRef.id);
+      if (isEdit) {
+        await updateDoc(doc(db, "geolis", initialData.id), landData);
+        showToast("Land details updated successfully!");
+      } else {
+        await addDoc(collection(db, "geolis"), {
+          ...landData,
+          createdAt: new Date(),
+        });
+        showToast("Land details uploaded successfully!");
+      }
 
       setLandDetails({});
       setActive(0);
@@ -176,7 +224,7 @@ export function UploadLandComponent({ getIsSubmitting }) {
       showToast("Failed to upload land details. Please try again.");
     } finally {
       setIsSubmitting(false);
-      getIsSubmitting(true);
+      setIsSubmited(true);
     }
   };
 
@@ -377,7 +425,11 @@ export function UploadLandComponent({ getIsSubmitting }) {
               <h2>Form Submission Complete!</h2>
               <p>Please review your entries before final submission.</p>
               <Button onClick={handleSubmit} loading={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit Land Details"}
+                {isSubmitting
+                  ? "Submitting..."
+                  : isEdit
+                  ? "Update Land Details"
+                  : "Submit Land Details"}
               </Button>
             </Stack>
           </Paper>

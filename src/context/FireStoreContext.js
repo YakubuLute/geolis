@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-// import { useAuth } from "./AuthContext";
 import { db } from '../config/firebaseConfig';
-import { collection, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
+import { collection, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { showToast, showErrorToast } from '../component/shared/Toast/Hot-Toast';
+
 const FireStoreContext = createContext();
 
 export function useFireStoreContext() {
@@ -18,6 +18,8 @@ export function FireStoreDataContext({ children }) {
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
   const [isLandDataLoading, setIsLandDataLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedLand, setSelectedLand] = useState(null);
+  const [openEdit, setOpenEdit] = useState(false);
 
   useEffect(() => {
     setIsLandDataLoading(true);
@@ -51,7 +53,6 @@ export function FireStoreDataContext({ children }) {
         };
         setUserProfile(profile);
       } else {
-        console.warn("User is signed out");
         setUserProfile(null);
         setUserData(null);
       }
@@ -73,9 +74,23 @@ export function FireStoreDataContext({ children }) {
     } finally {
       setIsDeleting(false);
     }
-
   };
 
+  const handleUpdateLand = async (collectionName, documentId, updatedData) => {
+    try {
+      const docRef = doc(db, collectionName, documentId);
+      await updateDoc(docRef, {
+        ...updatedData,
+        updatedAt: new Date()
+      });
+      showToast('Land updated successfully!');
+      setOpenEdit(false);
+      setSelectedLand(null);
+    } catch (err) {
+      console.error('Error updating land:', err);
+      showErrorToast(err.message || 'Error updating document');
+    }
+  };
 
   const value = {
     userProfile,
@@ -83,8 +98,13 @@ export function FireStoreDataContext({ children }) {
     landData,
     isDeleting,
     handleDeleteLand,
+    handleUpdateLand,
     isLandDataLoading,
     isUserDataLoading,
+    selectedLand,
+    setSelectedLand,
+    openEdit,
+    setOpenEdit
   };
 
   return (
@@ -93,3 +113,5 @@ export function FireStoreDataContext({ children }) {
     </FireStoreContext.Provider>
   );
 }
+
+export default FireStoreContext;

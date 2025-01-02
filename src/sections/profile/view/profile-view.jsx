@@ -223,13 +223,11 @@ export default function ProfileView() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log("Input changed:", name, value); // Debug log
     setFormData((prev) => {
       const newState = {
         ...prev,
         [name]: value,
       };
-      console.log("New form data state:", newState); // Debug log
       return newState;
     });
   };
@@ -278,7 +276,6 @@ export default function ProfileView() {
       });
 
       // Optional: Show success message
-      console.log("Profile picture updated successfully");
     } catch (error) {
       console.error("Error updating profile picture:", error);
       // Optional: Show error message to user
@@ -492,7 +489,6 @@ export default function ProfileView() {
                       size="small"
                       variant="contained"
                       onClick={async () => {
-                        console.log("Updating lastName to:", editValue); // Debug log
                         try {
                           await updateProfile({
                             lastName: editValue,

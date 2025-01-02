@@ -1,21 +1,21 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
-import Divider from '@mui/material/Divider';
-import Popover from '@mui/material/Popover';
-import { alpha } from '@mui/material/styles';
-import MenuItem from '@mui/material/MenuItem';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import { useFireStoreContext } from '../../../context/FireStoreContext'
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../../context/AuthContext'
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Divider from "@mui/material/Divider";
+import Popover from "@mui/material/Popover";
+import { alpha } from "@mui/material/styles";
+import MenuItem from "@mui/material/MenuItem";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import { useFireStoreContext } from "../../../context/FireStoreContext";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 const MENU_OPTIONS = [
   {
-    label: 'Home',
-    icon: 'eva:home-fill',
-    link: '/'
+    label: "Home",
+    icon: "eva:home-fill",
+    link: "/",
   },
   // {
   //   label: 'Profile',
@@ -27,7 +27,6 @@ const MENU_OPTIONS = [
   // },
 ];
 
-
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
   const { userProfile, userData } = useFireStoreContext();
@@ -37,15 +36,14 @@ export default function AccountPopover() {
   };
 
   const handleClose = (link) => {
-    console.log("Link", link)
-    { link && <Link to={`${link}`} /> }
+    link && <Link to={`${link}`} />;
     setOpen(null);
   };
 
   const handleLogout = () => {
-    signOutUser()
+    signOutUser();
     setOpen(null);
-  }
+  };
 
   return (
     <>
@@ -78,8 +76,8 @@ export default function AccountPopover() {
         open={!!open}
         anchorEl={open}
         onClose={handleClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
         PaperProps={{
           sx: {
             p: 0,
@@ -93,26 +91,29 @@ export default function AccountPopover() {
           <Typography variant="subtitle2" noWrap>
             {userProfile.displayName}
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+          <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
             {userProfile.email}
           </Typography>
         </Box>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        <Divider sx={{ borderStyle: "dashed" }} />
 
         {MENU_OPTIONS.map((option) => (
-          <MenuItem key={option.label} onClick={() => handleClose(option?.link)}>
+          <MenuItem
+            key={option.label}
+            onClick={() => handleClose(option?.link)}
+          >
             {option.label}
           </MenuItem>
         ))}
 
-        <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
+        <Divider sx={{ borderStyle: "dashed", m: 0 }} />
 
         <MenuItem
           disableRipple
           disableTouchRipple
           onClick={handleLogout}
-          sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
+          sx={{ typography: "body2", color: "error.main", py: 1.5 }}
         >
           Logout
         </MenuItem>
