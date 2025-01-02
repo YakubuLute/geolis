@@ -36,11 +36,40 @@ export function FireStoreDataContext({ children }) {
     return () => unsubscribe();
   }, []);
 
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
+  //     setIsUserDataLoading(true);
+  //     if (user) {
+  //       setUserData(user);
+  //       const profile = {
+  //         uid: user.uid,
+  //         displayName: user.displayName,
+  //         email: user.email,
+  //         photoURL: user.photoURL,
+  //         emailVerified: user.emailVerified,
+  //         phoneNumber: user.phoneNumber,
+  //         creationTime: user.metadata.creationTime,
+  //         lastSignInTime: user.metadata.lastSignInTime,
+  //       };
+  //       setUserProfile(profile);
+  //     } else {
+  //       setUserProfile(null);
+  //       setUserData(null);
+  //     }
+  //     setIsUserDataLoading(false);
+  //   });
+
+  //   return () => unsubscribe();
+  // }, [auth]);
+
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setIsUserDataLoading(true);
       if (user) {
         setUserData(user);
+
+        // Create basic profile from auth
         const profile = {
           uid: user.uid,
           displayName: user.displayName,
@@ -51,14 +80,44 @@ export function FireStoreDataContext({ children }) {
           creationTime: user.metadata.creationTime,
           lastSignInTime: user.metadata.lastSignInTime,
         };
-        setUserProfile(profile);
+
+        try {
+          // Fetch additional user data from Firestore
+          const userDocRef = doc(db, 'users', user.uid);
+          const unsubscribeUser = onSnapshot(userDocRef, (docSnapshot) => {
+            if (docSnapshot.exists()) {
+              // Combine auth profile with Firestore data
+              const firestoreData = docSnapshot.data();
+              setUserProfile({
+                ...profile,
+                ...firestoreData
+              });
+            } else {
+              // If no Firestore document exists, use just the auth profile
+              setUserProfile(profile);
+            }
+            setIsUserDataLoading(false);
+          }, (error) => {
+            console.error("Error fetching user data:", error);
+            setUserProfile(profile);
+            setIsUserDataLoading(false);
+          });
+
+          // Return cleanup function for user data listener
+          return () => unsubscribeUser();
+        } catch (error) {
+          console.error("Error setting up user data listener:", error);
+          setUserProfile(profile);
+          setIsUserDataLoading(false);
+        }
       } else {
         setUserProfile(null);
         setUserData(null);
+        setIsUserDataLoading(false);
       }
-      setIsUserDataLoading(false);
     });
 
+    // Return cleanup function for auth listener
     return () => unsubscribe();
   }, [auth]);
 

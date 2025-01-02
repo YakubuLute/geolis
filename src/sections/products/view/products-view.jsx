@@ -20,8 +20,15 @@ export default function ProductsView() {
   const [openFilter, setOpenFilter] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const { landData, selectedLand, setSelectedLand, openEdit, setOpenEdit } =
-    useFireStoreContext();
+  const {
+    landData,
+    userData,
+    userProfile,
+    selectedLand,
+    setSelectedLand,
+    openEdit,
+    setOpenEdit,
+  } = useFireStoreContext();
 
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
@@ -120,7 +127,7 @@ export default function ProductsView() {
                   key={land.id}
                   land={land}
                   sliceText
-                  showActionBtn
+                  showActionBtn={userProfile?.isAdmin}
                   isDashboardListing
                 />
               ))}

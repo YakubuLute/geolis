@@ -98,14 +98,13 @@ export function AuthProvider({ children }) {
         throw new Error('User is not registered. Please sign up first.');
       }
 
-      // User is registered, proceed with sign-in
       const result = await handleAsyncOperation(async () => {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         updateUserProfile(userCredential.user);
         return userCredential;
       }, 'Login successful.');
-
       return result;
+
     } catch (err) {
       setError(err.message);
       showToast(`Error: ${err.message}`, 'error');
@@ -144,16 +143,6 @@ export function AuthProvider({ children }) {
       "Password reset email was sent to your address"
     );
 
-  // const updateProfile = async (updates) => {
-  //   if (!currentUser) {
-  //     throw new Error("No authenticated user");
-  //   }
-
-  //   return handleAsyncOperation(async () => {
-  //     await updateProfile(updates);
-  //     updateUserProfile(currentUser);
-  //   }, "Profile updated successfully");
-  // };
 
   const updateProfile = async (newData) => {
     if (!currentUser) throw new Error('No user logged in');

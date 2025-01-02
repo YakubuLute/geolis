@@ -149,26 +149,11 @@ export function UploadLandComponent({ setIsSubmited, isEdit, initialData }) {
     }
   };
 
-  // useEffect(() => {
-  //   if (isEdit && initialData) {
-  //     setLandDetails(initialData);
-  //     if (initialData?.initialCood) {
-  //       console.log("Data", initialData?.initialCood);
-  //       setCoordinateInputs({
-  //         initialCood: initialData?.initialCood?.join(",") || "",
-  //         polygon: initialData?.polygon || "",
-  //       });
-  //     }
-  //   }
-  // }, [isEdit, initialData]);
-
   useEffect(() => {
     if (isEdit && initialData) {
       setLandDetails(initialData);
 
       if (initialData?.initialCood) {
-        console.log("Initial Coordinates:", initialData?.initialCood);
-
         // Check if it's already an array
         if (Array.isArray(initialData.initialCood)) {
           setCoordinateInputs({
@@ -225,7 +210,6 @@ export function UploadLandComponent({ setIsSubmited, isEdit, initialData }) {
       setLandDetails({});
       setActive(0);
     } catch (error) {
-      console.error("Error submitting land details: ", error);
       showToast("Failed to upload land details. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -431,7 +415,7 @@ export function UploadLandComponent({ setIsSubmited, isEdit, initialData }) {
               <p>Please review your entries before final submission.</p>
               <Button onClick={handleSubmit} loading={isSubmitting}>
                 {isSubmitting
-                  ? "Submitting..."
+                  ? ""
                   : isEdit
                   ? "Update Land Details"
                   : "Submit Land Details"}
