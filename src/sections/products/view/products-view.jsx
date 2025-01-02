@@ -15,7 +15,6 @@ import CustomModal from "../../../component/shared/Modal";
 import { useFireStoreContext } from "../../../context/FireStoreContext.js";
 import { UploadLandComponent } from "./upload-land-component.jsx";
 import PropertyCard from "../../../component/landingPage/PropertyCard.jsx";
-import PropertyListingLayout from "../../../component/landingPage/PropertyLayout.jsx";
 
 export default function ProductsView() {
   const [openFilter, setOpenFilter] = useState(false);

@@ -93,7 +93,6 @@ export function UploadLandComponent({ setIsSubmited, isEdit, initialData }) {
       const validFiles = files.filter((file) => {
         if (file.size > MAX_FILE_SIZE) {
           showToast(`File ${file.name} is too large. Maximum size is 3MB.`);
-
           return false;
         }
         if (!ALLOWED_FILE_TYPES.includes(file.type)) {
@@ -150,59 +149,65 @@ export function UploadLandComponent({ setIsSubmited, isEdit, initialData }) {
     }
   };
 
+  // useEffect(() => {
+  //   if (isEdit && initialData) {
+  //     setLandDetails(initialData);
+  //     if (initialData?.initialCood) {
+  //       console.log("Data", initialData?.initialCood);
+  //       setCoordinateInputs({
+  //         initialCood: initialData?.initialCood?.join(",") || "",
+  //         polygon: initialData?.polygon || "",
+  //       });
+  //     }
+  //   }
+  // }, [isEdit, initialData]);
+
   useEffect(() => {
-    console.log("Initial Data:", initialData);
-    console.log("Get is edit", isEdit);
     if (isEdit && initialData) {
       setLandDetails(initialData);
-      setCoordinateInputs({
-        initialCood: initialData.initialCood?.join(",") || "",
-        polygon: initialData.polygon || "",
-      });
+
+      if (initialData?.initialCood) {
+        console.log("Initial Coordinates:", initialData?.initialCood);
+
+        // Check if it's already an array
+        if (Array.isArray(initialData.initialCood)) {
+          setCoordinateInputs({
+            initialCood: initialData.initialCood.join(","),
+            polygon: initialData?.polygon || "",
+          });
+        }
+        // If it's a string (from an update)
+        else if (typeof initialData.initialCood === "string") {
+          setCoordinateInputs({
+            initialCood: initialData.initialCood,
+            polygon: initialData?.polygon || "",
+          });
+
+          // Parse the string coordinates into array for landDetails
+          const coords = parseCoordinates(initialData.initialCood);
+          if (coords.length === 2) {
+            handleInputChange("initialCood", coords);
+          }
+        }
+      }
     }
   }, [isEdit, initialData]);
-
-  // const handleSubmit = async () => {
-  //   if (!validateFields()) return;
-
-  //   setIsSubmitting(true);
-  //   try {
-  //     const landData = {
-  //       ...landDetails,
-  //       createdAt: new Date(),
-  //       initialCood: landDetails.initialCood
-  //         ? landDetails.initialCood.join(",")
-  //         : null,
-  //       polygon: landDetails.polygon,
-  //     };
-
-  //     const docRef = await addDoc(collection(db, "geolis"), landData);
-  //     showToast("Land details uploaded successfully!");
-
-  //     console.log("Document written with ID: ", docRef.id);
-
-  //     setLandDetails({});
-  //     setActive(0);
-  //   } catch (error) {
-  //     console.error("Error submitting land details: ", error);
-  //     showToast("Failed to upload land details. Please try again.");
-  //   } finally {
-  //     setIsSubmitting(false);
-  //     getIsSubmitting(true);
-  //   }
-  // };
 
   const handleSubmit = async () => {
     if (!validateFields()) return;
 
     setIsSubmitting(true);
     try {
+      const formattedInitialCood = landDetails.initialCood
+        ? Array.isArray(landDetails.initialCood)
+          ? landDetails.initialCood.join(",")
+          : landDetails.initialCood
+        : null;
+
       const landData = {
         ...landDetails,
         updatedAt: new Date(),
-        initialCood: landDetails.initialCood
-          ? landDetails.initialCood.join(",")
-          : null,
+        initialCood: formattedInitialCood,
         polygon: landDetails.polygon,
       };
 

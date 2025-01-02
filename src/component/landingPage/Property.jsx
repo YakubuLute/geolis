@@ -23,13 +23,7 @@ function Property() {
           <ul className="property-list has-scrollbar">
             <li className="items-list">
               {landData?.map((land) => (
-                <PropertyCard
-                  key={land.id}
-                  land={land}
-                  sliceText
-                  showActionBtn
-                  isDashboardListing
-                />
+                <PropertyCard key={land.id} land={land} isDashboardListing />
               ))}
             </li>
           </ul>
