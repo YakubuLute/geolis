@@ -124,6 +124,7 @@ export function AuthenticationForm(props) {
         navigate("/dashboard");
       }
     } catch (error) {
+      console.log("Error", error);
       showErrorToast(error.message);
     }
   };
