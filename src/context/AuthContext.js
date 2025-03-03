@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
       return result;
     } catch (err) {
       setError(err.message);
-      showToast(`Error: ${err.message}`, "error");
+      // showErrorToast(`Error: ${err.message}`, "error");
       console.error("Operation failed:", err);
       throw err;
     } finally {
@@ -107,7 +107,7 @@ export function AuthProvider({ children }) {
 
     } catch (err) {
       setError(err.message);
-      showToast(`Error: ${err.message}`, 'error');
+      showErrorToast(`Error: ${err.message}`, 'error');
       console.error('Sign-in failed:', err);
       throw err;
     }
