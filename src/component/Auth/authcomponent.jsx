@@ -115,7 +115,7 @@ export function AuthenticationForm(props) {
         }
       } else {
         const userDoc = await getUser(values.email);
-        if (!userDoc.exists()) {
+        if (!userDoc) {
           showErrorToast("User is not registered. Please sign up first.");
           return;
         }
@@ -124,7 +124,7 @@ export function AuthenticationForm(props) {
         navigate("/dashboard");
       }
     } catch (error) {
-      console.log("Error", error);
+      // console.log("Error", error);
       showErrorToast(error.message);
     }
   };
@@ -297,7 +297,7 @@ export function AuthenticationForm(props) {
             </Anchor>
           )}
 
-          <Button type="submit" radius="xl">
+          <Button type="submit" radius="xl" isLoading={form.loading}>
             {upperFirst(type)}
           </Button>
         </Group>
