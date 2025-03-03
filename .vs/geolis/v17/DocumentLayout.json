@@ -1,0 +1,88 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\New folder\\Development\\geolis\\geolis\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\New folder\\Development\\geolis\\geolis\\src\\component\\landingPage\\Property.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\component\\landingPage\\Property.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\New folder\\Development\\geolis\\geolis\\src\\component\\Auth\\index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\component\\Auth\\index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\New folder\\Development\\geolis\\geolis\\src\\Pages\\Home\\index.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\Pages\\Home\\index.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\New folder\\Development\\geolis\\geolis\\src\\index.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\index.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Property.jsx",
+              "DocumentMoniker": "D:\\New folder\\Development\\geolis\\geolis\\src\\component\\landingPage\\Property.jsx",
+              "RelativeDocumentMoniker": "src\\component\\landingPage\\Property.jsx",
+              "ToolTip": "D:\\New folder\\Development\\geolis\\geolis\\src\\component\\landingPage\\Property.jsx",
+              "RelativeToolTip": "src\\component\\landingPage\\Property.jsx",
+              "ViewState": "AgIAABcAAAAAAAAAAAAAwCAAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2025-01-28T12:38:33.508Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "index.js",
+              "DocumentMoniker": "D:\\New folder\\Development\\geolis\\geolis\\src\\component\\Auth\\index.js",
+              "RelativeDocumentMoniker": "src\\component\\Auth\\index.js",
+              "ToolTip": "D:\\New folder\\Development\\geolis\\geolis\\src\\component\\Auth\\index.js",
+              "RelativeToolTip": "src\\component\\Auth\\index.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-01-28T12:38:21.907Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "index.jsx",
+              "DocumentMoniker": "D:\\New folder\\Development\\geolis\\geolis\\src\\Pages\\Home\\index.jsx",
+              "RelativeDocumentMoniker": "src\\Pages\\Home\\index.jsx",
+              "ToolTip": "D:\\New folder\\Development\\geolis\\geolis\\src\\Pages\\Home\\index.jsx",
+              "RelativeToolTip": "src\\Pages\\Home\\index.jsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2025-01-28T12:37:59.772Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "index.jsx",
+              "DocumentMoniker": "D:\\New folder\\Development\\geolis\\geolis\\src\\index.jsx",
+              "RelativeDocumentMoniker": "src\\index.jsx",
+              "ToolTip": "D:\\New folder\\Development\\geolis\\geolis\\src\\index.jsx",
+              "RelativeToolTip": "src\\index.jsx",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABEAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2025-01-28T12:37:30.568Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
