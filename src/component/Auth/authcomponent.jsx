@@ -30,6 +30,7 @@ export function AuthenticationForm(props) {
     signInUserWithGoogle,
     signOutUser,
     getUser,
+    isLoading,
   } = useAuth();
 
   const ADMIN_EMAILS = [
@@ -297,7 +298,7 @@ export function AuthenticationForm(props) {
             </Anchor>
           )}
 
-          <Button type="submit" radius="xl" isLoading={form.loading}>
+          <Button type="submit" radius="xl" isLoading={isLoading}>
             {upperFirst(type)}
           </Button>
         </Group>

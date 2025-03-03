@@ -33,7 +33,7 @@ export function AuthProvider({ children }) {
     try {
       const result = await operation();
       setSuccessMsg(result);
-      showToast(successMessage);
+      // showToast(successMessage);
       return result;
     } catch (err) {
       setError(err.message);
@@ -107,7 +107,7 @@ export function AuthProvider({ children }) {
 
     } catch (err) {
       setError(err.message);
-      showErrorToast(`Error: ${err.message}`, 'error');
+      // showErrorToast(`Error: ${err.message}`, 'error');
       console.error('Sign-in failed:', err);
       throw err;
     }

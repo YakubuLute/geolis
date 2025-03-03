@@ -31,6 +31,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { getDoc } from "firebase/firestore";
 import { auth, db } from "../../../config/firebaseConfig";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { showToast } from "../../../component/shared/Toast/Hot-Toast";
 
 const EditDialog = React.memo(
   ({ open, onClose, formData, onInputChange, onSubmit }) => (
@@ -264,21 +265,15 @@ export default function ProfileView() {
       const storage = getStorage();
       const storageRef = ref(storage, `profile-pictures/${userProfile.uid}`);
 
-      // Upload the file
       await uploadBytes(storageRef, file);
-
-      // Get the download URL
       const downloadURL = await getDownloadURL(storageRef);
-
-      // Update the user profile with the new photo URL
       await updateProfile({
         photoURL: downloadURL,
       });
-
-      // Optional: Show success message
+      showToast("Profile picture updated successfully.");
     } catch (error) {
+      showToast("Error updating profile picture.");
       console.error("Error updating profile picture:", error);
-      // Optional: Show error message to user
     }
   };
 
