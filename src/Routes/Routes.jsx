@@ -34,7 +34,7 @@ import ProfilePage from "../Pages/Dashboard/profile.jsx";
 import { useLocation } from "react-router-dom";
 
 const PrivateRoute = ({ children }) => {
-  const { userData, isUserDataLoading, isLandDataLoading, } =
+  const { userData, isUserDataLoading, isLandDataLoading } =
     useFireStoreContext();
 
   const location = useLocation();
@@ -69,7 +69,7 @@ const PublicLayout = ({ children }) => {
 
 const MainRouter = () => {
   const { userData, isUserDataLoading } = useFireStoreContext();
-console.log("Get current user data", userData)
+  console.log("Get current user data", userData);
   if (isUserDataLoading) {
     return <Loading />;
   }
@@ -112,9 +112,7 @@ console.log("Get current user data", userData)
           }
         >
           <Route index element={<IndexPage />} />
-          {userData.role === "admin" && (
-            <Route path="user" element={<UserPage />} />
-          )}
+          {userData.isAdmin && <Route path="user" element={<UserPage />} />}
           <Route path="profile" element={<ProfilePage />} />
           <Route path="land" element={<ProductsPage />} />
         </Route>
