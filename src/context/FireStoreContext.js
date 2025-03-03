@@ -67,7 +67,7 @@ export function FireStoreDataContext({ children }) {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setIsUserDataLoading(true);
       if (user) {
-        setUserData(user); // Set the Firebase Auth user data
+        setUserData(user);
         const profile = {
           uid: user.uid,
           displayName: user.displayName || '', // Fallback to empty string if null
@@ -91,8 +91,12 @@ export function FireStoreDataContext({ children }) {
               ...profile,
               ...firestoreData, // Merge Firestore fields (e.g., firstName, lastName, phoneNumber, isAdmin, userName)
             });
+            setUserData({
+              ...profile,
+              ...firestoreData, // Merge Firestore fields (e.g., firstName, lastName, phoneNumber, isAdmin, userName)
+            });
+            console.log("Firestore", firestoreData)
           } else {
-            // If no Firestore document exists, use only the Auth profile
             setUserProfile(profile);
           }
         } catch (error) {
@@ -202,7 +206,7 @@ export function FireStoreDataContext({ children }) {
     allUser,
     isAllUserLoading,
     handleAddUser,
-    handleUpdateUserProfile, 
+    handleUpdateUserProfile,
   };
 
   return (
