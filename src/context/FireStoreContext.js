@@ -1,6 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { db } from '../config/firebaseConfig';
-import { collection, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import {
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  updateDoc,
+  addDoc,
+  getDoc // Import getDoc to fetch a single document
+} from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { showToast, showErrorToast } from '../component/shared/Toast/Hot-Toast';
 
@@ -20,6 +28,9 @@ export function FireStoreDataContext({ children }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [selectedLand, setSelectedLand] = useState(null);
   const [openEdit, setOpenEdit] = useState(false);
+  const [allUser, setAllUser] = useState([]);
+  const [isAllUserLoading, setAllUserLoading] = useState(false);
+
 
   useEffect(() => {
     setIsLandDataLoading(true);
@@ -36,78 +47,58 @@ export function FireStoreDataContext({ children }) {
     return () => unsubscribe();
   }, []);
 
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
-  //     setIsUserDataLoading(true);
-  //     if (user) {
-  //       setUserData(user);
-  //       const profile = {
-  //         uid: user.uid,
-  //         displayName: user.displayName,
-  //         email: user.email,
-  //         photoURL: user.photoURL,
-  //         emailVerified: user.emailVerified,
-  //         phoneNumber: user.phoneNumber,
-  //         creationTime: user.metadata.creationTime,
-  //         lastSignInTime: user.metadata.lastSignInTime,
-  //       };
-  //       setUserProfile(profile);
-  //     } else {
-  //       setUserProfile(null);
-  //       setUserData(null);
-  //     }
-  //     setIsUserDataLoading(false);
-  //   });
+  // Fetch all users data 
+  useEffect(() => {
+    setAllUserLoading(true);
+    const usersCollection = collection(db, 'users');
+    const unsubscribe = onSnapshot(usersCollection, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+      setAllUser(data);
+    }, (error) => {
+      console.error("Error fetching users data:", error);
+      setAllUserLoading(false);
+    });
 
-  //   return () => unsubscribe();
-  // }, [auth]);
+    return () => unsubscribe();
+  }, []);
 
-
+  // Handle auth state changes and fetch/merge user profile from Firestore
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setIsUserDataLoading(true);
       if (user) {
-        setUserData(user);
-
-        // Create basic profile from auth
+        setUserData(user); // Set the Firebase Auth user data
         const profile = {
           uid: user.uid,
-          displayName: user.displayName,
+          displayName: user.displayName || '', // Fallback to empty string if null
           email: user.email,
-          photoURL: user.photoURL,
-          emailVerified: user.emailVerified,
-          phoneNumber: user.phoneNumber,
+          photoURL: user.photoURL || '',
+          emailVerified: user.emailVerified || false,
+          phoneNumber: user.phoneNumber || '', // Fallback for phone number
           creationTime: user.metadata.creationTime,
           lastSignInTime: user.metadata.lastSignInTime,
         };
 
         try {
-          // Fetch additional user data from Firestore
+          // Query Firestore 'users' collection for the user with matching uid
           const userDocRef = doc(db, 'users', user.uid);
-          const unsubscribeUser = onSnapshot(userDocRef, (docSnapshot) => {
-            if (docSnapshot.exists()) {
-              // Combine auth profile with Firestore data
-              const firestoreData = docSnapshot.data();
-              setUserProfile({
-                ...profile,
-                ...firestoreData
-              });
-            } else {
-              // If no Firestore document exists, use just the auth profile
-              setUserProfile(profile);
-            }
-            setIsUserDataLoading(false);
-          }, (error) => {
-            console.error("Error fetching user data:", error);
-            setUserProfile(profile);
-            setIsUserDataLoading(false);
-          });
+          const userDocSnapshot = await getDoc(userDocRef);
 
-          // Return cleanup function for user data listener
-          return () => unsubscribeUser();
+          if (userDocSnapshot.exists()) {
+            // If the user exists in Firestore, merge the Firestore data with Auth data
+            const firestoreData = userDocSnapshot.data();
+            setUserProfile({
+              ...profile,
+              ...firestoreData, // Merge Firestore fields (e.g., firstName, lastName, phoneNumber, isAdmin, userName)
+            });
+          } else {
+            // If no Firestore document exists, use only the Auth profile
+            setUserProfile(profile);
+          }
         } catch (error) {
-          console.error("Error setting up user data listener:", error);
-          setUserProfile(profile);
+          console.error("Error fetching user data from Firestore:", error);
+          setUserProfile(profile); // Fallback to Auth profile if Firestore query fails
+        } finally {
           setIsUserDataLoading(false);
         }
       } else {
@@ -117,10 +108,10 @@ export function FireStoreDataContext({ children }) {
       }
     });
 
-    // Return cleanup function for auth listener
     return () => unsubscribe();
   }, [auth]);
 
+  // Existing functions (unchanged)
   const handleDeleteLand = async (collectionName, documentId) => {
     setIsDeleting(true);
     try {
@@ -151,6 +142,50 @@ export function FireStoreDataContext({ children }) {
     }
   };
 
+  // Function to add a new user to the 'users' collection (unchanged, but included for completeness)
+  const handleAddUser = async (userData) => {
+    try {
+      const usersCollectionRef = collection(db, 'users');
+      const docRef = await addDoc(usersCollectionRef, {
+        ...userData,
+        createdAt: new Date(),
+        isAdmin: userData.isAdmin || false,
+      });
+      showToast('User added successfully!');
+      return docRef.id;
+    } catch (err) {
+      console.error('Error adding user:', err);
+      showErrorToast(err.message || 'Error adding user');
+      throw err;
+    }
+  };
+
+  // New function to update user data in Firestore based on Firebase Auth uid
+  const handleUpdateUserProfile = async (updatedData) => {
+    try {
+      if (!userData || !userData.uid) {
+        throw new Error('No authenticated user found');
+      }
+
+      const userDocRef = doc(db, 'users', userData.uid);
+      await updateDoc(userDocRef, {
+        ...updatedData,
+        updatedAt: new Date(),
+      });
+      showToast('User profile updated successfully!');
+
+      // Update the local state with the new data
+      setUserProfile(prevProfile => ({
+        ...prevProfile,
+        ...updatedData,
+      }));
+    } catch (err) {
+      console.error('Error updating user profile:', err);
+      showErrorToast(err.message || 'Error updating user profile');
+      throw err;
+    }
+  };
+
   const value = {
     userProfile,
     userData,
@@ -163,7 +198,11 @@ export function FireStoreDataContext({ children }) {
     selectedLand,
     setSelectedLand,
     openEdit,
-    setOpenEdit
+    setOpenEdit,
+    allUser,
+    isAllUserLoading,
+    handleAddUser,
+    handleUpdateUserProfile, 
   };
 
   return (
