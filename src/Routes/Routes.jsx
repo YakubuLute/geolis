@@ -25,6 +25,7 @@ import Faqs from '../Pages/Home/Menu/Faqs/faqs.jsx'
 import { ForgotPassword } from '../component/Auth/resetpassword.jsx'
 import LandDetails from '../Pages/Home/Menu/LandDetails/index.jsx'
 import { useFireStoreContext } from '../context/FireStoreContext.js'
+
 // Dashboard components
 import DashboardLayout from '../layouts/dashboard/index.jsx'
 import Loading from '../component/shared/Loader/loader.jsx'
