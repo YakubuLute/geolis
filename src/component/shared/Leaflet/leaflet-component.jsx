@@ -6,34 +6,46 @@ import 'leaflet-draw';
 
 const LeafletMap = ({ initialCoordinates, polygonCoordinates }) => {
   const mapRef = useRef(null);
+  const mapInstanceRef = useRef(null);
 
   useEffect(() => {
+    // Check if the DOM element exists
     if (!mapRef.current) return;
 
+    // Set default coordinates if not provided
+    const defaultCoords = [51.505, -0.09]; // London coordinates as fallback
+    const coords = initialCoordinates || defaultCoords;
+
+    // Clean up previous map instance if it exists
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.remove();
+    }
+
     // Create map
-    const map = L.map(mapRef.current).setView(initialCoordinates, 13);
+    const map = L.map(mapRef.current).setView(coords, 13);
+    mapInstanceRef.current = map;
 
     // Base layers
     const openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     });
 
-    const googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+    const googleSat = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
 
-    const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+    const googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
 
-    const googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+    const googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
 
-    const googleTerrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+    const googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
@@ -69,11 +81,13 @@ const LeafletMap = ({ initialCoordinates, polygonCoordinates }) => {
       drawLayer.addLayer(event.layer);
     });
 
-    // Add marker for initial coordinates
-    L.marker(initialCoordinates).addTo(map);
+    // Add marker for initial coordinates if valid
+    if (coords && coords.length >= 2) {
+      L.marker(coords).addTo(map);
+    }
 
-    // Add polygon if coordinates are available
-    if (polygonCoordinates && polygonCoordinates.length > 0) {
+    // Add polygon if coordinates are available and valid
+    if (polygonCoordinates && Array.isArray(polygonCoordinates) && polygonCoordinates.length > 0) {
       L.polygon(polygonCoordinates).addTo(map);
     }
 
@@ -94,7 +108,10 @@ const LeafletMap = ({ initialCoordinates, polygonCoordinates }) => {
 
     // Cleanup function
     return () => {
-      map.remove();
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
     };
   }, [initialCoordinates, polygonCoordinates]);
 
