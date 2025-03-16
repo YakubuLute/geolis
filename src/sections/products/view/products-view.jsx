@@ -19,7 +19,7 @@ import PropertyCard from "../../../component/landingPage/PropertyCard.jsx";
 export default function ProductsView() {
   const [openFilter, setOpenFilter] = useState(false);
   const [open, setOpen] = useState(false);
-
+  const { userData } = useFireStoreContext();
   const {
     landData,
     userProfile,
@@ -66,6 +66,7 @@ export default function ProductsView() {
           onClick={handleOpen}
           variant="contained"
           color="inherit"
+          disabled={!userData?.isAdmin}
           startIcon={<Iconify icon="eva:plus-fill" />}
         >
           Add A New Listing
