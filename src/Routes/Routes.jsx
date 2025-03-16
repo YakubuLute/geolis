@@ -112,7 +112,7 @@ const MainRouter = () => {
           }
         >
           <Route index element={<IndexPage />} />
-          {userData.isAdmin && <Route path="user" element={<UserPage />} />}
+          {userData?.isAdmin && <Route path="user" element={<UserPage />} />}
           <Route path="profile" element={<ProfilePage />} />
           <Route path="land" element={<ProductsPage />} />
         </Route>
